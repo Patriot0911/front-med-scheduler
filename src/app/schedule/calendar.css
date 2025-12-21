@@ -11,12 +11,18 @@
   border: 1px solid hsl(var(--border));
 }
 
+.rbc-allday-cell {
+  display: none;
+}
+
 /* headers */
 .rbc-header {
   padding: 8px 0;
   font-size: 13px;
   font-weight: 500;
   background: hsl(var(--muted));
+  cursor: pointer;
+  border: none;
 }
 
 /* hours */
