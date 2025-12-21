@@ -1,8 +1,16 @@
-.test {
-    background-color: red;
-}
-.sidebar {
+.layout {
     display: flex;
-    flex-direction: column;
-    background-color: rebeccapurple;
+    flex-direction: row;
+    min-height: 100dvh;
+    .content {
+       display: flex;
+       flex-direction: column;
+       flex-grow: 1;
+       main {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 1rem 2rem;
+        }
+    }
 }

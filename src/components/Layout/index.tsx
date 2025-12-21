@@ -4,19 +4,12 @@ import Header from "./Header";
 
 import styles from './styles.module.scss';
 import Link from "next/link";
+import Sidebar from "./Sidebar";
 
 const Layout = ({ children, }: PropsWithChildren) => {
     return (
         <div className={styles.layout}>
-            <aside className={styles.sidebar}>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link href={'/'}>test</Link>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
+            {/* <Sidebar /> */}
             <div className={styles.content}>
                 <Header />
                 <main>{children}</main>
