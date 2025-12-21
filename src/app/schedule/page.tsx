@@ -36,6 +36,7 @@ export default function SchedulePage() {
         max={new Date(1970, 1, 1, 22, 0)}
         step={60}
         timeslots={1}
+        showAllEvents={false}
         formats={{
           timeGutterFormat: 'H:mm',
         }}

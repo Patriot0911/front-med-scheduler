@@ -3,13 +3,12 @@ import Footer from "./Footer";
 import Header from "./Header";
 
 import styles from './styles.module.scss';
-import Link from "next/link";
 import Sidebar from "./Sidebar";
 
 const Layout = ({ children, }: PropsWithChildren) => {
     return (
         <div className={styles.layout}>
-            {/* <Sidebar /> */}
+            <Sidebar />
             <div className={styles.content}>
                 <Header />
                 <main>{children}</main>
