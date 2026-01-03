@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { cn } from '@/src/lib/cn';
+import { cn } from '@/lib/cn';
 import { usePathname } from 'next/navigation';
-import { INavbarItem } from '@/src/interfaces/layout/sidebar';
+import { INavbarItem } from '@/interfaces/layout/sidebar';
 
 import styles from './styles.module.scss';
 

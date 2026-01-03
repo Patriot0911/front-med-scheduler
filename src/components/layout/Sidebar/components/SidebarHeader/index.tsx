@@ -1,6 +1,6 @@
-import { ISidebarHeaderProps } from '@/src/interfaces/layout/sidebar';
+import { ISidebarHeaderProps } from '@/interfaces/layout/sidebar';
 import { MdOutlineKeyboardDoubleArrowLeft } from 'react-icons/md';
-import { cn } from '@/src/lib/cn';
+import { cn } from '@/lib/cn';
 
 import styles from './styles.module.scss';
 

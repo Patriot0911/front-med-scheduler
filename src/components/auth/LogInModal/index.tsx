@@ -1,5 +1,5 @@
-import { ILogInModalProps } from '@/src/interfaces/auth/modal';
-import Modal from '../../ui/Modal';
+import { ILogInModalProps } from '@/interfaces/auth/modal';
+import Modal from '@/components/ui/Modal';
 
 const LogInModal = (props: ILogInModalProps) => {
   return (

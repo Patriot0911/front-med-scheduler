@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { cn } from '@/src/lib/cn';
+import { cn } from '@/lib/cn';
 import Navbar from './components/Navbar';
 import SidebarHeader from './components/SidebarHeader';
 import UserSection from './components/UserSection';

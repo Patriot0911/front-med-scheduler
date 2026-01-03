@@ -1,9 +1,11 @@
-import { Footer, Header, Sidebar } from '../components';
 import { PropsWithChildren } from 'react';
+import Sidebar from '../Sidebar';
+import Header from '../Header';
+import Footer from '../Footer';
 
 import styles from './styles.module.scss';
 
-const Layout = ({ children, }: PropsWithChildren) => {
+const BaseLayout = ({ children, }: PropsWithChildren) => {
   return (
     <div className={styles.layout}>
       <Sidebar />
@@ -16,4 +18,4 @@ const Layout = ({ children, }: PropsWithChildren) => {
   );
 }
 
-export default Layout;
+export default BaseLayout;

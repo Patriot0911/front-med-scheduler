@@ -1,14 +1,14 @@
-import { SIDEBAR_SETTINGS } from '@/src/configs/sidebar.config';
+import { SIDEBAR_SETTINGS } from '@/configs/sidebar.config';
+import SidebarUserProfile from '../SidebarUserProfile';
 import LoginButton from '../LoginButton';
 import NavLink from '../NavLink';
 
 import styles from './styles.module.scss';
-import SidebarUserProfile from '../SidebarUserProfile';
 
 const UserSection = () => {
   const isAuth = false;
 
-  if (isAuth)
+  if (!isAuth)
     return <LoginButton />
 
   return (

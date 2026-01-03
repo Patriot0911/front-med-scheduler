@@ -1,7 +1,8 @@
-import Image from "next/image";
 
-export default function Home() {
+const HomePage = () => {
   return (
-    <div>test</div>
+    <div className='flex gap-2 bg-red-500'> qwe</div>
   );
 }
+
+export default HomePage;

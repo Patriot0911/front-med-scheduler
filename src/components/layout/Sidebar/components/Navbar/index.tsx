@@ -1,4 +1,4 @@
-import { SIDEBAR_HOME, SIDEBAR_GROUPS } from '@/src/configs/sidebar.config';
+import { SIDEBAR_HOME, SIDEBAR_GROUPS } from '@/configs/sidebar.config';
 import NavLink from '../NavLink';
 
 import styles from './styles.module.scss';

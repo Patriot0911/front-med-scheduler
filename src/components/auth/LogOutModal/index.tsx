@@ -1,5 +1,5 @@
-import { ILogOutModalProps } from '@/src/interfaces/auth/modal';
-import Modal from '../../ui/Modal';
+import { ILogOutModalProps } from '@/interfaces/auth/modal';
+import Modal from '@/components/ui/Modal';
 
 const LogOutModal = (props: ILogOutModalProps) => {
   return (

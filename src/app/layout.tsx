@@ -1,9 +1,9 @@
-import { geistMono, geistSans } from '../fonts/geist';
-import Layout from '../components/layout/Layout';
-import type { PropsWithChildren } from 'react';
 import type { Metadata } from 'next';
+import type { PropsWithChildren } from 'react';
+import { geistMono, geistSans } from '@/fonts/geist';
+import BaseLayout from '@/components/layout/BaseLayout';
 
-import "./globals.css";
+import '@/styles/global.scss';
 
 export const metadata: Metadata = {
   title: "Med Scheduler",
@@ -15,9 +15,9 @@ const RootLayout = ({ children, }: Readonly<PropsWithChildren>) => {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Layout>
+        <BaseLayout>
           {children}
-        </Layout>
+        </BaseLayout>
       </body>
     </html>
   );
