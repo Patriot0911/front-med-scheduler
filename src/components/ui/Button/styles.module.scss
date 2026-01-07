@@ -1,0 +1,98 @@
+$primary: #6c63ff;
+$primary-hover: #5a52e6;
+$danger: #e5484d;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border-radius: 5px;
+  padding: 0.6rem 0;
+  border: none;
+
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(108, 99, 255, 0.6);
+    outline-offset: 2px;
+  }
+
+  .content {
+    line-height: normal;
+    font-family: var(--font-jost);
+  }
+}
+
+/* Variants */
+.primary {
+  background-color: $primary;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-hover;
+  }
+}
+
+.secondary {
+  background-color: rgba(108, 99, 255, 0.12);
+  color: $primary;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(108, 99, 255, 0.2);
+  }
+}
+
+.ghost {
+  background-color: transparent;
+  color: $primary;
+
+  &:hover:not(:disabled) {
+    background-color: rgba(108, 99, 255, 0.12);
+  }
+}
+
+.danger {
+  background-color: $danger;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+}
+
+.icon {
+  display: inline-flex;
+}
+
+.loading {
+  pointer-events: none;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

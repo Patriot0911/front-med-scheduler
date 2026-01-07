@@ -1,19 +1,20 @@
-import { SIDEBAR_SETTINGS } from '@/configs/sidebar.config';
+'use client';
+
 import SidebarUserProfile from '../SidebarUserProfile';
 import LoginButton from '../LoginButton';
-import NavLink from '../NavLink';
 
 import styles from './styles.module.scss';
+import { useAppSelector } from '@/hooks/redux';
+import { useUserSelector } from '@/hooks/redux/auth';
 
 const UserSection = () => {
-  const isAuth = false;
+  const user = useAppSelector(useUserSelector);
 
-  if (!isAuth)
+  if (!user)
     return <LoginButton />
 
   return (
     <div className={styles['user-section-wrapper']}>
-      <NavLink {...SIDEBAR_SETTINGS} />
       <SidebarUserProfile />
     </div>
   );

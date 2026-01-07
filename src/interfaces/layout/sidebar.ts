@@ -1,8 +1,3 @@
-export interface INavbarItemsGroup {
-  label: string;
-  isAuthenticated?: boolean;
-  items: INavbarItem[];
-};
 export interface INavbarItem {
   label: string;
   href: string;
