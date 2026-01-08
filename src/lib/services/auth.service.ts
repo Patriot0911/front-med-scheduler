@@ -1,4 +1,3 @@
-import type { IRegisterRequestPayload, IRegisterResponse } from '@/interfaces/auth/register';
 import type { ILoginRequestPayload, ILoginResponse } from '@/interfaces/auth/login';
 import type { IAuthUserResponse } from '@/interfaces/auth/user';
 import type { IRefreshResponse } from '@/interfaces/auth/refresh';
@@ -30,12 +29,7 @@ class AuthService {
     return AuthService.token;
   }
 
-  static async register(credentials: IRegisterRequestPayload): Promise<IRegisterResponse> {
-    console.log(`Registering with email: ${credentials.email}`);
-    return api.post('/auth/register', credentials);
-  }
   static async login(credentials: ILoginRequestPayload): Promise<ILoginResponse> {
-    console.log(`Logging in with email: ${credentials.email}`);
     return api.post('/auth/login', credentials);
   }
   static async refreshToken(): Promise<IRefreshResponse> {

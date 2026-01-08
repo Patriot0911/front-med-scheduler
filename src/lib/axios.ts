@@ -39,7 +39,7 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const { data } = await AuthService.refreshToken();
+      const { data: { data, } } = await AuthService.refreshToken();
 
       AuthService.updateTokens(data.tokens.accessToken, data.tokens.refreshToken);
       queue.forEach((cb) => cb());

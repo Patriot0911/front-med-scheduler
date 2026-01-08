@@ -1,6 +1,33 @@
 .controller-container {
-  .form-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-family: var(--font-jost);
+  label {
+    font-size: 0.9rem;
+    color: rgba(68, 68, 68, 0.938);
+    font-weight: 500;
+  }
+  .controller-input {
+    border-radius: 6px;
+    background-color: var(--color-light);
+    box-shadow: 0px 0px 2px 1px rgba(80, 80, 80, 0.26);
+    padding:  0.5rem 0.8rem;
+    transition: box-shadow ease-in-out 0.2s;
+    &__touched {
+      box-shadow: 0px 0px 2px 1px var(--color-primary);
+    }
+    &__error {
+      box-shadow: 0px 0px 2px 1px var(--color-error);
+    }
   }
   .controller-error {
+    position: relative;
+    height: 1rem;
+    line-height: 1rem;
+    font-size: 0.75rem;
+    color: var(--color-error);
+    font-weight: 600;
+    opacity: 0.5;
   }
 }

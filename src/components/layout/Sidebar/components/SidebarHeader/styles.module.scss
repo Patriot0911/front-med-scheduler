@@ -3,13 +3,7 @@
   position: relative;
   justify-content: center;
   align-items: center;
-  padding: 1.4rem 1rem;
-  background: linear-gradient(
-    to left top,
-    rgba(218, 195, 255, 0.747),
-    rgba(255, 255, 255, 0.815) 90%
-  );
-  box-shadow: -1px 2px 5px 1px rgba(218, 195, 255, 0.404);
+  padding: 1.2rem 1rem;
   .logo-wrapper {
     user-select: none;
     -ms-user-select: none;
@@ -20,7 +14,7 @@
     color: rgb(115, 100, 255);
     letter-spacing: -1px;
     line-height: normal;
-    }
+  }
   .nav-button {
     cursor: pointer;
     position: absolute;

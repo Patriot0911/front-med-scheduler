@@ -1,23 +1,28 @@
 'use client';
 
+import { useEffect } from 'react';
 import SidebarUserProfile from '../SidebarUserProfile';
 import LoginButton from '../LoginButton';
-
-import styles from './styles.module.scss';
-import { useAppSelector } from '@/hooks/redux';
-import { useUserSelector } from '@/hooks/redux/auth';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useAuthSelector, } from '@/hooks/redux/auth';
+import { initAuth } from '@/store/slices/authSlice';
 
 const UserSection = () => {
-  const user = useAppSelector(useUserSelector);
+  const authState = useAppSelector(useAuthSelector);
+  const dispatch = useAppDispatch();
 
-  if (!user)
-    return <LoginButton />
-
-  return (
-    <div className={styles['user-section-wrapper']}>
-      <SidebarUserProfile />
-    </div>
+  useEffect(
+    () => {
+      dispatch(initAuth());
+    }, []
   );
+
+  if (authState.status === 'guest' || authState.status === 'loading')
+    return <LoginButton />;
+
+  if (authState.status === 'processing') return <>Loading user...</>;
+  // add optimistic user profile
+  return <SidebarUserProfile />;
 }
 
 export default UserSection;
