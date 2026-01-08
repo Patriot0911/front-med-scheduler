@@ -1,19 +1,19 @@
 .sidebar-wrapper {
 	position: relative;
-	width: 220px;
+	width: 240px;
 	.sidebar {
 		position: fixed;
 		top: 0;
 		left: 0;
 
-		width: 220px;
+		width: 240px;
 		height: 100dvh;
 
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
 
-		background-color: #fff;
-		box-shadow: 2px 0px 2px 1px rgba(0, 0, 0, 0.11);
+		background-color: #ffffffc9;
+		box-shadow: 2px 0px 2px 1px rgba(0, 0, 0, 0.082);
 	}
 }
