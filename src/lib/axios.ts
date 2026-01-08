@@ -8,6 +8,7 @@ export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
+// Auth interceptor
 api.interceptors.request.use((config) => {
   const token = AuthService.getToken();
 
@@ -18,6 +19,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Auth response interceptor
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
@@ -39,7 +41,7 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const { data: { data, } } = await AuthService.refreshToken();
+      const { data, } = await AuthService.refreshToken();
 
       AuthService.updateTokens(data.tokens.accessToken, data.tokens.refreshToken);
       queue.forEach((cb) => cb());
@@ -53,3 +55,6 @@ api.interceptors.response.use(
     }
   }
 );
+
+// Data interceptor
+api.interceptors.response.use((res) => res.data);

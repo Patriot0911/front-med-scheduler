@@ -1,0 +1,39 @@
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      background: #f9fafb;
+    }
+
+    tr:hover {
+      background: #f3f4f6;
+    }
+
+    .clickable {
+      cursor: pointer;
+    }
+
+    .state {
+      text-align: center;
+      padding: 32px;
+      color: #6b7280;
+    }
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 12px 0;
+  }
+}

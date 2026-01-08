@@ -1,6 +1,4 @@
-import type { AxiosResponse, } from 'axios';
-
-export interface IGenericResponse<T> extends AxiosResponse<{
+export interface IGenericResponse<T> {
   data: T;
   status: boolean;
-}> {};
+};

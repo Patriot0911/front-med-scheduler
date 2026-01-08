@@ -12,7 +12,7 @@ const initialState: IAuthStoreState = {
 export const login = createAsyncThunk(
   'auth/login',
   async (credentials: ILoginRequestPayload) => {
-    const { data: { data, }, } = await AuthService.login(credentials);
+    const { data, } = await AuthService.login(credentials);
     return data;
   }
 );
@@ -20,7 +20,7 @@ export const login = createAsyncThunk(
 export const refresh = createAsyncThunk(
   'auth/refresh',
   async () => {
-    const { data: { data, }, } = await AuthService.refreshToken();
+    const { data, } = await AuthService.refreshToken();
     return data;
   }
 );
@@ -36,7 +36,7 @@ export const initAuth = createAsyncThunk(
 
     AuthService.setToken(token);
     try {
-      const { data: { data, }} = await AuthService.getMeUser();
+      const { data, } = await AuthService.getMeUser();
       return data;
     } catch (e: any) {
       throw rejectWithValue(e.message);
