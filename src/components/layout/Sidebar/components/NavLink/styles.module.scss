@@ -8,12 +8,12 @@
     background-color cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s;
   &::before {
     content: ' ';
-    width: 5px;
+    width: 8px;
     border-top-right-radius: 50%;
     border-bottom-right-radius: 50%;
     height: 100%;
     justify-content: center;
-    background-color: rgba(98, 70, 255, 0.918);
+    background-color: rgba(70, 38, 255, 0.918);
     position: absolute;
     transition:
       height ease-in-out 0.2s,
@@ -47,7 +47,7 @@
     }
   }
   &.active {
-    background-color: rgba(230, 226, 252, 0.623);
+    background-color: rgba(108, 107, 114, 0.055);
     &::before {
       transform: translateX(0);
     }

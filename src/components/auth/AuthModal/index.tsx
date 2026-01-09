@@ -1,20 +1,19 @@
 import { useEffect } from 'react';
 import type { ILogInModalProps } from '@/interfaces/auth/modal';
 import { FormProvider, useForm } from 'react-hook-form';
-import { login } from '@/store/slices/authSlice';
 import { useAppDispatch, useAppSelector, } from '@/hooks/redux';
 import Modal from '@/components/ui/Modal';
 import FormInput from '@/components/ui/FormInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, TLoginForm } from './auth.scheme';
-import { useAuthSelector } from '@/hooks/redux/auth';
+import { authSelector } from '@/hooks/redux/auth';
 import Button from '@/components/ui/Button';
 
 import styles from './styles.module.scss'
 
 const AuthModal = (props: ILogInModalProps) => {
   const dispatch = useAppDispatch();
-  const authState = useAppSelector(useAuthSelector);
+  const authState = useAppSelector(authSelector);
   const methods = useForm<TLoginForm>({
     resolver: zodResolver(loginSchema),
     mode: 'onTouched',
@@ -22,10 +21,10 @@ const AuthModal = (props: ILogInModalProps) => {
   });
 
   const loginHandler = (data: TLoginForm) => {
-    dispatch(login({
-      email: data.email,
-      password: data.password,
-    }));
+    // dispatch(login({
+    //   email: data.email,
+    //   password: data.password,
+    // }));
   };
 
   useEffect(
@@ -49,8 +48,9 @@ const AuthModal = (props: ILogInModalProps) => {
             />
           </div>
           <p>Log in to your account using the credentials provided to you by the manager.</p>
-          <Button type='submit' disabled={!methods.formState.isValid || authState.isLoading}>Sign In</Button>
+          <Button type='submit' disabled={!methods.formState.isValid || true}>Sign In</Button>
         </form>
+        {/* authState.isLoading */}
       </FormProvider>
     </Modal>
   );

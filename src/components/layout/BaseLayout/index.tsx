@@ -1,5 +1,6 @@
 import { PropsWithChildren } from 'react';
 import Provider from '../Provider';
+import AuthInit from '../AuthInit';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
 import Footer from '../Footer';
@@ -10,6 +11,7 @@ const BaseLayout = ({ children, }: PropsWithChildren) => {
   return (
     <div className={styles.layout}>
       <Provider>
+        <AuthInit />
         <Sidebar />
         <div className={styles.content}>
           <Header />

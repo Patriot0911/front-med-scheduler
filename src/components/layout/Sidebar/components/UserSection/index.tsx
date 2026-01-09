@@ -1,27 +1,21 @@
 'use client';
 
-import { useEffect } from 'react';
+import useMeQuery from '@/hooks/queries/auth/useMeQuery';
 import SidebarUserProfile from '../SidebarUserProfile';
 import LoginButton from '../LoginButton';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { useAuthSelector, } from '@/hooks/redux/auth';
-import { initAuth } from '@/store/slices/authSlice';
+import { useAppSelector } from '@/hooks/redux';
+import { authStatusSelector } from '@/hooks/redux/auth';
 
 const UserSection = () => {
-  const authState = useAppSelector(useAuthSelector);
-  const dispatch = useAppDispatch();
+  const status = useAppSelector(authStatusSelector);
+  const { isLoading, isEnabled, } = useMeQuery();
 
-  useEffect(
-    () => {
-      dispatch(initAuth());
-    }, []
-  );
-
-  if (authState.status === 'guest' || authState.status === 'loading')
+  if (!isEnabled && status === 'guest')
     return <LoginButton />;
 
-  if (authState.status === 'processing') return <>Loading user...</>;
-  // add optimistic user profile
+  // todo: show skeleton
+  if (isLoading || status === 'init') return <>Loading user...</>;
+
   return <SidebarUserProfile />;
 }
 
