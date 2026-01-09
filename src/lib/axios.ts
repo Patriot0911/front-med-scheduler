@@ -4,9 +4,10 @@ import AuthService from './services/auth.service';
 let isRefreshing = false;
 let queue: (() => void)[] = [];
 
-export const api = axios.create({
+export const apiConfig = {
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-});
+};
+export const api = axios.create(apiConfig);
 
 // Auth interceptor
 api.interceptors.request.use((config) => {
@@ -41,7 +42,7 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const { data, } = await AuthService.refreshToken();
+      const { data: { data: { data, }, }, } = await AuthService.refreshToken();
 
       AuthService.updateTokens(data.tokens.accessToken, data.tokens.refreshToken);
       queue.forEach((cb) => cb());

@@ -1,7 +1,9 @@
 import type { ILoginRequestPayload, ILoginResponse } from '@/interfaces/auth/login';
 import type { IAuthUserResponse } from '@/interfaces/auth/user';
 import type { IRefreshResponse } from '@/interfaces/auth/refresh';
-import { api } from '../axios';
+import { api, apiConfig, } from '../axios';
+import axios from 'axios';
+import { IGenericAxiosResponse } from '@/interfaces/shared/generic-response';
 
 export const REFRESH_TOKEN_KEY = 'refresh_token';
 export const ACCESS_TOKEN_KEY = 'access_token';
@@ -36,12 +38,13 @@ class AuthService {
   static async login(credentials: ILoginRequestPayload): Promise<ILoginResponse> {
     return api.post('/auth/login', credentials);
   }
-  static async refreshToken(): Promise<IRefreshResponse> {
+  static async refreshToken(): Promise<IGenericAxiosResponse<IRefreshResponse>> {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
     if (!refreshToken) {
       throw new Error('No refresh token available');
     }
-    return api.post('/auth/refresh', {}, {
+    return axios.post('/auth/refresh', {}, {
+      ...apiConfig,
       headers: {
         Authorization: `Bearer ${refreshToken}`,
       },

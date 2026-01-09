@@ -2,8 +2,9 @@
 
 import type { IModalProps } from '@/interfaces/shared/modal';
 import { AnimatePresence, motion, } from 'framer-motion';
-import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useEffect } from 'react';
+import Loading from '../Loading';
 import { cn } from '@/lib/cn';
 
 import styles from './styles.module.scss';
@@ -62,8 +63,21 @@ const Modal = ({ children, isOpen, isLoading, className, onClose, }: IModalProps
             onClick={(e) => e.stopPropagation()}
           >
             {children}
+            <motion.div
+              className={
+                cn(
+                  styles['loading-overlay'],
+                  !isLoading && styles['loading-overlay__hidden']
+                )
+              }
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isLoading ? 1 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {isLoading && <Loading />}
+            </motion.div>
           </motion.div>
-        </motion.div>
+          </motion.div>
       )}
     </AnimatePresence>,
     document.body

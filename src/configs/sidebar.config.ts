@@ -21,4 +21,4 @@ export const SIDEBAR_ITEMS: INavbarItem[] = [
     icon: FaGear({}),
     isAuthenticated: true,
   }
-];
+] as const;

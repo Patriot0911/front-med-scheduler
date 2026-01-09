@@ -12,6 +12,7 @@
     border-radius: 6px;
     background-color: var(--color-light);
     box-shadow: 0px 0px 2px 1px rgba(80, 80, 80, 0.26);
+    color: var(--color-dark);
     padding:  0.5rem 0.8rem;
     transition: box-shadow ease-in-out 0.2s;
     &__touched {
@@ -19,6 +20,14 @@
     }
     &__error {
       box-shadow: 0px 0px 2px 1px var(--color-error);
+    }
+    &:disabled {
+      background-color: rgba(var(--color-dark-rgb), 0.03);
+      color: var(--color-text-secondary);
+    }
+    &[type="password"] {
+      font: small-caption;
+      font-size: 1rem;
     }
   }
   .controller-error {
