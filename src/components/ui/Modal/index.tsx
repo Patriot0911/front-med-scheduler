@@ -18,7 +18,7 @@ const modalVariants = {
   visible: { opacity: 1, y: 0, scale: 1 },
 };
 
-const Modal = ({ children, isOpen, onClose, className, }: IModalProps) => {
+const Modal = ({ children, isOpen, isLoading, className, onClose, }: IModalProps) => {
 
   useEffect(() => {
     if (!isOpen) return;

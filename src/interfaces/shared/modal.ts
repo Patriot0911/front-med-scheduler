@@ -4,5 +4,6 @@ export interface IModalBaseProps {
 };
 export interface IModalProps extends IModalBaseProps {
   children: React.ReactNode;
+  isLoading?: boolean;
   className?: string;
 };
