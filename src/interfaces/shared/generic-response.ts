@@ -5,3 +5,4 @@ export interface IGenericResponse<T> {
   status: boolean;
 };
 export interface IGenericAxiosResponse<T> extends AxiosResponse<IGenericResponse<T>> {};
+export interface IBooleanResponse extends IGenericResponse<boolean> {};

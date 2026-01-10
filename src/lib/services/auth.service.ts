@@ -1,9 +1,9 @@
 import type { ILoginRequestPayload, ILoginResponse } from '@/interfaces/auth/login';
 import type { IAuthUserResponse } from '@/interfaces/auth/user';
+import type { IBooleanResponse } from '@/interfaces/shared/generic-response';
 import type { IRefreshResponse } from '@/interfaces/auth/refresh';
 import { api, apiConfig, } from '../axios';
 import axios from 'axios';
-import { IGenericAxiosResponse } from '@/interfaces/shared/generic-response';
 
 export const REFRESH_TOKEN_KEY = 'refresh_token';
 export const ACCESS_TOKEN_KEY = 'access_token';
@@ -35,10 +35,13 @@ class AuthService {
     return AuthService.token;
   }
 
+  static async logout(): Promise<IBooleanResponse> {
+    return api.post('/auth/logout');
+  }
   static async login(credentials: ILoginRequestPayload): Promise<ILoginResponse> {
     return api.post('/auth/login', credentials);
   }
-  static async refreshToken(): Promise<IGenericAxiosResponse<IRefreshResponse>> {
+  static async refreshToken(): Promise<IRefreshResponse> {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
     if (!refreshToken) {
       throw new Error('No refresh token available');

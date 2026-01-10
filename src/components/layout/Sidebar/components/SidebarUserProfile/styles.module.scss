@@ -1,5 +1,6 @@
 .user-profile-wrapper {
   display: flex;
+  position: relative;
   padding: 0.5rem 0.8rem;
   border-radius: 5px;
   background-color: var(--color-light);
@@ -31,6 +32,24 @@
       line-height: 0.9rem;
       font-weight: 600;
       opacity: 0.4;
+    }
+  }
+  .logout-wrapper {
+    position: absolute;
+    bottom: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    left: 0;
+    padding-bottom: 0.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity cubic-bezier(0.19, 1, 0.22, 1) 0.2s, transform cubic-bezier(0.165, 0.84, 0.44, 1) 0.3s;
+  }
+  &:hover {
+    .logout-wrapper {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }

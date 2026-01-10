@@ -10,6 +10,7 @@ const QueryProvider = ({ children, }: PropsWithChildren) => {
         queries: {
           retry: 1,
           refetchOnWindowFocus: false,
+          retryOnMount: false,
           staleTime: 60_000,
         },
       },

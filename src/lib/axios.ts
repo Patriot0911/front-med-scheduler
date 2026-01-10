@@ -20,9 +20,9 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Auth response interceptor
+// Response interceptor
 api.interceptors.response.use(
-  (res) => res,
+  (res) => res.data,
   async (error) => {
     const original = error.config;
 
@@ -42,20 +42,19 @@ api.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      const { data: { data: { data, }, }, } = await AuthService.refreshToken();
+      const { data: { data, }, } = await AuthService.refreshToken();
 
       AuthService.updateTokens(data.tokens.accessToken, data.tokens.refreshToken);
       queue.forEach((cb) => cb());
+      queue = [];
 
       return api(original);
-    } catch {
+    } catch(err) {
       AuthService.clearTokens();
       window.location.href = '/';
+      return Promise.reject(err);
     } finally {
       isRefreshing = false;
     }
   }
 );
-
-// Data interceptor
-api.interceptors.response.use((res) => res.data);

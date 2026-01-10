@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { ILogInModalProps } from '@/interfaces/auth/modal';
 import { FormProvider, useForm } from 'react-hook-form';
 import { LoadingStateVariantsMap, mutationToLoadingState } from '@/lib/loading-mappers';
-import useLoginMutation from '@/hooks/mutations/useLoginMutation';
+import useLoginMutation from '@/hooks/mutations/auth/useLoginMutation';
 import { AuthLoginButtonDictionary } from '@/configs/auth.dictionary';
 import Modal from '@/components/ui/Modal';
 import FormInput from '@/components/ui/FormInput';

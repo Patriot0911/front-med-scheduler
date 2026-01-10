@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient, } from '@tanstack/react-query';
-import { useAppDispatch } from '../redux';
+import { useAppDispatch } from '../../redux';
 import AuthService, { AuthQueryKey } from '@/lib/services/auth.service';
 import { login, logout } from '@/store/slices/authSlice';
 import { IAuthUserResponse } from '@/interfaces/auth/user';

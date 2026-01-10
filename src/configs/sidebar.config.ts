@@ -1,7 +1,9 @@
 import type { INavbarItem } from '../interfaces/layout/sidebar';
+import { IoSchoolSharp } from "react-icons/io5";
 import { FaCalendarAlt } from "react-icons/fa";
 import { GoHomeFill } from "react-icons/go";
-import { FaGear } from 'react-icons/fa6';
+import { IoLibrary } from "react-icons/io5";
+import { FaUsers } from "react-icons/fa6";
 
 export const SIDEBAR_ITEMS: INavbarItem[] = [
   {
@@ -11,14 +13,26 @@ export const SIDEBAR_ITEMS: INavbarItem[] = [
     icon: GoHomeFill({}),
   },
   {
-    label: "Study Schedule",
+    label: "Schedule",
     href: "/schedule",
     icon: FaCalendarAlt({}),
   },
   {
-    label: 'Parameters',
-    href: '/parameters',
-    icon: FaGear({}),
+    label: 'Lessons',
+    href: '/lessons',
+    icon: IoSchoolSharp({}),
     isAuthenticated: true,
-  }
+  },
+  {
+    label: 'Users',
+    href: '/users',
+    icon: FaUsers({}),
+    isAuthenticated: true,
+  },
+  {
+    label: 'Dictionaries',
+    href: '/dictionaries',
+    icon: IoLibrary({}),
+    isAuthenticated: true,
+  },
 ] as const;
