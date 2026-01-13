@@ -1,8 +1,13 @@
-import { IFilterParams } from '@/interfaces/shared/services';
+import type { IRoleResponse } from '@/interfaces/dictionaries/roles';
+import type { IFilterParams } from '@/interfaces/shared/services';
 import { api } from '../axios';
 
+export enum RolesQueryKey {
+  RolesList = 'rolesList',
+};
+
 class RolesService {
-  static async getRoles(prams: IFilterParams = { page: 1, pageSize: 20 }) {
+  static async getRoles(prams: IFilterParams = { page: 1, pageSize: 20 }): Promise<IRoleResponse> {
     return api.get(`/roles?page=${prams.page}&pageSize=${prams.pageSize}`);
   }
 }
