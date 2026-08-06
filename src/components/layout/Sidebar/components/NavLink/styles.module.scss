@@ -13,7 +13,7 @@
     border-bottom-right-radius: 50%;
     height: 100%;
     justify-content: center;
-    background-color: rgba(70, 38, 255, 0.918);
+    background-color: var(--color-primary);
     position: absolute;
     transition:
       height ease-in-out 0.2s,
@@ -29,7 +29,7 @@
     padding: 0.5rem 1rem;
     gap: 0.7rem;
     font-family: var(--font-jost);
-    color: rgba(31, 31, 31, 0.596);
+    color: var(--color-text-secondary);
     transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 0.2s;
     svg {
       font-size: 1.1rem;
@@ -40,14 +40,14 @@
     }
   }
   &:not(.active):hover {
-    background-color: rgba(147, 129, 247, 0.048);
+    background-color: var(--color-primary-50);
     a {
-      color: rgb(73, 73, 73);
+      color: var(--color-text-primary);
       transform: translateX(10px);
     }
   }
   &.active {
-    background-color: rgba(108, 107, 114, 0.055);
+    background-color: var(--color-primary-50);
     &::before {
       transform: translateX(0);
     }
@@ -55,7 +55,7 @@
       padding-left: 1.5rem;
     }
     svg, span {
-      color: rgba(98, 70, 255, 0.918);
+      color: var(--color-primary);
     }
   }
 }
