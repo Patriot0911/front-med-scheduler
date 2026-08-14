@@ -1,47 +1,32 @@
-import type { IFormInputProps } from '@/interfaces/ui/inputs';
 import { FieldValues, useController, useFormContext } from 'react-hook-form';
-import { cn } from '@/lib/cn';
-
-import styles from './styles.module.scss';
+import { IFormInputProps } from '@/interfaces/ui/inputs';
+import Input from '@/components/ui/Input';
 
 const FormInput = <T extends FieldValues>({
-  label,
   name,
-  className,
+  hideErrorMessage,
   ...props
 }: IFormInputProps<T>) => {
-  const { control } = useFormContext<T>();
+  const { control, formState: { isSubmitted } } = useFormContext<T>();
   const {
     field,
-    fieldState: { error, isTouched, isDirty, },
-  } = useController({ name, control, });
+    fieldState: { error, isTouched, isDirty },
+  } = useController({ name, control });
+
+  const hasValue = Boolean(field.value);
+  const touched = (isDirty || isTouched) && !error && hasValue;
+  const showError = error && (isSubmitted || isDirty || hasValue);
 
   return (
-    <div className={styles['controller-container']}>
-      <label htmlFor={name}>{label}</label>
-
-      <input
-        {...field}
-        {...props}
-        id={name}
-        aria-invalid={!!error}
-        aria-describedby={`${name}-error`}
-        value={field.value ?? ''}
-        className={
-          cn(
-            className,
-            styles['controller-input'],
-            (isTouched || isDirty) && styles['controller-input__touched'],
-            error && styles['controller-input__error'],
-          )
-        }
-      />
-
-      <span className={styles['controller-error']} id={`${name}-error`}>
-        {error?.message}
-      </span>
-    </div>
+    <Input
+      {...props}
+      {...field}
+      value={field.value ?? ''}
+      touched={touched}
+      error={showError ? error.message : undefined}
+      hideErrorMessage={hideErrorMessage}
+    />
   );
-}
+};
 
 export default FormInput;

@@ -5,7 +5,5 @@ export interface IRole {
   name: string;
   permissions: string[]; // todo: to enum?
 };
-export interface IDictionaryRole {
-};
 
 export interface IRoleResponse extends IGenericListResponse<IRole> {};

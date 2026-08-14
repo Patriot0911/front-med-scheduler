@@ -1,4 +1,4 @@
-import { IButtonProps } from '@/interfaces/ui/inputs';
+import { IButtonProps } from '@/interfaces/ui/buttons';
 import { cn } from '@/lib/cn';
 
 import styles from './styles.module.scss';
