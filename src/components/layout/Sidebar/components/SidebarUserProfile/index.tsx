@@ -8,8 +8,10 @@ import useLogoutMutation from '@/hooks/mutations/auth/useLogoutMutation';
 import Button from '@/components/ui/Button';
 
 const SidebarUserProfile = () => {
-  const { data,} = useMeQuery();
+  const { data, } = useMeQuery();
   const logoutMutation = useLogoutMutation();
+
+  console.log({ data })
 
   const logoutHandle = () => {
     logoutMutation.mutate();

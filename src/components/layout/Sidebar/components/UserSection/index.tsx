@@ -18,7 +18,7 @@ const UserSection = () => {
 
   const canLogin = !isEnabled && status === 'guest';
 
-  if (isLoading || status === 'init') return <>Loading user...</>;
+  if (isLoading || status === 'init') return;
 
   return (
     <div className={styles['user-section-wrapper']}>

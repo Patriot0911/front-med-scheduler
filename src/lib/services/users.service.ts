@@ -1,8 +1,8 @@
-import { api } from '../axios';
+import { apiClient } from '../axios';
 
 class UsersService {
   static async getUsers() {
-    return api.get('/users');
+    return apiClient.get('/users');
   }
 }
 

@@ -34,6 +34,7 @@ const AuthModal = (props: ILogInModalProps) => {
       methods.reset();
     }
   }, [props.isOpen]);
+
   useEffect(() => {
     if (!props.isOpen) return;
     if (!loginMutation.isSuccess) return;

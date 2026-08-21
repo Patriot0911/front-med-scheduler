@@ -1,10 +1,10 @@
 import type { IGenericAxiosResponse, } from '../shared/generic-response';
 import type { IAuthToken } from './token';
-import type { IAuthUserPayload } from './user';
+import type { IAuthUser } from './user';
 
-interface IRefreshResponsePayload {
+export interface IRefreshResponse {
   tokens: IAuthToken;
-  user: IAuthUserPayload;
-}
+  user: IAuthUser;
+};
 
-export interface IRefreshResponse extends IGenericAxiosResponse<IRefreshResponsePayload> {}
+export interface IRefreshAxiosResponse extends IGenericAxiosResponse<IRefreshResponse> {}

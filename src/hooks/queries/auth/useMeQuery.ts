@@ -1,17 +1,17 @@
 import { useAppSelector } from '@/hooks/redux';
 import { authSelector } from '@/hooks/redux/auth';
-import { IAuthUserResponse } from '@/interfaces/auth/user';
+import { IAuthMeResponse } from '@/interfaces/auth/me';
 import AuthService, { AuthQueryKey } from '@/lib/services/auth.service';
 import { useQuery } from '@tanstack/react-query';
 
 const useMeQuery = () => {
   const { status, } = useAppSelector(authSelector);
 
-  return useQuery<IAuthUserResponse, Error, IAuthUserResponse['data']>({
+  return useQuery<IAuthMeResponse, Error, IAuthMeResponse>({
     queryKey: [AuthQueryKey.Me],
     queryFn: AuthService.getMeUser,
     retry: false,
-    select: ({ data, }) => data,
+    select: (data) => data,
     enabled: status === 'authenticated',
   });
 }

@@ -1,15 +1,12 @@
-import { IGenericResponse } from '../shared/generic-response';
 import { IAuthToken } from './token';
-import { IAuthUserPayload } from './user';
+import { IAuthUser } from './user';
 
-interface ILoginResponsePayload {
+export interface ILoginResponse {
   tokens: IAuthToken;
-  user: IAuthUserPayload;
-}
+  user: IAuthUser;
+};
 
 export interface ILoginRequestPayload {
   email: string;
   password: string;
-}
-
-export interface ILoginResponse extends IGenericResponse<ILoginResponsePayload> {}
+};

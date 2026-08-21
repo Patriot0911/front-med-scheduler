@@ -1,8 +1,7 @@
 import type { ILoginRequestPayload, ILoginResponse } from '@/interfaces/auth/login';
-import type { IAuthUserResponse } from '@/interfaces/auth/user';
-import type { IBooleanResponse } from '@/interfaces/shared/generic-response';
 import type { IRefreshResponse } from '@/interfaces/auth/refresh';
-import { api, apiConfig, } from '../axios';
+import { IAuthMeResponse } from '@/interfaces/auth/me';
+import { apiConfig, apiClient, } from '../axios';
 import axios from 'axios';
 
 export const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -18,6 +17,7 @@ class AuthService {
   static setToken(token: string | null) {
     AuthService.token = token;
   }
+
   static updateTokens(accessToken: string, refreshToken?: string) {
     AuthService.setToken(accessToken);
     localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
@@ -25,6 +25,7 @@ class AuthService {
       localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
     }
   }
+
   static clearTokens() {
     AuthService.setToken(null);
     localStorage.removeItem(ACCESS_TOKEN_KEY);
@@ -35,12 +36,14 @@ class AuthService {
     return AuthService.token;
   }
 
-  static async logout(): Promise<IBooleanResponse> {
-    return api.post('/auth/logout');
+  static async logout(): Promise<boolean> {
+    return apiClient.post('/auth/logout');
   }
+
   static async login(credentials: ILoginRequestPayload): Promise<ILoginResponse> {
-    return api.post('/auth/login', credentials);
+    return apiClient.post('/auth/login', credentials);
   }
+
   static async refreshToken(): Promise<IRefreshResponse> {
     const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
     if (!refreshToken) {
@@ -54,8 +57,8 @@ class AuthService {
     });
   }
 
-  static async getMeUser(): Promise<IAuthUserResponse> {
-    return api.get('/auth/me');
+  static async getMeUser(): Promise<IAuthMeResponse> {
+    return apiClient.get('/auth/me');
   }
 }
 
