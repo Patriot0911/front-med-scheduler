@@ -1,9 +1,10 @@
 import { SIDEBAR_ITEMS } from '@/configs/sidebar.config';
+import { ISidebarSectionProps } from '@/interfaces/layout/sidebar';
 import NavLink from '../NavLink';
 
 import styles from './styles.module.scss';
 
-const Navbar = () => {
+const Navbar = ({ isOpen }: ISidebarSectionProps) => {
   return (
     <nav className={styles['nav-container']}>
       <ul className={styles['nav-list']}>
@@ -12,6 +13,7 @@ const Navbar = () => {
             (item) => (
               <NavLink
                 {...item}
+                isOpen={isOpen}
                 key={item.href}
               />
             )

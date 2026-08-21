@@ -13,11 +13,6 @@ export const SIDEBAR_ITEMS: INavbarItem[] = [
     icon: GoHomeFill({}),
   },
   {
-    label: "Schedule",
-    href: "/schedule",
-    icon: FaCalendarAlt({}),
-  },
-  {
     label: 'Lessons',
     href: '/lessons',
     icon: IoSchoolSharp({}),

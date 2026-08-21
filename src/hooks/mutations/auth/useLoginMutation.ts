@@ -12,7 +12,6 @@ const useLoginMutation = () => {
   return useMutation<ILoginResponse, Error, ILoginRequestPayload>({
     mutationFn: AuthService.login,
     onSuccess: (data) => {
-      console.log({ data });
       dispatch(login(data.tokens));
       queryClient.setQueryData(
         [AuthQueryKey.Me],

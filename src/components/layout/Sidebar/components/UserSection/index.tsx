@@ -8,10 +8,11 @@ import { useState } from 'react';
 import AuthModal from '@/components/auth/AuthModal';
 import Button from '@/components/ui/Button';
 import { FaUserGraduate } from 'react-icons/fa';
+import { ISidebarSectionProps } from '@/interfaces/layout/sidebar';
 
 import styles from './styles.module.scss';
 
-const UserSection = () => {
+const UserSection = ({ isOpen }: ISidebarSectionProps) => {
   const [isShownAuthModal, setIsShownAuthModal] = useState(false);
   const status = useAppSelector(authStatusSelector);
   const { isLoading, isEnabled, } = useMeQuery();
@@ -28,10 +29,13 @@ const UserSection = () => {
       />
       {
         canLogin ? (
-          <Button onClick={() => setIsShownAuthModal(true)} leftIcon={FaUserGraduate({})}>
-            Sign In
+          <Button
+            onClick={() => setIsShownAuthModal(true)}
+            leftIcon={FaUserGraduate({})}
+          >
+            {isOpen ? 'Sign In' : ''}
           </Button>
-        ) : <SidebarUserProfile />
+        ) : <SidebarUserProfile isOpen={isOpen} />
       }
     </div>
   );
