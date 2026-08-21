@@ -5,6 +5,7 @@ import { geistMono, geistSans } from '@/fonts/geist';
 import { oswald } from '@/fonts/oswald';
 import { Providers } from './providers';
 import { jost } from '@/fonts/jost';
+import { Toaster } from 'react-hot-toast';
 
 import '@/styles/global.scss';
 
@@ -22,6 +23,11 @@ const RootLayout = ({ children, }: Readonly<PropsWithChildren>) => {
           <BaseLayout>
             {children}
           </BaseLayout>
+          <Toaster
+            toastOptions={{
+              position: 'bottom-right',
+            }}
+          />
         </Providers>
       </body>
     </html>
