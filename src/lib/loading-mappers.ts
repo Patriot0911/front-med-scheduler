@@ -1,7 +1,8 @@
-import { ButtonVariant } from '@/interfaces/ui/inputs';
+import { ButtonVariant } from '@/interfaces/ui/buttons';
 import { UseMutationResult } from '@tanstack/react-query';
 
 export enum LoadingState {
+  Loading = 'loading',
   Ide = 'ide',
   Pendding = 'pendding',
   Success = 'success',
@@ -9,6 +10,7 @@ export enum LoadingState {
 
 export const LoadingStateVariantsMap: Record<LoadingState, ButtonVariant> = {
   [LoadingState.Ide]: 'primary',
+  [LoadingState.Loading]: 'secondary',
   [LoadingState.Pendding]: 'secondary',
   [LoadingState.Success]: 'success',
 };
