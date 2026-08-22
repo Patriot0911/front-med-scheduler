@@ -27,6 +27,7 @@ const ConfirmModal = (props: IConfirmModalProps) => {
       <form onSubmit={props.onConfirm} className={styles['confirm-form']}>
         <span className={styles['confirm-title']}>Confirmation</span>
         <div className={styles['confirm-inputs']}>
+          {!!props.description && <p>{props.description}</p>}
           {!!props.confirmationWord && (
             <Input
               name={'confirmWord'}
@@ -42,6 +43,7 @@ const ConfirmModal = (props: IConfirmModalProps) => {
           disabled={
             (!!props.confirmationWord && props.confirmationWord !== confirmWord)
             || props.requestState !== LoadingState.Ide
+            || props.disabled
           }
           variant={LoadingStateVariantsMap[props.requestState ?? LoadingState.Ide]}
         >

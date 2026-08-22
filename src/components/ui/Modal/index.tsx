@@ -8,6 +8,10 @@ import Loading from '../Loading';
 import { cn } from '@/lib/cn';
 
 import styles from './styles.module.scss';
+import ModalHeader from './components/ModalHeader';
+import ModalFormBody from './components/ModalFormBody';
+import ModalFooter from './components/ModalFooter';
+import ModalContent from './components/ModalContent';
 
 const overlayVariants = {
   hidden: { opacity: 0 },
@@ -83,5 +87,10 @@ const Modal = ({ children, isOpen, isLoading, className, onClose, }: IModalProps
     document.body
   );
 }
+
+Modal.Header = ModalHeader;
+Modal.FormBody = ModalFormBody;
+Modal.Content = ModalContent;
+Modal.Footer = ModalFooter;
 
 export default Modal;
