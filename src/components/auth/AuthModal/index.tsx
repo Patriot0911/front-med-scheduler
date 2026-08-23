@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { ILogInModalProps } from '@/interfaces/auth/modal';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { LoadingStateVariantsMap, mutationToLoadingState } from '@/lib/loading-mappers';
 import useLoginMutation from '@/hooks/mutations/auth/useLoginMutation';
 import { AuthLoginButtonDictionary } from '@/configs/auth.dictionary';
@@ -53,34 +53,41 @@ const AuthModal = (props: ILogInModalProps) => {
 
   return (
     <Modal {...props} isLoading={loginMutation.isPending}>
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(loginHandler)} className={styles['auth-form']}>
-          <span className={styles['auth-title']}>Sign In</span>
-          <div className={styles['auth-inputs']}>
-            <FormInput<TLoginForm>
-              name={'email'}
-              label='Email'
-              autoComplete='email'
-              disabled={loginMutation.isPending || loginMutation.isSuccess}
-            />
-            <FormInput<TLoginForm>
-              name={'password'}
-              label='Password'
-              type='password'
-              autoComplete='password'
-              disabled={loginMutation.isPending || loginMutation.isSuccess}
-            />
-          </div>
-          <p>Log in to your account using the credentials provided to you by the manager.</p>
+      <Modal.FormBody methods={methods} onSubmit={methods.handleSubmit(loginHandler)}
+      className={styles['auth-form']}
+      >
+        <Modal.Header
+          title={'Sign In'}
+        />
+        <Modal.Content>
+          <FormInput<TLoginForm>
+            name={'email'}
+            label='Email'
+            autoComplete='email'
+            disabled={loginMutation.isPending || loginMutation.isSuccess}
+          />
+          <FormInput<TLoginForm>
+            name={'password'}
+            label='Password'
+            type='password'
+            autoComplete='password'
+            disabled={loginMutation.isPending || loginMutation.isSuccess}
+          />
+          <p className={styles['auth-description']}>
+            Log in to your account using the credentials provided to you by the manager.
+          </p>
+        </Modal.Content>
+        <Modal.Footer>
           <Button
             type='submit'
+            className='flex-1'
             disabled={!methods.formState.isValid || loginMutation.isPending || loginMutation.isSuccess}
             variant={LoadingStateVariantsMap[mutationToLoadingState(loginMutation)]}
           >
             {AuthLoginButtonDictionary[mutationToLoadingState(loginMutation)]}
           </Button>
-        </form>
-      </FormProvider>
+        </Modal.Footer>
+      </Modal.FormBody>
     </Modal>
   );
 }

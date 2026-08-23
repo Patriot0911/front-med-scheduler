@@ -1,5 +1,6 @@
 import { LoadingState } from '@/lib/loading-mappers';
 import { FormHTMLAttributes, HTMLAttributes, PropsWithChildren } from 'react';
+import { UseFormReturn } from 'react-hook-form';
 
 export interface IModalBaseProps {
   isOpen: boolean;
@@ -12,8 +13,10 @@ export interface IModalHeaderProps {
 };
 
 export interface IModalFormBodyProps extends
-  PropsWithChildren,
-  FormHTMLAttributes<HTMLFormElement> {};
+PropsWithChildren,
+FormHTMLAttributes<HTMLFormElement> {
+  methods: UseFormReturn<any>;
+};
 
 export interface IModalContentProps extends
   PropsWithChildren,
