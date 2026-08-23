@@ -7,6 +7,7 @@ const Input = ({
   label,
   error,
   hint,
+  bottomHint,
   icon,
   onIconClick,
   hideErrorMessage,
@@ -14,7 +15,6 @@ const Input = ({
   touched,
   className,
   id,
-  hideOptionalFlag,
   name,
   ...props
 }: IInputProps) => {
@@ -24,11 +24,20 @@ const Input = ({
   return (
     <div className={styles.controller}>
       {
-        (!!label || !hideOptionalFlag) && (
+        (!!label || !!hint) && (
           <div className={styles['label-wrapper']}>
-            {label && (<label htmlFor={inputId}>{label}</label>)}
-            {(!props.required && !hideOptionalFlag) && (
-              <span className={styles['flag-optional']}>Optional</span>
+            {!!label && (
+              <label
+                htmlFor={inputId}
+                className={cn(
+                  hasError && styles['error-state']
+                )}
+              >
+                {label} {!!props.required && ' *'}
+              </label>
+            )}
+            {hint && !bottomHint && (!hasError || !hideHintOnError) && (
+              <span className={styles.hint}>{hint}</span>
             )}
           </div>
         )
@@ -45,6 +54,9 @@ const Input = ({
         <input
           {...props}
           id={inputId}
+          className={cn(
+            (hasError && !touched) && styles['input__error']
+          )}
           name={name}
           aria-invalid={hasError}
           aria-describedby={inputId ? `${inputId}-error` : undefined}
@@ -56,7 +68,7 @@ const Input = ({
         )}
       </div>
       <div className={styles.sub}>
-        {hint && (!hasError || !hideHintOnError) && (
+        {hint && !!bottomHint && (!hasError || !hideHintOnError) && (
           <span className={styles.hint}>{hint}</span>
         )}
         {
