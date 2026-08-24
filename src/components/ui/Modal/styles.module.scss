@@ -33,5 +33,14 @@
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-lg);
+    &.sm {
+      min-width: 400px;
+    }
+    &.md {
+      min-width: 600px;
+    }
+    &.lg {
+      min-width: 700px;
+    }
   }
 }

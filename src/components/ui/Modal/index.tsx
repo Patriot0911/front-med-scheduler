@@ -23,7 +23,7 @@ const modalVariants = {
   visible: { opacity: 1, y: 0, scale: 1 },
 };
 
-const Modal = ({ children, isOpen, isLoading, className, onClose, }: IModalProps) => {
+const Modal = ({ children, isOpen, isLoading, className, size, onClose, }: IModalProps) => {
 
   useEffect(() => {
     if (!isOpen) return;
@@ -58,7 +58,7 @@ const Modal = ({ children, isOpen, isLoading, className, onClose, }: IModalProps
           <motion.div
             role="dialog"
             aria-modal="true"
-            className={cn(styles.modal, className)}
+            className={cn(styles.modal, className, size && styles[size])}
             variants={modalVariants}
             initial='hidden'
             animate='visible'

@@ -53,9 +53,7 @@ const AuthModal = (props: ILogInModalProps) => {
 
   return (
     <Modal {...props} isLoading={loginMutation.isPending}>
-      <Modal.FormBody methods={methods} onSubmit={methods.handleSubmit(loginHandler)}
-      className={styles['auth-form']}
-      >
+      <Modal.FormBody methods={methods} onSubmit={methods.handleSubmit(loginHandler)}>
         <Modal.Header
           title={'Sign In'}
         />

@@ -4,15 +4,31 @@ import { cn } from '@/lib/cn';
 
 import styles from './styles.module.scss';
 
-const ModalFormBody = ({ children, className, methods, ...props }: IModalFormBodyProps) => {
+const FormWrapper = ({ children, className, ...props }: Omit<IModalFormBodyProps, 'methods'>) => {
+  return (
+    <form
+      {...props}
+      className={cn(className, styles['modal-body'])}
+    >
+      {children}
+    </form>
+  );
+}
+
+const ModalFormBody = ({ children, methods, ...props }: IModalFormBodyProps) => {
+  if (!methods) {
+    return (
+      <FormWrapper {...props}>
+        {children}
+      </FormWrapper>
+    )
+  }
+
   return (
     <FormProvider {...methods}>
-      <form
-        {...props}
-        className={cn(className, styles['modal-body'])}
-      >
+      <FormWrapper {...props}>
         {children}
-      </form>
+      </FormWrapper>
     </FormProvider>
   );
 }

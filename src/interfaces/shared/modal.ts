@@ -15,7 +15,7 @@ export interface IModalHeaderProps {
 export interface IModalFormBodyProps extends
 PropsWithChildren,
 FormHTMLAttributes<HTMLFormElement> {
-  methods: UseFormReturn<any>;
+  methods?: UseFormReturn<any>;
 };
 
 export interface IModalContentProps extends
@@ -28,6 +28,7 @@ export interface IModalFooterProps extends PropsWithChildren {
 export interface IModalProps extends IModalBaseProps, PropsWithChildren {
   isLoading?: boolean;
   className?: string;
+  size?: 'sm' | 'md' | 'lg';
 };
 
 export interface IConfirmModalProps extends IModalBaseProps, PropsWithChildren {
