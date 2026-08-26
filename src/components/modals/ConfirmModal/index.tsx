@@ -8,6 +8,8 @@ import Button from '@/components/ui/Button';
 import Modal from '@/components/ui/Modal';
 import Input from '@/components/ui/Input';
 
+import styles from './styles.module.scss';
+
 const ConfirmModal = (props: IConfirmModalProps) => {
   const [confirmWord, setConfirmWord] = useState<string>('')
 
@@ -28,7 +30,7 @@ const ConfirmModal = (props: IConfirmModalProps) => {
           title={'Confirmation'}
         />
         <Modal.Content>
-          {!!props.description && <p>{props.description}</p>}
+          {!!props.description && <p className={styles['description']}>{props.description}</p>}
           {!!props.confirmationWord && (
             <Input
               name={'confirmWord'}
