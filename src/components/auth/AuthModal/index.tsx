@@ -61,8 +61,8 @@ const AuthModal = (props: ILogInModalProps) => {
           <FormInput<TLoginForm>
             name={'email'}
             label='Email'
+            placeholder={'Enter your corporate email'}
             required
-            hint='provide some sort of email'
             autoComplete='email'
             disabled={loginMutation.isPending || loginMutation.isSuccess}
           />
