@@ -1,15 +1,14 @@
 import RequireAuth from '@/components/auth/RequireAuth';
-import DictionaryTable from '@/components/dictionaries/DictionaryTable';
+import DictionarySection from '@/components/dictionaries/DictionarySection';
 import BaseLayout from '@/components/layout/BaseLayout';
+import Heading from '@/components/ui/headings/Heading';
 
 const DictionariesPage = () => {
   return (
     <RequireAuth shouldRedirect>
       <BaseLayout>
-        <div>Parameters Page</div>
-        <DictionaryTable
-          selectedDictionaryKey={'roles'}
-        />
+        <Heading level={1}>Parameters Page</Heading>
+        <DictionarySection />
       </BaseLayout>
     </RequireAuth>
   );
