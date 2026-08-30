@@ -7,10 +7,11 @@ import SubHeading from '@/components/ui/headings/SubHeading';
 import { dictionariesConfig } from '@/configs/dictionaries.config';
 import Tabs from '@/components/ui/Tabs';
 import DictionaryTabItem from '../DictionaryTabItem';
+import { ITabItem } from '@/interfaces/ui/tabs';
 
 const DictionarySection = () => {
   const [selectedDictionaryKey, setSelectedDictionaryKey] = useState<TDictionaryKey>('roles');
-  const tabsItems = Object.keys(dictionariesConfig).map((key) => ({
+  const tabsItems: ITabItem[] = Object.keys(dictionariesConfig).map((key) => ({
     key,
     data: key,
     label: dictionariesConfig[key as TDictionaryKey].title,

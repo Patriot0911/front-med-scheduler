@@ -8,9 +8,16 @@ const Tabs = <T extends string>({ items, value, renderItem, onChange }: ITabsPro
     {items.map((item) => (
       <button
         key={item.key}
-        type="button"
-        className={cn(styles.tab, value === item.key && styles.active)}
+        type='button'
         onClick={() => onChange(item.data)}
+        className={cn(
+          styles['tab-item'],
+          value === item.key && styles.active,
+          (typeof item.isDisabled === 'function'
+            ? item.isDisabled()
+            : !!item.isDisabled)
+          && styles.disabled,
+        )}
       >
         {
           item.render
