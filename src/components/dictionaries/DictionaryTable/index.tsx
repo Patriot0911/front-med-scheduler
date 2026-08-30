@@ -10,16 +10,12 @@ import { IDictionaryTableProps } from '@/interfaces/dictionaries/tables';
 const DictionaryTable = ({ selectedDictionaryKey, }: IDictionaryTableProps) => {
   const { data, isLoading, } = useDictionariesTableQuery(selectedDictionaryKey);
 
-  if (isLoading) {
-    // TODO: use table skeleton instead of loading component
-    return <Loading />;
-  }
-
   return (
     <Table<IRole>
       columns={dictionariesConfig[selectedDictionaryKey]?.columns || []}
       rowKey={(i) => i.id}
       data={data?.items || []}
+      skeletonRows={5}
       isLoading={isLoading}
     >
       <Table.Header />
