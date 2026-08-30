@@ -11,8 +11,7 @@ const DictionarySection = () => {
   return (
     <>
       <SubHeading level={2}>
-        test
-        {dictionariesConfig[selectedDictionaryKey].title ?? 'Dictionary'}
+        {dictionariesConfig[selectedDictionaryKey].title ?? ' '}
       </SubHeading>
       <DictionaryTable
         selectedDictionaryKey={selectedDictionaryKey}

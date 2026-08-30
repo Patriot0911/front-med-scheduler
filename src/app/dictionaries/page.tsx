@@ -7,7 +7,7 @@ const DictionariesPage = () => {
   return (
     <RequireAuth shouldRedirect>
       <BaseLayout>
-        <Heading level={1}>Parameters Page</Heading>
+        <Heading level={1}>Dictionary</Heading>
         <DictionarySection />
       </BaseLayout>
     </RequireAuth>

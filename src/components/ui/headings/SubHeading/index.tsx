@@ -4,11 +4,11 @@ import type { ElementType } from 'react';
 
 import styles from './styles.module.scss';
 
-const SubHeading = ({ children, level = 1, className, ...props }: IHeadingProps) => {
+const SubHeading = ({ children, level = 2, className, ...props }: IHeadingProps) => {
   const Tag: ElementType = `h${level}`;
   return (
     <Tag
-      className={cn(className, styles.heading)}
+      className={cn(className, styles['sub-heading'])}
       {...props}
     >
       {children}
