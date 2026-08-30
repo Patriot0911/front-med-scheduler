@@ -1,19 +1,26 @@
-import styles from './styles.module.scss';
-import { TabsProps } from './Tabs';
+import { ITabsProps } from '@/interfaces/ui/tabs';
+import { cn } from '@/lib/cn';
 
-const Tabs = <T extends string>({ items, value, onChange }: TabsProps<T>) => (
+import styles from './styles.module.scss';
+
+const Tabs = <T extends string>({ items, value, renderItem, onChange }: ITabsProps<T>) => (
   <div className={styles.tabs}>
-    {items.map(({ key, label, count }) => (
+    {items.map((item) => (
       <button
-        key={key}
+        key={item.key}
         type="button"
-        className={`${styles.tab} ${value === key ? styles.tabActive : ''}`}
-        onClick={() => onChange(key)}
+        className={cn(styles.tab, value === item.key && styles.active)}
+        onClick={() => onChange(item.data)}
       >
-        {label}
-        {count !== undefined && (
-          <span className={styles.tabCount}>{count}</span>
-        )}
+        {
+          item.render
+            ? (typeof item.render === 'function' ? item.render(item.data) : item.render)
+            : (
+              renderItem
+                ? renderItem(item)
+                : item.label
+            )
+        }
       </button>
     ))}
   </div>
