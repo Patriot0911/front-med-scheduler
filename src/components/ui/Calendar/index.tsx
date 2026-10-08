@@ -111,12 +111,14 @@ const Calendar = <R,>({
       ));
 
     return {
-      toolbar: ({ label, view: tView, onNavigate, onView }: ToolbarProps<ICalendarEvent<R>>) => (
+      toolbar: ({ label, date: tDate, view: tView, onNavigate, onView }: ToolbarProps<ICalendarEvent<R>>) => (
         <CalendarToolbar
           label={label}
+          date={tDate}
           view={tView as TCalendarView}
           views={views}
           onNavigate={(action) => onNavigate(action as NavigateAction)}
+          onDateSelect={(next) => onNavigate('DATE', next)}
           onViewChange={onView}
         />
       ),

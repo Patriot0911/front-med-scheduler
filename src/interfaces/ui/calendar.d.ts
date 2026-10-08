@@ -40,8 +40,10 @@ export interface ICalendarProps<R = unknown> {
 
 export interface ICalendarToolbarProps {
   label: string;
+  date: Date;
   view: TCalendarView;
   views: TCalendarView[];
   onNavigate: (action: 'PREV' | 'NEXT' | 'TODAY') => void;
+  onDateSelect: (date: Date) => void;
   onViewChange: (view: TCalendarView) => void;
 };
