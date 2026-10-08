@@ -35,7 +35,6 @@
 
     &.sidebar-open {
       width: 100dvw;
-      box-shadow: var(--shadow-lg);
     }
 
     @include mq('md') {
@@ -44,4 +43,9 @@
       }
     }
   }
+}
+
+.sidebar-restoring,
+.sidebar-restoring * {
+  transition: none !important;
 }
