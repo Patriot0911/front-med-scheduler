@@ -1,46 +1,65 @@
+@use '../../../styles/abstracts/mixins' as *;
+
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.5);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
   z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: rgba(var(--color-dark-rgb), 0.5);
   font-family: var(--font-jost);
+
+  @include mq('sm') {
+    align-items: center;
+    padding: 24px 16px;
+  }
+
   .loading-overlay {
     display: flex;
     justify-content: center;
     align-items: center;
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-color: rgba(var(--color-light-rgb), 0.7);
     backdrop-filter: blur(1px);
     &__hidden {
       pointer-events: none;
     }
   }
+
   .modal {
-    background: var(--color-surface);
-    border-radius: var(--radius-md);
-    padding: 20px 24px 40px;
-    max-width: 420px;
-    width: 100%;
+    --modal-width: 420px;
+
     position: relative;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 32px);
+    padding: 20px 16px 24px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background: var(--color-surface);
     box-shadow: var(--shadow-lg);
+
+    @include mq('sm') {
+      max-width: var(--modal-width);
+      max-height: calc(100dvh - 48px);
+      padding: 20px 24px 32px;
+      border-radius: var(--radius-md);
+    }
+
     &.sm {
-      min-width: 400px;
+      --modal-width: 420px;
     }
     &.md {
-      min-width: 600px;
+      --modal-width: 600px;
     }
     &.lg {
-      min-width: 700px;
+      --modal-width: 800px;
     }
   }
 }

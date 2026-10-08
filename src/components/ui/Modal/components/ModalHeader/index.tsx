@@ -7,7 +7,7 @@ const ModalHeader = ({ description, title, }: IModalHeaderProps) => {
       <span className={styles.headerTitle}>
         {title}
       </span>
-      {!!styles.headerSub && (
+      {!!description && (
         <p className={styles.headerSub}>
           {description}
         </p>
