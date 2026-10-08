@@ -143,6 +143,7 @@ const Calendar = <R,>({
   return (
     <div
       className={cn(styles.calendar, className)}
+      data-view={view}
       style={{ height, '--calendar-slot-height': `${slotHeight}px` } as CSSProperties}
     >
       <BigCalendar<ICalendarEvent<R>>

@@ -1,58 +1,73 @@
 @use '../../../../styles/abstracts/mixins' as *;
 
 .toolbar {
-  display: flex;
-  flex-wrap: wrap;
+  position: sticky;
+  left: 0;
+  z-index: 6;
+  display: grid;
+  grid-template-columns: auto auto auto 1fr auto;
+  grid-template-areas:
+    'label label label label picker'
+    'today prev next . .'
+    'tabs tabs tabs tabs tabs';
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 8px 6px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-surface);
   font-family: var(--font-jost);
+
+  @include mq('md') {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+  }
 }
 
 .navigation {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-}
-
-.toolbar .view-tabs {
-  width: 100%;
-
-  > button {
-    flex: 1;
-    min-width: 0;
-  }
+  display: contents;
 
   @include mq('md') {
-    width: fit-content;
-
-    > button {
-      flex: initial;
-      min-width: 7.5rem;
-    }
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
   }
 }
 
-.today-btn {
-  padding: 0.45rem 1rem;
-  margin-right: 6px;
+.toolbar .today-btn {
+  grid-area: today;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+
+  @include mq('md') {
+    margin-right: 6px;
+    padding: 0.45rem 1rem;
+    font-size: inherit;
+  }
+}
+
+.prev {
+  grid-area: prev;
+}
+
+.next {
+  grid-area: next;
 }
 
 .arrow-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background-color: var(--color-surface);
   color: var(--color-text-secondary);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   cursor: pointer;
   transition:
     background-color 0.15s ease,
@@ -75,24 +90,35 @@
     border-color: var(--color-primary-200);
     color: var(--color-primary);
   }
+
+  @include mq('md') {
+    width: 32px;
+    height: 32px;
+    font-size: var(--text-md);
+  }
 }
 
 .label {
-  margin-left: 4px;
+  grid-area: label;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: var(--text-md);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
-  white-space: nowrap;
 
-  @include mq('sm') {
+  @include mq('md') {
     margin-left: 10px;
     font-size: var(--text-lg);
   }
 }
 
 .picker {
+  grid-area: picker;
   position: relative;
   display: inline-flex;
+  justify-self: end;
 }
 
 .picker-popover {
@@ -105,7 +131,37 @@
   @include mq('sm') {
     position: absolute;
     top: calc(100% + 6px);
-    left: 0;
+    left: auto;
+    right: 0;
     transform: none;
+  }
+
+  @include mq('md') {
+    left: 0;
+    right: auto;
+  }
+}
+
+.toolbar .view-tabs {
+  grid-area: tabs;
+  justify-self: stretch;
+  width: 100%;
+
+  > button {
+    flex: 1;
+    min-width: 0;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  @include mq('md') {
+    width: fit-content;
+
+    > button {
+      flex: initial;
+      min-width: 7.5rem;
+      padding: 0.4rem 0.8rem;
+      font-size: 1.05rem;
+    }
   }
 }

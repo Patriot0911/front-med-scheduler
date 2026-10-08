@@ -65,7 +65,7 @@ const CalendarToolbar = ({
         <button
           type="button"
           aria-label="Previous"
-          className={styles['arrow-btn']}
+          className={cn(styles['arrow-btn'], styles.prev)}
           onClick={() => onNavigate('PREV')}
         >
           <LuChevronLeft />
@@ -73,7 +73,7 @@ const CalendarToolbar = ({
         <button
           type="button"
           aria-label="Next"
-          className={styles['arrow-btn']}
+          className={cn(styles['arrow-btn'], styles.next)}
           onClick={() => onNavigate('NEXT')}
         >
           <LuChevronRight />

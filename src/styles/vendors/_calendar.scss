@@ -1,3 +1,5 @@
+@use '../abstracts/mixins' as *;
+
 .rbc-calendar {
   --calendar-now: var(--color-error);
   --calendar-today-bg: var(--color-primary-50);
@@ -6,6 +8,15 @@
   font-family: var(--font-jost);
   font-size: var(--text-sm);
   color: var(--color-text-primary);
+
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-neutral-300) transparent;
+
+  @include mq('md') {
+    overflow-x: visible;
+  }
 
   .rbc-month-view,
   .rbc-time-view {
@@ -272,5 +283,20 @@
       --event-bg: var(--color-success-50);
       --event-text: var(--color-success-500);
     }
+  }
+}
+
+[data-view='week'] .rbc-time-view {
+  min-width: 760px;
+}
+
+[data-view='month'] .rbc-month-view {
+  min-width: 700px;
+}
+
+@include mq('md') {
+  [data-view='week'] .rbc-time-view,
+  [data-view='month'] .rbc-month-view {
+    min-width: 0;
   }
 }
