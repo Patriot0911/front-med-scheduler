@@ -15,6 +15,7 @@ export interface ICalendarEvent<R = unknown> {
   allDay?: boolean;
   location?: string;
   host?: string;
+  description?: string;
   resource?: R;
 };
 

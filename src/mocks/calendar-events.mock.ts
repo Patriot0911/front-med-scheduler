@@ -9,11 +9,12 @@ interface IMockTemplate {
   durationMin: number;
   location?: string;
   host?: string;
+  description?: string;
   allDay?: boolean;
 };
 
 const TEMPLATES: IMockTemplate[] = [
-  { title: 'Anatomy', type: 'lesson', dayOffset: 0, start: '08:30', durationMin: 90, location: 'Room 204', host: 'Dr. Kovalenko' },
+  { title: 'Anatomy', type: 'lesson', dayOffset: 0, start: '08:30', durationMin: 90, location: 'Room 204', host: 'Dr. Kovalenko', description: 'Musculoskeletal system: bones of the upper limb. Bring the atlas and lab coat.' },
   { title: 'Biochemistry', type: 'lecture', dayOffset: 0, start: '10:15', durationMin: 90, location: 'Hall A', host: 'Prof. Shevchenko' },
   { title: 'Histology lab', type: 'lesson', dayOffset: 0, start: '13:00', durationMin: 120, location: 'Lab 3' },
   { title: 'Physiology', type: 'lecture', dayOffset: 1, start: '09:00', durationMin: 90, location: 'Hall B', host: 'Prof. Melnyk' },
@@ -22,11 +23,11 @@ const TEMPLATES: IMockTemplate[] = [
   { title: 'Anatomy', type: 'lesson', dayOffset: 2, start: '08:30', durationMin: 90, location: 'Room 204', host: 'Dr. Kovalenko' },
   { title: 'Pharmacology', type: 'lecture', dayOffset: 2, start: '12:00', durationMin: 90, location: 'Hall A' },
   { title: 'Microbiology', type: 'lesson', dayOffset: 2, start: '14:00', durationMin: 90, location: 'Lab 1' },
-  { title: 'Biochemistry test', type: 'exam', dayOffset: 3, start: '10:00', durationMin: 120, location: 'Hall C' },
+  { title: 'Biochemistry test', type: 'exam', dayOffset: 3, start: '10:00', durationMin: 120, location: 'Hall C', host: 'Prof. Shevchenko', description: 'Covers modules 1–3: enzymes, metabolism of carbohydrates and lipids. Calculators are not allowed.' },
   { title: 'Clinical practice', type: 'lesson', dayOffset: 3, start: '13:30', durationMin: 180, location: 'City Hospital №1' },
   { title: 'Pathology', type: 'lecture', dayOffset: 4, start: '09:00', durationMin: 90, location: 'Hall B' },
-  { title: 'First aid workshop', type: 'event', dayOffset: 4, start: '14:00', durationMin: 120, location: 'Simulation center' },
-  { title: 'Medical conference', type: 'event', dayOffset: 5, start: '00:00', durationMin: 0, allDay: true },
+  { title: 'First aid workshop', type: 'event', dayOffset: 4, start: '14:00', durationMin: 120, location: 'Simulation center', host: 'Red Cross instructors', description: 'Hands-on CPR and bleeding control training. Registration is required.' },
+  { title: 'Medical conference', type: 'event', dayOffset: 5, start: '00:00', durationMin: 0, allDay: true, location: 'Main building', description: 'Annual student medical conference. Attendance counts towards research credits.' },
   { title: 'Anatomy exam', type: 'exam', dayOffset: 9, start: '09:00', durationMin: 180, location: 'Hall C' },
   { title: 'Open lecture: Cardiology', type: 'lecture', dayOffset: -4, start: '11:00', durationMin: 90, location: 'Hall A' },
   { title: 'Physiology', type: 'lecture', dayOffset: 8, start: '09:00', durationMin: 90, location: 'Hall B' },
@@ -65,6 +66,7 @@ export const getMockCalendarEvents = (base: Date = new Date()): ICalendarEvent[]
       allDay: tpl.allDay,
       location: tpl.location,
       host: tpl.host,
+      description: tpl.description,
     };
   });
 };
