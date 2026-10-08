@@ -5,6 +5,8 @@ import { queryClient } from '@/lib/query-client';
 import StoreProvider from '@/components/providers/StoreProvider';
 import AuthProvider from '@/components/providers/AuthProvider';
 
+import '@/lib/dayjs';
+
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <StoreProvider>

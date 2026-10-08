@@ -3,8 +3,8 @@ import { cn } from '@/lib/cn';
 
 import styles from './styles.module.scss';
 
-const Tabs = <T extends string>({ items, value, renderItem, onChange }: ITabsProps<T>) => (
-  <div className={styles.tabs}>
+const Tabs = <T extends string>({ items, value, renderItem, onChange, className }: ITabsProps<T>) => (
+  <div className={cn(styles.tabs, className)}>
     {items.map((item) => (
       <button
         key={item.key}

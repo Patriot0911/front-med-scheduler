@@ -107,6 +107,7 @@ const CalendarToolbar = ({
       </div>
 
       <Tabs<TCalendarView>
+        className={styles['view-tabs']}
         items={tabsItems}
         value={view}
         onChange={onViewChange}

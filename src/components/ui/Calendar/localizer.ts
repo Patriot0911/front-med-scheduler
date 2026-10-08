@@ -1,9 +1,7 @@
-import dayjs from 'dayjs';
+import dayjs, { DAYJS_LOCALE } from '@/lib/dayjs';
 import { dayjsLocalizer, Formats } from 'react-big-calendar';
 
-import 'dayjs/locale/en-gb';
-
-export const CALENDAR_CULTURE = 'en-gb';
+export const CALENDAR_CULTURE = DAYJS_LOCALE;
 
 export const calendarLocalizer = dayjsLocalizer(dayjs);
 

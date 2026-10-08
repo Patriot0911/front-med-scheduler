@@ -13,4 +13,5 @@ export interface ITabsProps<T extends string = string> {
   value: string;
   onChange: (value: T) => void;
   renderItem?: (item: ITabItem<T>) => ReactNode;
+  className?: string;
 };

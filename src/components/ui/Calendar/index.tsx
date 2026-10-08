@@ -28,6 +28,8 @@ import styles from './styles.module.scss';
 
 const DEFAULT_VIEWS: TCalendarView[] = ['day', 'week', 'month'];
 
+const DEFAULT_HEIGHT = 'clamp(520px, calc(100dvh - 120px), 1080px)';
+
 const STEP_MINUTES = 30;
 const EVENT_PADDING_PX = 8;
 const EVENT_LINE_PX = 16;
@@ -69,7 +71,7 @@ const Calendar = <R,>({
   minHour = 7,
   maxHour = 21,
   slotHeight = 32,
-  height = 720,
+  height = DEFAULT_HEIGHT,
   renderEvent,
   className,
 }: ICalendarProps<R>) => {

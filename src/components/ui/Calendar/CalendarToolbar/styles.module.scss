@@ -13,8 +13,28 @@
 
 .navigation {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+}
+
+.toolbar .view-tabs {
+  width: 100%;
+
+  > button {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @include mq('md') {
+    width: fit-content;
+
+    > button {
+      flex: initial;
+      min-width: 7.5rem;
+    }
+  }
 }
 
 .today-btn {
@@ -58,11 +78,16 @@
 }
 
 .label {
-  margin-left: 10px;
-  font-size: var(--text-lg);
+  margin-left: 4px;
+  font-size: var(--text-md);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
   white-space: nowrap;
+
+  @include mq('sm') {
+    margin-left: 10px;
+    font-size: var(--text-lg);
+  }
 }
 
 .picker {
