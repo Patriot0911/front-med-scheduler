@@ -7,7 +7,7 @@ import { ICalendarEvent } from '@/interfaces/ui/calendar';
 import { ILessonsCalendarProps } from '@/interfaces/lessons/calendar';
 import { getMockCalendarEvents } from '@/mocks/calendar-events.mock';
 
-const LessonsCalendar = ({ height }: ILessonsCalendarProps) => {
+const LessonsCalendar = (props: ILessonsCalendarProps) => {
   const events = useMemo(() => getMockCalendarEvents(), []);
   const [selectedEvent, setSelectedEvent] = useState<ICalendarEvent | null>(null);
   const [isShownDetailsModal, setIsShownDetailsModal] = useState(false);
@@ -20,8 +20,8 @@ const LessonsCalendar = ({ height }: ILessonsCalendarProps) => {
   return (
     <>
       <Calendar
+        {...props}
         events={events}
-        height={height}
         defaultView="week"
         onEventClick={openDetails}
       />

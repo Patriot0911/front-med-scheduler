@@ -1,5 +1,8 @@
 import { ICalendarProps } from '../ui/calendar';
 
-export interface ILessonsCalendarProps {
-  height?: ICalendarProps['height'];
-};
+export type ILessonsCalendarProps = Pick<
+  ICalendarProps,
+  'height' | 'date' | 'view' | 'onDateChange' | 'onViewChange'
+>;
+
+export type IQuerySyncedCalendarProps = Pick<ICalendarProps, 'height'>;

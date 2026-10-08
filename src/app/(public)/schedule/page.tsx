@@ -1,7 +1,9 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import ScheduleHero from '@/components/schedule/ScheduleHero';
+import QuerySyncedCalendar from '@/components/lessons/QuerySyncedCalendar';
 import BackToPlatformButton from '@/components/schedule/BackToPlatformButton';
-import LessonsSection from '@/components/lessons/LessonsSection';
+import Loading from '@/components/ui/Loading';
 
 import styles from './styles.module.scss';
 
@@ -16,7 +18,9 @@ const SchedulePage = () => {
     <div className={styles.page}>
       <ScheduleHero />
       <main className={styles.content}>
-        <LessonsSection height={CALENDAR_HEIGHT} />
+        <Suspense fallback={<Loading />}>
+          <QuerySyncedCalendar height={CALENDAR_HEIGHT} />
+        </Suspense>
       </main>
       <BackToPlatformButton />
     </div>
