@@ -3,7 +3,6 @@ import { dayjsLocalizer, Formats } from 'react-big-calendar';
 
 import 'dayjs/locale/en-gb';
 
-// en-gb: Monday as first day of week + 24h time
 export const CALENDAR_CULTURE = 'en-gb';
 
 export const calendarLocalizer = dayjsLocalizer(dayjs);

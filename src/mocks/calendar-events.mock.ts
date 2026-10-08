@@ -4,8 +4,8 @@ import { ICalendarEvent, TCalendarEventType } from '@/interfaces/ui/calendar';
 interface IMockTemplate {
   title: string;
   type: TCalendarEventType;
-  dayOffset: number; // relative to Monday of the current week
-  start: string;     // HH:mm
+  dayOffset: number;
+  start: string;
   durationMin: number;
   location?: string;
   host?: string;
@@ -33,9 +33,7 @@ const TEMPLATES: IMockTemplate[] = [
   { title: 'Student council', type: 'event', dayOffset: 11, start: '16:00', durationMin: 60 },
 ];
 
-/** Mock events placed around the current week, so every view has something to show. */
 export const getMockCalendarEvents = (base: Date = new Date()): ICalendarEvent[] => {
-  // dayjs().day(): 0 = Sunday → shift to Monday-based week
   const monday = dayjs(base).startOf('day').subtract((dayjs(base).day() + 6) % 7, 'day');
 
   return TEMPLATES.map((tpl, index) => {

@@ -7,7 +7,6 @@ import Calendar from '@/components/ui/Calendar';
 import { getMockCalendarEvents } from '@/mocks/calendar-events.mock';
 
 const LessonsCalendar = () => {
-  // TODO: replace mocks with lessons query once API is ready
   const events = useMemo(() => getMockCalendarEvents(), []);
 
   return (

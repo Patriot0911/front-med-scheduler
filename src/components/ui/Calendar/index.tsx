@@ -60,7 +60,6 @@ const Calendar = <R,>({
     return {
       min: today.hour(minHour).toDate(),
       max: today.hour(maxHour).toDate(),
-      // keep current time in sight on day/week views
       scrollToTime: dayjs().subtract(1, 'hour').toDate(),
     };
   }, [minHour, maxHour]);
@@ -81,7 +80,7 @@ const Calendar = <R,>({
   }), [views, renderEvent]);
 
   const eventPropGetter = useCallback<EventPropGetter<ICalendarEvent<R>>>((event) => ({
-    className: cn(styles.event, styles[`event-${event.type}`]),
+    className: `event-${event.type}`,
   }), []);
 
   return (
