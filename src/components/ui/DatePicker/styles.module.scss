@@ -21,7 +21,25 @@
 }
 
 .title {
+  padding: 4px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-50);
+    color: var(--color-primary);
+  }
+
+  &__static {
+    cursor: default;
+  }
 }
 
 .nav-btn {
@@ -44,8 +62,9 @@
 }
 
 .nav-btn,
+.title,
 .day,
-.month {
+.cell {
   &:focus-visible {
     outline: 2px solid rgba(var(--color-primary-rgb), 0.5);
     outline-offset: 1px;
@@ -156,13 +175,13 @@
   }
 }
 
-.months {
+.cells {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
 }
 
-.month {
+.cell {
   height: 40px;
   border: none;
   border-radius: var(--radius-sm);
