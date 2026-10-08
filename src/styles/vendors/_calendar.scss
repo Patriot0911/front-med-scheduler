@@ -28,6 +28,22 @@
     border-top-color: var(--color-neutral-100);
   }
 
+  .rbc-time-view .rbc-time-slot {
+    min-height: var(--calendar-slot-height, 32px);
+  }
+
+  .rbc-day-slot .rbc-event {
+    overflow: hidden;
+
+    &:hover {
+      z-index: 6;
+    }
+
+    .rbc-event-content {
+      line-height: 1.25;
+    }
+  }
+
   .rbc-time-content {
     border-top-width: 1px;
   }
@@ -114,13 +130,28 @@
     }
   }
 
-  .rbc-show-more {
-    background: transparent;
-    color: var(--color-primary);
-    font-weight: var(--font-weight-semibold);
+  .rbc-row-segment {
+    padding: 1px 4px;
+  }
 
-    &:hover {
-      color: var(--color-primary-500);
+  .rbc-show-more {
+    display: inline-flex;
+    align-items: center;
+    margin: 2px 0 0 4px;
+    padding: 1px 8px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-neutral-100);
+    color: var(--color-text-secondary);
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.5;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--color-primary-50);
+      color: var(--color-primary);
     }
   }
 
@@ -154,16 +185,38 @@
   }
 
   .rbc-overlay {
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 220px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 0 8px 8px;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
     background-color: var(--color-surface);
-    padding: 8px;
+    box-shadow: var(--shadow-lg);
+
+    > * + * {
+      margin-top: 0;
+    }
+
+    .rbc-event {
+      padding: 6px 8px;
+    }
   }
 
   .rbc-overlay-header {
-    border-bottom-color: var(--color-border);
-    color: var(--color-text-secondary);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin: 0 -8px 4px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-neutral-50);
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
     font-weight: var(--font-weight-semibold);
   }
 

@@ -4,6 +4,8 @@ export type TCalendarView = 'day' | 'week' | 'month';
 
 export type TCalendarEventType = 'lesson' | 'lecture' | 'exam' | 'event';
 
+export type TCalendarEventDensity = 'compact' | 'regular' | 'full';
+
 export interface ICalendarEvent<R = unknown> {
   id: string;
   title: string;
@@ -29,6 +31,7 @@ export interface ICalendarProps<R = unknown> {
   onSlotSelect?: (slot: { start: Date; end: Date }) => void;
   minHour?: number;
   maxHour?: number;
+  slotHeight?: number;
   height?: number | string;
   renderEvent?: (event: ICalendarEvent<R>) => ReactNode;
   className?: string;

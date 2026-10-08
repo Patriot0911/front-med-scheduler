@@ -31,6 +31,21 @@ const TEMPLATES: IMockTemplate[] = [
   { title: 'Open lecture: Cardiology', type: 'lecture', dayOffset: -4, start: '11:00', durationMin: 90, location: 'Hall A' },
   { title: 'Physiology', type: 'lecture', dayOffset: 8, start: '09:00', durationMin: 90, location: 'Hall B' },
   { title: 'Student council', type: 'event', dayOffset: 11, start: '16:00', durationMin: 60 },
+
+  { title: 'Morning rounds', type: 'event', dayOffset: 3, start: '08:00', durationMin: 60, location: 'City Hospital №1' },
+  { title: 'Surgery basics', type: 'lesson', dayOffset: 3, start: '09:00', durationMin: 90, location: 'Room 310', host: 'Dr. Bondarenko' },
+  { title: 'Immunology', type: 'lecture', dayOffset: 3, start: '10:30', durationMin: 60, location: 'Hall A' },
+  { title: 'Pharmacology quiz', type: 'exam', dayOffset: 3, start: '12:30', durationMin: 45, location: 'Room 204' },
+  { title: 'Case study group', type: 'lesson', dayOffset: 3, start: '13:30', durationMin: 60, location: 'Room 105' },
+  { title: 'Ethics seminar', type: 'lecture', dayOffset: 3, start: '15:00', durationMin: 90, location: 'Hall B' },
+  { title: 'Research club', type: 'event', dayOffset: 3, start: '17:00', durationMin: 90, location: 'Library' },
+
+  { title: 'Open day', type: 'event', dayOffset: 7, start: '00:00', durationMin: 0, allDay: true },
+  { title: 'Anatomy', type: 'lesson', dayOffset: 7, start: '08:30', durationMin: 90, location: 'Room 204' },
+  { title: 'Genetics', type: 'lecture', dayOffset: 7, start: '10:15', durationMin: 90, location: 'Hall A' },
+  { title: 'Radiology', type: 'lesson', dayOffset: 7, start: '12:00', durationMin: 90, location: 'Lab 2' },
+  { title: 'Neurology', type: 'lecture', dayOffset: 7, start: '14:00', durationMin: 90, location: 'Hall B' },
+  { title: 'Clinical skills exam', type: 'exam', dayOffset: 7, start: '16:00', durationMin: 120, location: 'Simulation center' },
 ];
 
 export const getMockCalendarEvents = (base: Date = new Date()): ICalendarEvent[] => {
