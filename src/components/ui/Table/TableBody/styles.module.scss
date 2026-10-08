@@ -1,14 +1,14 @@
 .body {
   tr {
-    transition: background 0.15s ease;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: background-color 0.15s ease;
+    border-bottom: 1px solid var(--color-border);
 
     &:last-child {
       border-bottom: none;
     }
 
     &:hover {
-      background: rgba(255, 255, 255, 0.022);
+      background-color: var(--color-surface-hover);
     }
   }
 
@@ -17,18 +17,18 @@
     cursor: pointer;
 
     &:hover {
-      background: rgba(154, 107, 255, 0.08);
+      background-color: var(--color-primary-50);
     }
 
     &:active {
-      background: rgba(154, 107, 255, 0.14);
+      background-color: var(--color-primary-100);
     }
   }
 }
 
 .table-cell {
   padding: 12px 16px;
-  color: var(--ink-1);
+  color: var(--color-text-primary);
   vertical-align: middle;
   white-space: nowrap;
 
@@ -42,15 +42,14 @@
 .state {
   padding: 56px 16px;
   text-align: center;
-  color: var(--ink-3);
+  color: var(--color-text-muted);
   font-size: var(--text-sm);
-  font-family: var(--font-mono);
-  letter-spacing: 0.06em;
+  font-weight: var(--font-weight-medium);
 }
 
 // ── Skeleton ───────────────────────────────────────────────────────
 .skeleton-row {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--color-border);
 
   &:last-child {
     border-bottom: none;
@@ -71,13 +70,13 @@
 
 .skeleton-bar {
   height: 12px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.04) 0%,
-    rgba(154, 107, 255, 0.12) 40%,
-    rgba(107, 134, 255, 0.10) 60%,
-    rgba(255, 255, 255, 0.04) 100%
+    var(--color-neutral-100) 0%,
+    var(--color-primary-50) 40%,
+    var(--color-neutral-200) 60%,
+    var(--color-neutral-100) 100%
   );
   background-size: 300% 100%;
   animation: shimmer 2s ease-in-out infinite;

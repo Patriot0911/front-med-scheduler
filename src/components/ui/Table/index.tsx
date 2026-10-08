@@ -2,6 +2,7 @@ import { cn } from '@/lib/cn';
 import { TableContext } from './context';
 import { TableHeader } from './TableHeader';
 import { TableBody } from './TableBody';
+import TablePagination from './TablePagination';
 import { ITableProps } from '@/interfaces/ui/table';
 
 import styles from './styles.module.scss';
@@ -17,6 +18,7 @@ const Table = <T,>({
   emptyComponent,
   loadingComponent,
   onRowClick,
+  pagination,
   className,
   children,
 }: ITableProps<T>) => {
@@ -36,9 +38,17 @@ const Table = <T,>({
       }}
     >
       <div className={cn(styles['table-wrapper'], className)}>
-        <table className={styles.table}>
-          {children}
-        </table>
+        <div className={styles['table-scroll']}>
+          <table className={styles.table}>
+            {children}
+          </table>
+        </div>
+        {pagination && (
+          <TablePagination
+            disabled={isLoading}
+            {...pagination}
+          />
+        )}
       </div>
     </TableContext.Provider>
   );

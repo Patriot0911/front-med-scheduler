@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { IPaginationProps } from './pagination';
 
 export interface ITableColumn<T> {
   key: string;
@@ -33,12 +34,7 @@ export interface ITableAction<T> {
   onClick: (row: T) => void;
 };
 
-export interface ITablePaginationProps {
-  page: number;
-  pageSize: number;
-  total: number;
-  onChange: (page: number) => void;
-};
+export type ITablePaginationProps = IPaginationProps;
 
 export interface ITableProps<T> {
   columns: ITableColumn<T>[];
@@ -51,6 +47,7 @@ export interface ITableProps<T> {
   emptyComponent?: ReactNode;
   loadingComponent?: ReactNode;
   onRowClick?: (row: T) => void;
+  pagination?: ITablePaginationProps;
   className?: string;
   children: ReactNode;
 };

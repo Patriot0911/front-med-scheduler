@@ -14,19 +14,24 @@
 .btn {
   width: 28px;
   height: 28px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   display: grid;
   place-items: center;
-  color: var(--ink-2);
-  background: transparent;
+  color: var(--color-text-secondary);
+  background-color: transparent;
   border: none;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.12s, color 0.12s;
+  transition: background-color 0.12s, color 0.12s;
 
   &:hover:not(:disabled) {
-    background: var(--surface-2);
-    color: var(--ink-0);
+    background-color: var(--color-neutral-100);
+    color: var(--color-text-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(var(--color-primary-rgb), 0.5);
+    outline-offset: 2px;
   }
 
   &:disabled {
@@ -37,14 +42,14 @@
 
 .btn-danger {
   &:hover:not(:disabled) {
-    background: rgba(255, 80, 80, 0.10);
-    color: var(--status-error);
+    background-color: var(--color-error-50);
+    color: var(--color-error);
   }
 }
 
 .btn-primary {
   &:hover:not(:disabled) {
-    background: rgba(154, 107, 255, 0.12);
-    color: var(--accent);
+    background-color: var(--color-primary-50);
+    color: var(--color-primary);
   }
 }
