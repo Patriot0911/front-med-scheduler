@@ -1,7 +1,15 @@
-import { TDictionaryKey } from './tables';
+import type { ReactNode } from 'react';
 
 export interface IDictionaryTabItemProps {
-  key: TDictionaryKey;
   title: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
+  isActive: boolean;
+};
+
+export interface IDictionaryToolbarProps {
+  search: string;
+  onSearchChange: (search: string) => void;
+  itemName: string;
+  canManage: boolean;
+  onCreate: () => void;
 };

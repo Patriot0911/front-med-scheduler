@@ -1,6 +1,7 @@
-import { ISelectOption, useSelectContext } from '../../context';
+import { useSelectContext } from '../../context';
+import { ISelectOption } from '@/interfaces/ui/selectors';
 import { IFormSelectOptionProps } from './FormSelectOption';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 
 import styles from './styles.module.scss';
 

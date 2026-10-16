@@ -1,7 +1,7 @@
 'use client';
 
 import { FieldValues, useController, useFormContext } from 'react-hook-form';
-import { ISelectOption } from '@/components/ui/Select/context';
+import { ISelectOption } from '@/interfaces/ui/selectors';
 import { IFormSelectProps } from './FormSelect';
 import Select from '@/components/ui/Select';
 

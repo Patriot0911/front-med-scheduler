@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { useSelectContext } from '../../context';
 
 import styles from './styles.module.scss';

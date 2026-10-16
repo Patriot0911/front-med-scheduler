@@ -1,0 +1,19 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+// many tabs: scroll horizontally on narrow screens instead of overflowing the page
+.tabs {
+  max-width: 100%;
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: thin;
+}
+
+.empty {
+  padding: 2rem 0;
+  color: var(--color-text-secondary);
+}

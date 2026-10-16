@@ -1,43 +1,69 @@
 'use client';
 
-import { useState } from 'react';
-import DictionaryTable from '../DictionaryTable';
-import { TDictionaryKey } from '@/interfaces/dictionaries/tables';
-import SubHeading from '@/components/ui/headings/SubHeading';
+import { useMemo } from 'react';
 import { dictionariesConfig } from '@/configs/dictionaries.config';
-import Tabs from '@/components/ui/Tabs';
-import DictionaryTabItem from '../DictionaryTabItem';
+import { TDictionaryKey } from '@/interfaces/dictionaries/tables';
 import { ITabItem } from '@/interfaces/ui/tabs';
+import usePermissions from '@/hooks/queries/auth/usePermissions';
+import useDictionaryTabParam from '@/hooks/dictionaries/useDictionaryTabParam';
+import Tabs from '@/components/ui/Tabs';
+import Loading from '@/components/ui/Loading';
+import DictionaryTabItem from '../DictionaryTabItem';
+import DictionaryTabPanel from '../DictionaryTabPanel';
 
+import styles from './styles.module.scss';
+
+const ALL_DICTIONARY_KEYS = Object.keys(dictionariesConfig) as TDictionaryKey[];
+
+/** Tabs of the dictionaries the user may read; the selected one is kept in `?tab=`. */
 const DictionarySection = () => {
-  const [selectedDictionaryKey, setSelectedDictionaryKey] = useState<TDictionaryKey>('roles');
-  const tabsItems: ITabItem[] = Object.keys(dictionariesConfig).map((key) => ({
+  const { hasAny, isReady, } = usePermissions();
+  const availableKeys = useMemo(
+    () => ALL_DICTIONARY_KEYS.filter((key) => hasAny(dictionariesConfig[key].readPermissions)),
+    [hasAny],
+  );
+  const { tab, setTab, } = useDictionaryTabParam(availableKeys);
+
+  if (!isReady) {
+    return <Loading />;
+  }
+
+  if (!tab) {
+    return (
+      <p className={styles.empty}>
+        You don&apos;t have access to any dictionary. Ask an administrator for permissions.
+      </p>
+    );
+  }
+
+  const tabsItems: ITabItem<TDictionaryKey>[] = availableKeys.map((key) => ({
     key,
     data: key,
-    label: dictionariesConfig[key as TDictionaryKey].title,
+    label: dictionariesConfig[key].title,
   }));
 
   return (
-    <>
-      <SubHeading level={2}>
-        {dictionariesConfig[selectedDictionaryKey].title ?? ' '}
-      </SubHeading>
-      <Tabs
+    <section className={styles.section}>
+      <Tabs<TDictionaryKey>
+        className={styles.tabs}
         items={tabsItems}
-        value={selectedDictionaryKey}
-        renderItem={
-          (item) => DictionaryTabItem({
-            title: item.label,
-            key: item.key as TDictionaryKey,
-            icon: dictionariesConfig[item.key as TDictionaryKey].icon,
-          })
-        }
-        onChange={(item) => setSelectedDictionaryKey(item as TDictionaryKey)}
+        value={tab}
+        renderItem={(item) => (
+          <DictionaryTabItem
+            title={item.label}
+            icon={dictionariesConfig[item.data].icon}
+            isActive={item.key === tab}
+          />
+        )}
+        onChange={setTab}
       />
-      <DictionaryTable
-        selectedDictionaryKey={selectedDictionaryKey}
+
+      <DictionaryTabPanel
+        key={tab}
+        dictionaryKey={tab}
+        canManage={hasAny(dictionariesConfig[tab].managePermissions)}
       />
-    </>
+    </section>
   );
 }
 

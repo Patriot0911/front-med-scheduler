@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
-import { ISelectOption, useSelectContext } from '../../context';
+import { cn } from '@/lib/cn';
+import { useSelectContext } from '../../context';
+import { ISelectOption } from '@/interfaces/ui/selectors';
 
 import styles from './styles.module.scss';
 

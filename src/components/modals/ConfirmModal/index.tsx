@@ -25,7 +25,12 @@ const ConfirmModal = (props: IConfirmModalProps) => {
       isLoading={props.requestState === LoadingState.Loading}
       size={'md'}
     >
-      <Modal.FormBody onSubmit={props.onConfirm}>
+      <Modal.FormBody
+        onSubmit={(e) => {
+          e.preventDefault();
+          props.onConfirm();
+        }}
+      >
         <Modal.Header
           title={'Confirmation'}
         />

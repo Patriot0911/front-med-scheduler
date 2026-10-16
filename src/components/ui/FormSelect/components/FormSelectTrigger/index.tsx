@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/cn';
 import { useSelectContext } from '../../context';
 import { LuChevronDown } from 'react-icons/lu';
 import { IFormSelectTriggerProps } from './FormSelectedTrigger';
