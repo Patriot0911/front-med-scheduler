@@ -3,10 +3,9 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { roleSchema, TRoleForm } from './role.scheme';
 import type { IRole } from '@/interfaces/dictionaries/roles';
 import type { IDictionaryFormModalProps } from '@/interfaces/dictionaries/tables';
-import { Permission } from '@/interfaces/auth/permission';
 import RolesService, { RolesQueryKey } from '@/lib/services/roles.service';
 import useDictionaryMutation from '@/hooks/mutations/dictionaries/useDictionaryMutation';
 import usePermissionsDictionaryQuery from '@/hooks/queries/dictionaries/usePermissionsDictionaryQuery';
@@ -14,16 +13,6 @@ import { getPermissionLabel } from '@/configs/permissions.config';
 import DictionaryModal from '@/components/modals/DictionaryModal';
 import FormInput from '@/components/ui/FormInput';
 import FormCheckboxGroup from '@/components/ui/FormCheckboxGroup';
-
-const roleSchema = z.object({
-  name: z.string().trim().min(3, 'Min 3 chars'),
-  rolePriority: z.string()
-    .regex(/^\d+$/, 'Whole number from 0 to 256')
-    .refine((value) => Number(value) <= 256, 'Whole number from 0 to 256'),
-  permissions: z.array(z.enum(Permission)),
-});
-
-type TRoleForm = z.infer<typeof roleSchema>;
 
 const toFormValues = (role: IRole | null): TRoleForm => ({
   name: role?.name ?? '',

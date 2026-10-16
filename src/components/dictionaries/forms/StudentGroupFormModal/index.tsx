@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { studentGroupSchema, TStudentGroupForm } from './student-group.scheme';
 import type { IStudentGroup } from '@/interfaces/dictionaries/student-groups';
 import type { IDictionaryFormModalProps } from '@/interfaces/dictionaries/tables';
 import StudentGroupsService, { StudentGroupsQueryKey } from '@/lib/services/student-groups.service';
@@ -12,14 +12,6 @@ import useGroupTagsDictionaryQuery from '@/hooks/queries/dictionaries/useGroupTa
 import DictionaryModal from '@/components/modals/DictionaryModal';
 import FormInput from '@/components/ui/FormInput';
 import FormCheckboxGroup from '@/components/ui/FormCheckboxGroup';
-
-const studentGroupSchema = z.object({
-  name: z.string().trim().min(3, 'Min 3 chars'),
-  studyYear: z.string().trim().min(1, 'Required'),
-  tagIds: z.array(z.string()),
-});
-
-type TStudentGroupForm = z.infer<typeof studentGroupSchema>;
 
 const toFormValues = (group: IStudentGroup | null): TStudentGroupForm => ({
   name: group?.name ?? '',

@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { groupTagSchema, TGroupTagForm } from './group-tag.scheme';
 import type { IGroupTag } from '@/interfaces/dictionaries/group-tags';
 import type { IDictionaryFormModalProps } from '@/interfaces/dictionaries/tables';
 import GroupTagsService, { GroupTagsQueryKey } from '@/lib/services/group-tags.service';
@@ -11,12 +11,6 @@ import { DictionaryQueryKey } from '@/lib/services/dictionaries.service';
 import useDictionaryMutation from '@/hooks/mutations/dictionaries/useDictionaryMutation';
 import DictionaryModal from '@/components/modals/DictionaryModal';
 import FormInput from '@/components/ui/FormInput';
-
-const groupTagSchema = z.object({
-  name: z.string().trim().min(3, 'Min 3 chars'),
-});
-
-type TGroupTagForm = z.infer<typeof groupTagSchema>;
 
 const GroupTagFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<IGroupTag>) => {
   const methods = useForm<TGroupTagForm>({

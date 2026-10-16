@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { departmentSchema, TDepartmentForm } from './department.scheme';
 import type { IDepartment } from '@/interfaces/dictionaries/departments';
 import type { IDictionaryFormModalProps } from '@/interfaces/dictionaries/tables';
 import type { ISelectOption } from '@/interfaces/ui/selectors';
@@ -13,14 +13,6 @@ import useTeachersDictionaryQuery from '@/hooks/queries/dictionaries/useTeachers
 import DictionaryModal from '@/components/modals/DictionaryModal';
 import FormInput from '@/components/ui/FormInput';
 import FormSelect from '@/components/ui/FormSelect';
-
-const departmentSchema = z.object({
-  name: z.string().trim().min(2, 'Min 2 chars'),
-  // '' = no head
-  headTeacherId: z.string(),
-});
-
-type TDepartmentForm = z.infer<typeof departmentSchema>;
 
 const NO_HEAD_OPTION: ISelectOption = { value: '', label: 'Not assigned', };
 

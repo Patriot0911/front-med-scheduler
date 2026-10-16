@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { semesterSchema, TSemesterForm } from './semester.scheme';
 import dayjs from 'dayjs';
 import type { ISemester } from '@/interfaces/dictionaries/semesters';
 import type { IDictionaryFormModalProps } from '@/interfaces/dictionaries/tables';
@@ -13,17 +13,6 @@ import DictionaryModal from '@/components/modals/DictionaryModal';
 import FormInput from '@/components/ui/FormInput';
 
 const DATE_INPUT_FORMAT = 'YYYY-MM-DD';
-
-const semesterSchema = z.object({
-  name: z.string().trim().min(3, 'Min 3 chars'),
-  dateFrom: z.string().min(1, 'Required'),
-  dateTo: z.string().min(1, 'Required'),
-}).refine(
-  ({ dateFrom, dateTo, }) => !dateFrom || !dateTo || !dayjs(dateTo).isBefore(dayjs(dateFrom)),
-  { message: 'Must not be earlier than the start date', path: ['dateTo'], },
-);
-
-type TSemesterForm = z.infer<typeof semesterSchema>;
 
 const toFormValues = (semester: ISemester | null): TSemesterForm => ({
   name: semester?.name ?? '',
