@@ -15,7 +15,6 @@ export const PermissionLabels: Record<Permission, string> = {
   [Permission.READ_LESSONS]: 'View lessons',
   [Permission.MANAGE_LESSONS]: 'Manage all lessons',
   [Permission.MANAGE_OWN_LESSONS]: 'Manage own lessons',
-  [Permission.MANAGE_DEPARTMENT_LESSONS]: 'Manage department lessons (head)',
 
   [Permission.READ_COMMENTS]: 'View comments',
   [Permission.MANAGE_COMMENTS]: 'Manage comments',
