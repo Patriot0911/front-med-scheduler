@@ -16,14 +16,18 @@ const SelectOption = <O extends ISelectOption<string, string>>({
   className,
   disabled,
 }: ISelectOptionProps<O>) => {
-  const { options, value, onChange, isOpen } = useSelectContext<O>();
+  const { options, isSelected: isValueSelected, onChange, isOpen, search } = useSelectContext<O>();
 
   if (!isOpen) return null;
+
+  if (!options.length) {
+    return <span className={styles.empty}>{search ? 'Nothing found' : 'No options'}</span>;
+  }
 
   return (
     <>
       {options.map((item) => {
-        const isSelected = item.value === value;
+        const isSelected = isValueSelected(item.value);
 
         return (
           <div

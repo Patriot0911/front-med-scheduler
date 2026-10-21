@@ -13,25 +13,26 @@ const SelectTrigger = ({ className, disabled }: ISelectTriggerProps) => {
   const { isOpen, toggle } = useSelectContext();
 
   return (
-    <button
-      type="button"
-      onClick={() => !disabled && toggle()}
-      className={cn(
-        styles.trigger,
-        className,
-        disabled && styles['disabled']
-      )}
-      aria-expanded={isOpen}
-      aria-haspopup="listbox"
-    >
-      <LuChevronDown
-        size={16}
+    <>
+      {/* the whole field is clickable, while the chevron takes its place in the row like an Input icon */}
+      <button
+        type="button"
+        onClick={() => !disabled && toggle()}
         className={cn(
-          styles['trigger-icon'],
-          isOpen && styles['trigger-icon__open'],
+          styles.trigger,
+          className,
+          disabled && styles['disabled']
         )}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
       />
-    </button>
+      <span className={styles['trigger-icon']}>
+        <LuChevronDown
+          size={16}
+          className={cn(isOpen && styles['trigger-icon__open'])}
+        />
+      </span>
+    </>
   );
 };
 

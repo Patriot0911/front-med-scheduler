@@ -34,15 +34,16 @@ const Select = <O extends ISelectOption<string, string>>({
   disabled,
   searchable,
   filterOption = defaultFilterOption,
+  isValueSelected,
+  closeOnSelect = true,
 }: ISelectProps<O>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const ref = useRef<HTMLDivElement>(null);
   // an option may have an empty value (e.g. "Not assigned"), so look for the option, not a truthy value
-  const selectedOption = options.find((o) => o.value === value);
+  const isSelected = isValueSelected ?? ((optionValue: string) => optionValue === value);
+  const selectedOption = options.find((o) => isSelected(o.value));
   const hasError = Boolean(error);
-  // while searching, the search input shows its own placeholder
-  const showPlaceholder = !selectedOption && !(searchable && isOpen);
   const visibleOptions = searchable && search ? options.filter((o) => filterOption(o, search)) : options;
 
   const close = () => {
@@ -61,8 +62,9 @@ const Select = <O extends ISelectOption<string, string>>({
         selectedOption,
         onChange: (v) => {
           onChange(v);
-          close();
+          if (closeOnSelect) close();
         },
+        isSelected,
         isOpen,
         toggle: () => (isOpen ? close() : setIsOpen(true)),
         close,
@@ -94,18 +96,20 @@ const Select = <O extends ISelectOption<string, string>>({
           )}
         >
           {children}
-          {showPlaceholder && <span className={styles.placeholder}>{placeholder}</span>}
+          {!selectedOption && <span className={styles.placeholder}>{placeholder}</span>}
           <Select.Trigger
             disabled={disabled}
           />
         </div>
 
-        <div className={styles.sub}>
-          {hint && <span className={styles.hint}>{hint}</span>}
-          {!hideErrorMessage && (
-            <span className={styles['controller-error']}>{error}</span>
-          )}
-        </div>
+        {(hint || !hideErrorMessage) && (
+          <div className={styles.sub}>
+            {hint && <span className={styles.hint}>{hint}</span>}
+            {!hideErrorMessage && (
+              <span className={styles['controller-error']}>{error}</span>
+            )}
+          </div>
+        )}
       </div>
     </SelectContext.Provider>
   );

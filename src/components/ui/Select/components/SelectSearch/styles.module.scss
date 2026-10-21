@@ -1,6 +1,31 @@
+// pinned over the scrolling options; negative margins cancel the Area padding
+.wrapper {
+  position: sticky;
+  top: -6px;
+  z-index: 1;
+  margin: -6px -6px 4px;
+  padding: 6px;
+  background: var(--color-surface);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: var(--color-primary-50);
+  border: 1px solid var(--color-neutral-300);
+  box-shadow: inset 0px 0px 1px var(--color-secondary-400);
+
+  .icon {
+    flex-shrink: 0;
+    color: var(--color-text-secondary);
+  }
+}
+
 .search {
   flex: 1;
-  width: 100%;
   min-width: 0;
   border: 0;
   background: transparent;
@@ -9,9 +34,6 @@
   font-weight: 600;
   font-family: var(--font-geist-sans);
   outline: none;
-  // keep input above the full-size trigger button so it can receive clicks
-  position: relative;
-  z-index: 1;
 
   &::placeholder {
     font-size: 0.8rem;
@@ -20,5 +42,20 @@
     font-weight: 700;
     opacity: 0.5;
     letter-spacing: 0.04em;
+  }
+}
+
+.clear {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+
+  &:hover {
+    color: var(--color-text-primary);
   }
 }

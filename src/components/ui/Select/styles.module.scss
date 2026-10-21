@@ -32,7 +32,6 @@
       padding: 0 6px;
       border-radius: var(--radius-sm);
       background: var(--color-neutral-100);
-      border: 1px solid var(--color-neutral-200);
       user-select: none;
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -44,8 +43,6 @@
     align-items: center;
     gap: 8px;
     padding: 10px 12px;
-    // reserve space for the chevron trigger
-    padding-right: 40px;
     border-radius: var(--radius-sm);
     background: var(--color-primary-100);
     border: 1px solid var(--color-neutral-300);

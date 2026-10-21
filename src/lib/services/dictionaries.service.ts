@@ -8,6 +8,7 @@ export enum DictionaryQueryKey {
   GroupTags = 'dictionaryGroupTags',
   Teachers = 'dictionaryTeachers',
   Departments = 'dictionaryDepartments',
+  Roles = 'dictionaryRoles',
 };
 
 class DictionariesService {
@@ -25,6 +26,10 @@ class DictionariesService {
 
   static async getDepartments(): Promise<IDictionaryItem[]> {
     return apiClient.get('/dictionaries/departments');
+  }
+
+  static async getRoles(): Promise<IDictionaryItem[]> {
+    return apiClient.get('/dictionaries/roles');
   }
 }
 

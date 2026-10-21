@@ -1,6 +1,6 @@
 .option {
   padding: 8px 10px;
-  border-radius: var(--radius-sm);
+  border-radius: 3px;
   background: transparent;
   border: 0;
   text-align: left;
@@ -29,4 +29,10 @@
     opacity: 0.4;
     pointer-events: none;
   }
+}
+
+.empty {
+  padding: 8px 10px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
 }
