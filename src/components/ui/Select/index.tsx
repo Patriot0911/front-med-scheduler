@@ -30,7 +30,7 @@ const Select = <O extends ISelectOption<string, string>>({
   required,
   touched,
   children,
-  hideOptionalFlag,
+  showOptionalFlag,
   disabled,
   searchable,
   filterOption = defaultFilterOption,
@@ -76,14 +76,14 @@ const Select = <O extends ISelectOption<string, string>>({
       }}
     >
       <div className={cn(styles.controller, className)} ref={ref}>
-        {(label || (!required && !hideOptionalFlag)) && (
+        {(label || (!required && showOptionalFlag)) && (
           <div className={styles['label-wrapper']}>
             {label && (
               <label className={cn(hasError && styles['error-state'])}>
                 {label} {required && ' *'}
               </label>
             )}
-            {!required && !hideOptionalFlag && <span className={styles['flag-optional']}>Optional</span>}
+            {!required && showOptionalFlag && <span className={styles['flag-optional']}>Optional</span>}
           </div>
         )}
 

@@ -52,7 +52,6 @@ const UsersToolbar = ({
             placeholder={'All roles'}
             searchPlaceholder={'Search role…'}
             searchable
-            hideOptionalFlag
             hideErrorMessage
           />
         )}
@@ -62,7 +61,6 @@ const UsersToolbar = ({
           value={filters.profiles}
           onChange={(profiles) => onFiltersChange({ ...filters, profiles: profiles as UserProfileType[], })}
           placeholder={'All profiles'}
-          hideOptionalFlag
           hideErrorMessage
         />
       </div>

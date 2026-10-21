@@ -28,7 +28,7 @@ export interface ISelectProps<O extends ISelectOption<string, string>> extends P
   onChange: (value: string) => void;
   onBlur?: () => void;
   label?: string;
-  hideOptionalFlag?: boolean;
+  showOptionalFlag?: boolean;
   hint?: string;
   error?: string;
   hideErrorMessage?: boolean;

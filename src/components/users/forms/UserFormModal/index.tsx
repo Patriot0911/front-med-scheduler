@@ -126,6 +126,7 @@ const UserFormModal = ({ isOpen, onClose, canAssignRoles, }: IUserFormModalProps
             label={'Department'}
             options={toOptions(departments)}
             placeholder={'Not assigned'}
+            hideErrorMessage
             searchable
           >
             <FormSelect.Selected<ISelectOption>>
@@ -153,6 +154,7 @@ const UserFormModal = ({ isOpen, onClose, canAssignRoles, }: IUserFormModalProps
             label={'Student group'}
             options={toOptions(groups)}
             placeholder={'Not assigned'}
+            hideErrorMessage
             searchable
           >
             <FormSelect.Selected<ISelectOption>>
@@ -168,6 +170,7 @@ const UserFormModal = ({ isOpen, onClose, canAssignRoles, }: IUserFormModalProps
           <FormSwitch<TUserForm>
             name={'isGroupMonitor'}
             label={'Group monitor'}
+            disabled={!methods.getValues('studentGroupId')}
           />
         </Collapse>
       </section>
