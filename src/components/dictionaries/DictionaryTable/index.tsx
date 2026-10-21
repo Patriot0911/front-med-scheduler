@@ -52,16 +52,16 @@ const DictionaryTable = ({
       rowKey={(row) => row.id}
       data={data?.items ?? []}
       skeletonRows={5}
+      pageSize={config.pageSize}
       isLoading={isLoading}
       emptyText={search ? `Nothing found for “${search}”` : `No ${config.title.toLowerCase()} yet`}
       onRowClick={canManage ? onEdit : undefined}
-      pagination={total > config.pageSize ? {
+      pagination={{
         page,
-        pageSize: config.pageSize,
         total,
         onChange: onPageChange,
         disabled: isFetching,
-      } : undefined}
+      }}
     >
       <Table.Header />
       <Table.Body />

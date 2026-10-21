@@ -1,4 +1,7 @@
 .table-wrapper {
+  // fixed body row height, so padding rows match real ones
+  --table-row-height: 3rem;
+
   width: 100%;
   overflow: hidden;
   border-radius: var(--radius-md);

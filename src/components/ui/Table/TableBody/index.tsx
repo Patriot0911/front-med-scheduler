@@ -14,6 +14,7 @@ export const TableBody = <T,>({ className }: ITableBodyProps) => {
     rowKey,
     isLoading,
     skeletonRows,
+    pageSize,
     onRowClick,
     emptyText,
     emptyComponent,
@@ -27,6 +28,19 @@ export const TableBody = <T,>({ className }: ITableBodyProps) => {
       ? rowKey(row)
       : String(row[rowKey] ?? index);
 
+  // a single state cell (loading / empty) takes the height of all the rows it replaces
+  const stateCellStyle = pageSize > 0
+    ? { height: `calc(var(--table-row-height) * ${pageSize})`, }
+    : undefined;
+
+  // not real rows: they only keep the table at the height of a full page
+  const renderFillerRows = (filledCount: number) =>
+    Array.from({ length: Math.max(pageSize - filledCount, 0) }).map((_, index) => (
+      <tr key={`filler-${index}`} aria-hidden className={styles['filler-row']}>
+        <td colSpan={colSpan} />
+      </tr>
+    ));
+
   const getCellValue = (row: T, col: typeof columns[number], index: number): ReactNode => {
     if (col.render) return col.render(row, index);
     if (col.dataBind) return row[col.dataBind] as ReactNode;
@@ -38,7 +52,7 @@ export const TableBody = <T,>({ className }: ITableBodyProps) => {
       return (
         <tbody className={className}>
           <tr>
-            <td colSpan={colSpan} className={styles.state}>
+            <td colSpan={colSpan} className={styles.state} style={stateCellStyle}>
               {loadingComponent}
             </td>
           </tr>
@@ -64,6 +78,7 @@ export const TableBody = <T,>({ className }: ITableBodyProps) => {
             ) : null}
           </tr>
         ))}
+        {renderFillerRows(skeletonRows)}
       </tbody>
     );
   }
@@ -72,7 +87,7 @@ export const TableBody = <T,>({ className }: ITableBodyProps) => {
     return (
       <tbody className={className}>
         <tr>
-          <td colSpan={colSpan} className={styles.state}>
+          <td colSpan={colSpan} className={styles.state} style={stateCellStyle}>
             {emptyComponent ?? emptyText ?? 'No data found'}
           </td>
         </tr>
@@ -106,6 +121,7 @@ export const TableBody = <T,>({ className }: ITableBodyProps) => {
           ) : null}
         </tr>
       ))}
+      {renderFillerRows(data.length)}
     </tbody>
   );
 };

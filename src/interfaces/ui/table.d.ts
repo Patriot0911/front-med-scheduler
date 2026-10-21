@@ -36,7 +36,7 @@ export interface ITableAction<T> {
 
 export type ITablePaginationProps = IPaginationProps;
 
-export interface ITableProps<T> {
+interface ITableBaseProps<T> {
   columns: ITableColumn<T>[];
   actions?: ITableAction<T>[];
   data: T[];
@@ -47,10 +47,18 @@ export interface ITableProps<T> {
   emptyComponent?: ReactNode;
   loadingComponent?: ReactNode;
   onRowClick?: (row: T) => void;
-  pagination?: ITablePaginationProps;
   className?: string;
   children: ReactNode;
 };
+
+/**
+ * `pageSize` is the one page size of the table: the body is padded with empty rows up to it
+ * (so the height stays fixed) and pagination counts pages by it. Pagination requires it.
+ */
+export type ITableProps<T> = ITableBaseProps<T> & (
+  | { pageSize?: number; pagination?: never }
+  | { pageSize: number; pagination?: Omit<ITablePaginationProps, 'pageSize'> }
+);
 
 export interface ITableContext<T = unknown> {
   columns: ITableColumn<T>[];
@@ -58,6 +66,7 @@ export interface ITableContext<T = unknown> {
   data: T[];
   isLoading: boolean;
   skeletonRows: number;
+  pageSize: number;
   rowKey: keyof T | ((row: T) => string);
   onRowClick?: (row: T) => void;
   emptyText?: ReactNode;

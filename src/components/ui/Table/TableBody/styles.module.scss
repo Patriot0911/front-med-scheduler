@@ -1,5 +1,6 @@
 .body {
   tr {
+    height: var(--table-row-height);
     transition: background-color 0.15s ease;
     border-bottom: 1px solid var(--color-border);
 
@@ -10,6 +11,13 @@
     &:hover {
       background-color: var(--color-surface-hover);
     }
+  }
+
+  // empty space after the last real row: no divider, no hover
+  .filler-row,
+  .filler-row:hover {
+    border-bottom: none;
+    background-color: transparent;
   }
 
   // Higher specificity (.body .clickable) overrides .body tr:hover
@@ -47,8 +55,13 @@
   font-weight: var(--font-weight-medium);
 }
 
+.filler-row {
+  height: var(--table-row-height);
+}
+
 // ── Skeleton ───────────────────────────────────────────────────────
 .skeleton-row {
+  height: var(--table-row-height);
   border-bottom: 1px solid var(--color-border);
 
   &:last-child {

@@ -14,6 +14,7 @@ const Table = <T,>({
   rowKey,
   isLoading = false,
   skeletonRows = 5,
+  pageSize = 0,
   emptyText,
   emptyComponent,
   loadingComponent,
@@ -31,6 +32,7 @@ const Table = <T,>({
         rowKey,
         isLoading,
         skeletonRows,
+        pageSize,
         emptyText,
         emptyComponent,
         loadingComponent,
@@ -47,6 +49,7 @@ const Table = <T,>({
           <TablePagination
             disabled={isLoading}
             {...pagination}
+            pageSize={pageSize}
           />
         )}
       </div>

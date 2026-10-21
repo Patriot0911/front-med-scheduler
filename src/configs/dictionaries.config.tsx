@@ -24,7 +24,7 @@ import SemesterFormModal from '@/components/dictionaries/forms/SemesterFormModal
 import DepartmentFormModal from '@/components/dictionaries/forms/DepartmentFormModal';
 import DepartmentTeachersModal from '@/components/dictionaries/forms/DepartmentTeachersModal';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 const DATE_FORMAT = 'DD.MM.YYYY';
 
 /** Erases the row type so configs of different dictionaries fit into one map. */
