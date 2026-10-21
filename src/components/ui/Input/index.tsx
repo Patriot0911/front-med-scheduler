@@ -21,6 +21,14 @@ const Input = ({
   const inputId = id ?? name;
   const hasError = Boolean(error);
 
+  const showHint = Boolean(hint) && (!hasError || !hideHintOnError);
+
+  const showError = (
+    !hideErrorMessage && (
+      !hideHintOnError || (hideHintOnError && hasError)
+    )
+  );
+
   return (
     <div className={styles.controller}>
       {
@@ -36,7 +44,7 @@ const Input = ({
                 {label} {!!props.required && ' *'}
               </label>
             )}
-            {hint && !bottomHint && (!hasError || !hideHintOnError) && (
+            {showHint && (
               <span className={styles.hint}>{hint}</span>
             )}
           </div>
@@ -67,22 +75,22 @@ const Input = ({
           </button>
         )}
       </div>
-      <div className={styles.sub}>
-        {hint && !!bottomHint && (!hasError || !hideHintOnError) && (
-          <span className={styles.hint}>{hint}</span>
-        )}
-        {
-          (
-            !hideErrorMessage && (
-              !hideHintOnError || (hideHintOnError && hasError)
-            )
-          ) && (
-            <span className={styles['controller-error']} id={inputId ? `${inputId}-error` : undefined}>
-              {error}
-            </span>
-          )
-        }
-      </div>
+      {
+        (!!showHint || !!bottomHint) && (
+          <div className={styles.sub}>
+            {showHint && (
+              <span className={styles.hint}>{hint}</span>
+            )}
+            {
+              showError && (
+                <span className={styles['controller-error']} id={inputId ? `${inputId}-error` : undefined}>
+                  {error}
+                </span>
+              )
+            }
+          </div>
+        )
+      }
     </div>
   );
 };
