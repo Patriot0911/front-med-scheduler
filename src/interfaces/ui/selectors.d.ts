@@ -60,6 +60,11 @@ export interface IFormSelectProps<T extends FieldValues, O extends ISelectOption
   name: Path<T>;
 };
 
+export interface IFormMultiSelectProps<T extends FieldValues, O extends ISelectOption<string, string>>
+  extends Omit<IMultiSelectProps<O>, 'value' | 'onChange' | 'onBlur' | 'error' | 'touched'> {
+  name: Path<T>;
+};
+
 export interface ISelectSearchProps {
   className?: string;
   placeholder?: string;

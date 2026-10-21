@@ -6,6 +6,7 @@ import { IUsersFilters } from '@/interfaces/users/users';
 import usePermissions from '@/hooks/queries/auth/usePermissions';
 import Loading from '@/components/ui/Loading';
 import UsersToolbar from '../UsersToolbar';
+import UserFormModal from '../forms/UserFormModal';
 
 import styles from './styles.module.scss';
 
@@ -19,6 +20,7 @@ const UsersSection = () => {
   const { hasAny, isReady, } = usePermissions();
   const [search, setSearch] = useState('');
   const [filters, setFilters] = useState<IUsersFilters>(INITIAL_FILTERS);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   if (!isReady) {
     return <Loading />;
@@ -32,6 +34,8 @@ const UsersSection = () => {
     );
   }
 
+  const canReadRoles = hasAny(READ_ROLES_PERMISSIONS);
+
   return (
     <section className={styles.section}>
       <p className={styles.description}>
@@ -43,9 +47,15 @@ const UsersSection = () => {
         onSearchChange={setSearch}
         filters={filters}
         onFiltersChange={setFilters}
-        canFilterByRoles={hasAny(READ_ROLES_PERMISSIONS)}
+        canFilterByRoles={canReadRoles}
         canManage={hasAny(MANAGE_PERMISSIONS)}
-        onCreate={() => {}}
+        onCreate={() => setIsCreateOpen(true)}
+      />
+
+      <UserFormModal
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        canAssignRoles={canReadRoles}
       />
     </section>
   );
