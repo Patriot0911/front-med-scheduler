@@ -21,7 +21,7 @@ const Input = ({
   const inputId = id ?? name;
   const hasError = Boolean(error);
 
-  const showHint = Boolean(hint) && (!hasError || !hideHintOnError);
+  const isHintHidden = (!hasError || !hideHintOnError);
 
   const showError = (
     !hideErrorMessage && (
@@ -44,7 +44,7 @@ const Input = ({
                 {label} {!!props.required && ' *'}
               </label>
             )}
-            {showHint && (
+            {(Boolean(hint) && isHintHidden) && (
               <span className={styles.hint}>{hint}</span>
             )}
           </div>
@@ -76,10 +76,10 @@ const Input = ({
         )}
       </div>
       {
-        (!!showHint || !!bottomHint) && (
+        (!!showError && !isHintHidden) && (
           <div className={styles.sub}>
-            {showHint && (
-              <span className={styles.hint}>{hint}</span>
+            {(Boolean(bottomHint) && isHintHidden) && (
+              <span className={styles.hint}>{bottomHint}</span>
             )}
             {
               showError && (

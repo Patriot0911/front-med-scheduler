@@ -59,7 +59,6 @@ const FormCheckboxGroup = <T extends FieldValues>({
               className={cn(styles.chip, isChecked && styles['chip__checked'])}
               onClick={() => toggle(option.value)}
             >
-              {isChecked && <LuCheck size={14} />}
               {option.label}
             </button>
           );
