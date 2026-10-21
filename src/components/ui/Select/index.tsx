@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { SelectContext } from './context';
 import useOnClickOutside from '@/hooks/shared/useOnClickOutside';
@@ -19,6 +19,7 @@ const defaultFilterOption = <O extends ISelectOption<string, string>>(option: O,
 const Select = <O extends ISelectOption<string, string>>({
   value,
   onChange,
+  onBlur,
   options,
   label,
   hint,
@@ -37,18 +38,20 @@ const Select = <O extends ISelectOption<string, string>>({
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const ref = useRef<HTMLDivElement>(null);
-  const hasValue = Boolean(value);
+  // an option may have an empty value (e.g. "Not assigned"), so look for the option, not a truthy value
   const selectedOption = options.find((o) => o.value === value);
   const hasError = Boolean(error);
+  // while searching, the search input shows its own placeholder
+  const showPlaceholder = !selectedOption && !(searchable && isOpen);
   const visibleOptions = searchable && search ? options.filter((o) => filterOption(o, search)) : options;
 
-  const close = () => setIsOpen(false);
+  const close = () => {
+    if (isOpen) onBlur?.();
+    setIsOpen(false);
+    setSearch('');
+  };
 
   useOnClickOutside(ref, close);
-
-  useEffect(() => {
-    if (!isOpen) setSearch('');
-  }, [isOpen]);
 
   return (
     <SelectContext.Provider
@@ -61,7 +64,7 @@ const Select = <O extends ISelectOption<string, string>>({
           close();
         },
         isOpen,
-        toggle: () => setIsOpen((prev) => !prev),
+        toggle: () => (isOpen ? close() : setIsOpen(true)),
         close,
         showError: hasError,
         showTouched: Boolean(touched),
@@ -73,7 +76,11 @@ const Select = <O extends ISelectOption<string, string>>({
       <div className={cn(styles.controller, className)} ref={ref}>
         {(label || (!required && !hideOptionalFlag)) && (
           <div className={styles['label-wrapper']}>
-            {label && <label>{label}</label>}
+            {label && (
+              <label className={cn(hasError && styles['error-state'])}>
+                {label} {required && ' *'}
+              </label>
+            )}
             {!required && !hideOptionalFlag && <span className={styles['flag-optional']}>Optional</span>}
           </div>
         )}
@@ -87,17 +94,18 @@ const Select = <O extends ISelectOption<string, string>>({
           )}
         >
           {children}
-          {!hasValue && <span className={styles.placeholder}>{placeholder}</span>}
+          {showPlaceholder && <span className={styles.placeholder}>{placeholder}</span>}
           <Select.Trigger
             disabled={disabled}
           />
         </div>
 
-        {hint && <span className={styles.hint}>{hint}</span>}
-
-        {!hideErrorMessage && (
-          <span className={styles['controller-error']}>{error}</span>
-        )}
+        <div className={styles.sub}>
+          {hint && <span className={styles.hint}>{hint}</span>}
+          {!hideErrorMessage && (
+            <span className={styles['controller-error']}>{error}</span>
+          )}
+        </div>
       </div>
     </SelectContext.Provider>
   );

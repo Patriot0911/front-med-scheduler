@@ -1,0 +1,36 @@
+.teachers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.teachers-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.teachers-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  line-height: 0.9rem;
+  letter-spacing: 0.04em;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+}
+
+.count {
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-100);
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  line-height: 1rem;
+}
+
+.teachers-list {
+  max-height: 220px;
+}

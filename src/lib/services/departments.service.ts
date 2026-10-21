@@ -23,6 +23,11 @@ class DepartmentsService {
     return apiClient.put(`/departments/${id}/head`, { teacherId, });
   }
 
+  /** Replaces the department teachers: teachers of other departments are moved here, missing ones are detached. */
+  static async setDepartmentTeachers(id: string, teacherIds: string[]): Promise<IDepartment> {
+    return apiClient.put(`/departments/${id}/teachers`, { teacherIds, });
+  }
+
   static async deleteDepartment(id: string): Promise<IDepartment> {
     return apiClient.delete(`/departments/${id}`);
   }

@@ -20,6 +20,16 @@ export interface IDictionaryTableProps {
   onPageChange: (page: number) => void;
   onEdit: (item: IDictionaryRow) => void;
   onDelete: (item: IDictionaryRow) => void;
+  /** Click on one of the config's `rowActions` */
+  onRowAction: (actionKey: string, item: IDictionaryRow) => void;
+};
+
+/** Extra row button that opens its own modal for the row, e.g. department teachers. */
+export interface IDictionaryRowAction<T extends IDictionaryRow> {
+  key: string;
+  icon: ReactNode;
+  label: string;
+  Modal: ComponentType<IDictionaryFormModalProps<T>>;
 };
 
 /** Props of a dictionary create / edit modal; `item` is null when creating. */
@@ -65,4 +75,6 @@ export interface IDictionaryConfig<T extends IDictionaryRow> {
   getItemLabel: (item: T) => string;
   deleteWarning?: string;
   FormModal: ComponentType<IDictionaryFormModalProps<T>>;
+  /** Shown between Edit and Delete for users who can manage the dictionary */
+  rowActions?: IDictionaryRowAction<T>[];
 };

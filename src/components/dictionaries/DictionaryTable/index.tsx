@@ -15,6 +15,7 @@ const DictionaryTable = ({
   onPageChange,
   onEdit,
   onDelete,
+  onRowAction,
 }: IDictionaryTableProps) => {
   const config = dictionariesConfig[selectedDictionaryKey];
   const { data, isLoading, isFetching, } = useDictionariesTableQuery(selectedDictionaryKey, page, search);
@@ -28,6 +29,12 @@ const DictionaryTable = ({
         label: `Edit ${config.itemName}`,
         onClick: onEdit,
       },
+      ...(config.rowActions ?? []).map(({ key, icon, label, }) => ({
+        key,
+        icon,
+        label,
+        onClick: (row: IDictionaryRow) => onRowAction(key, row),
+      })),
       {
         key: 'delete',
         icon: <LuTrash2 />,

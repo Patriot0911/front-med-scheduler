@@ -1,8 +1,7 @@
 'use client';
 
 import { FieldValues, useController, useFormContext } from 'react-hook-form';
-import { ISelectOption } from '@/interfaces/ui/selectors';
-import { IFormSelectProps } from './FormSelect';
+import { IFormSelectProps, ISelectOption } from '@/interfaces/ui/selectors';
 import Select from '@/components/ui/Select';
 
 const FormSelect = <T extends FieldValues, O extends ISelectOption<string, string>>({
@@ -21,10 +20,11 @@ const FormSelect = <T extends FieldValues, O extends ISelectOption<string, strin
   const showError = Boolean(error && (isSubmitted || isDirty || hasValue));
 
   return (
-    <Select
+    <Select<O>
       {...props}
-      value={field.value}
+      value={field.value ?? undefined}
       onChange={field.onChange}
+      onBlur={field.onBlur}
       touched={touched}
       error={showError ? error?.message : undefined}
       hideErrorMessage={hideErrorMessage}

@@ -1,13 +1,24 @@
 .search {
+  flex: 1;
   width: 100%;
+  min-width: 0;
   border: 0;
   background: transparent;
-  color: var(--ink-0);
-  font-size: 13px;
-  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--font-geist-sans);
   outline: none;
+  // keep input above the full-size trigger button so it can receive clicks
+  position: relative;
+  z-index: 1;
 
   &::placeholder {
-    color: var(--ink-3);
+    font-size: 0.8rem;
+    font-family: var(--font-geist-sans);
+    color: var(--color-text-secondary);
+    font-weight: 700;
+    opacity: 0.5;
+    letter-spacing: 0.04em;
   }
 }

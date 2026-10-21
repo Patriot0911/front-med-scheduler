@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { LuBuilding2, LuCalendarRange, LuShieldCheck, LuTags, LuUsers } from 'react-icons/lu';
+import { LuBuilding2, LuCalendarRange, LuGraduationCap, LuShieldCheck, LuTags, LuUsers } from 'react-icons/lu';
 import type { IDictionaryConfig, IDictionaryRow } from '@/interfaces/dictionaries/tables';
 import type { IRole } from '@/interfaces/dictionaries/roles';
 import type { IStudentGroup } from '@/interfaces/dictionaries/student-groups';
@@ -22,6 +22,7 @@ import StudentGroupFormModal from '@/components/dictionaries/forms/StudentGroupF
 import GroupTagFormModal from '@/components/dictionaries/forms/GroupTagFormModal';
 import SemesterFormModal from '@/components/dictionaries/forms/SemesterFormModal';
 import DepartmentFormModal from '@/components/dictionaries/forms/DepartmentFormModal';
+import DepartmentTeachersModal from '@/components/dictionaries/forms/DepartmentTeachersModal';
 
 const PAGE_SIZE = 20;
 const DATE_FORMAT = 'DD.MM.YYYY';
@@ -43,7 +44,16 @@ const departmentsDictionaryConfig = defineDictionary<IDepartment>({
   remove: DepartmentsService.deleteDepartment,
   getItemLabel: (department) => department.name,
   deleteWarning: 'Teachers of this department will be left without a department.',
+  relatedQueryKeys: [DictionaryQueryKey.Departments, DictionaryQueryKey.Teachers],
   FormModal: DepartmentFormModal,
+  rowActions: [
+    {
+      key: 'teachers',
+      icon: <LuGraduationCap />,
+      label: 'Department teachers',
+      Modal: DepartmentTeachersModal,
+    },
+  ],
   columns: [
     {
       key: 'name',

@@ -1,4 +1,5 @@
 import { PropsWithChildren } from 'react';
+import { FieldValues, Path } from 'react-hook-form';
 
 export interface ISelectOption<T = string, K = string> {
   value: T;
@@ -24,6 +25,7 @@ export interface ISelectProps<O extends ISelectOption<string, string>> extends P
   options: O[];
   value: string | undefined;
   onChange: (value: string) => void;
+  onBlur?: () => void;
   label?: string;
   hideOptionalFlag?: boolean;
   hint?: string;
@@ -36,6 +38,11 @@ export interface ISelectProps<O extends ISelectOption<string, string>> extends P
   disabled?: boolean;
   searchable?: boolean;
   filterOption?: (option: O, search: string) => boolean;
+};
+
+export interface IFormSelectProps<T extends FieldValues, O extends ISelectOption<string, string>>
+  extends Omit<ISelectProps<O>, 'value' | 'onChange' | 'onBlur' | 'error' | 'touched'> {
+  name: Path<T>;
 };
 
 export interface ISelectSearchProps {

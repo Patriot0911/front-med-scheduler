@@ -22,13 +22,13 @@
     height: 22px;
     display: grid;
     place-items: center;
-    color: var(--ink-2);
+    color: var(--color-text-secondary);
     flex-shrink: 0;
     transition: transform 0.15s, color 0.15s;
 
     &__open {
       transform: rotate(180deg);
-      color: var(--ink-0);
+      color: var(--color-text-primary);
     }
   }
 }

@@ -21,7 +21,11 @@ const DictionaryToolbar = ({ search, onSearchChange, itemName, canManage, onCrea
         />
       </div>
       {canManage && (
-        <Button leftIcon={<LuPlus />} onClick={onCreate}>
+        <Button
+          leftIcon={<LuPlus />}
+          onClick={onCreate}
+          className={styles['action-button']}
+        >
           Add {itemName}
         </Button>
       )}

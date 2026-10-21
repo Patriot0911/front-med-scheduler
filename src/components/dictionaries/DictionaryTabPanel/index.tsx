@@ -19,6 +19,7 @@ interface IDictionaryTabPanelProps {
 };
 
 type TFormState = { isOpen: boolean; item: IDictionaryRow | null };
+type TRowActionState = { key: string | null; item: IDictionaryRow | null };
 
 const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 
@@ -31,6 +32,8 @@ const DictionaryTabPanel = ({ dictionaryKey, canManage, }: IDictionaryTabPanelPr
   const debouncedSearch = useDebouncedValue(search.trim());
   const [form, setForm] = useState<TFormState>({ isOpen: false, item: null, });
   const [itemToDelete, setItemToDelete] = useState<IDictionaryRow | null>(null);
+  // the item is kept after closing so the modal keeps its content during the exit animation
+  const [rowAction, setRowAction] = useState<TRowActionState>({ key: null, item: null, });
 
   const deleteMutation = useDictionaryMutation({
     mutationFn: (item: IDictionaryRow) => config.remove(item.id),
@@ -70,6 +73,7 @@ const DictionaryTabPanel = ({ dictionaryKey, canManage, }: IDictionaryTabPanelPr
           deleteMutation.reset();
           setItemToDelete(item);
         }}
+        onRowAction={(key, item) => setRowAction({ key, item, })}
       />
 
       <FormModal
@@ -77,6 +81,15 @@ const DictionaryTabPanel = ({ dictionaryKey, canManage, }: IDictionaryTabPanelPr
         item={form.item}
         onClose={() => setForm((prev) => ({ ...prev, isOpen: false, }))}
       />
+
+      {config.rowActions?.map(({ key, Modal: RowActionModal, }) => (
+        <RowActionModal
+          key={key}
+          isOpen={rowAction.key === key}
+          item={rowAction.item}
+          onClose={() => setRowAction((prev) => ({ ...prev, key: null, }))}
+        />
+      ))}
 
       <ConfirmModal
         isOpen={!!itemToDelete}

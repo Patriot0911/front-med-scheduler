@@ -1,23 +1,28 @@
 .option {
-  padding: 9px 10px;
-  border-radius: 7px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
   background: transparent;
   border: 0;
   text-align: left;
   cursor: pointer;
   width: 100%;
-  color: var(--ink-1);
-  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  font-family: var(--font-geist-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
   transition: background 0.1s, color 0.1s;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--ink-0);
+    background: var(--color-surface-hover);
   }
 
   &__selected {
-    background: rgba(154, 107, 255, 0.10);
-    color: var(--ink-0);
+    background: var(--color-primary-50);
+    color: var(--color-primary-500);
+
+    &:hover {
+      background: var(--color-primary-100);
+    }
   }
 
   &__disabled {
