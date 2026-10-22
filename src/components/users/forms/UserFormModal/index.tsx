@@ -4,10 +4,11 @@ import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TUserForm, userSchema } from './user.scheme';
-import type { ICreateUserPayload, IUserFormModalProps } from '@/interfaces/users/users';
+import type { IUser, IUserFormModalProps, IUserPayload } from '@/interfaces/users/users';
 import type { ISelectOption } from '@/interfaces/ui/selectors';
 import UsersService, { UsersQueryKey } from '@/lib/services/users.service';
 import { DictionaryQueryKey } from '@/lib/services/dictionaries.service';
+import { DepartmentsQueryKey } from '@/lib/services/departments.service';
 import useDictionaryMutation from '@/hooks/mutations/dictionaries/useDictionaryMutation';
 import useRolesDictionaryQuery from '@/hooks/queries/dictionaries/useRolesDictionaryQuery';
 import useDepartmentsDictionaryQuery from '@/hooks/queries/dictionaries/useDepartmentsDictionaryQuery';
@@ -23,24 +24,25 @@ import styles from './styles.module.scss';
 
 const NOT_ASSIGNED_OPTION: ISelectOption = { value: '', label: 'Not assigned', };
 
-const DEFAULT_VALUES: TUserForm = {
-  fullName: '',
-  email: '',
-  roleIds: [],
-  isTeacher: false,
-  departmentId: '',
-  isStudent: false,
-  studentGroupId: '',
-  isGroupMonitor: false,
-};
+const toFormValues = (user: IUser | null): TUserForm => ({
+  fullName: user?.fullName ?? '',
+  email: user?.email ?? '',
+  roleIds: user?.roleIds ?? [],
+  isTeacher: !!user?.teacher,
+  departmentId: user?.teacher?.departmentId ?? '',
+  isStudent: !!user?.student,
+  studentGroupId: user?.student?.studentGroupId ?? '',
+  isGroupMonitor: user?.student?.isGroupMonitor ?? false,
+});
 
-const toPayload = (data: TUserForm): ICreateUserPayload => ({
+/** Roles are sent only when the user can see them, otherwise an edit keeps the current ones */
+const toPayload = (data: TUserForm, canAssignRoles: boolean): IUserPayload => ({
   fullName: data.fullName.trim(),
   email: data.email,
-  roleIds: data.roleIds,
+  roleIds: canAssignRoles ? data.roleIds : undefined,
   teacher: data.isTeacher ? { departmentId: data.departmentId || null, } : null,
   student: data.isStudent
-    ? { studentGroupId: data.studentGroupId || undefined, isGroupMonitor: data.isGroupMonitor, }
+    ? { studentGroupId: data.studentGroupId || null, isGroupMonitor: data.isGroupMonitor, }
     : null,
 });
 
@@ -49,12 +51,13 @@ const toOptions = (items: { id: string; name: string }[] = []): ISelectOption[] 
   ...items.map((item) => ({ value: item.id, label: item.name, })),
 ];
 
-/** Creates a user with optional roles and teacher / student profiles (POST /users). */
-const UserFormModal = ({ isOpen, onClose, canAssignRoles, }: IUserFormModalProps) => {
+/** Creates a user with optional roles and teacher / student profiles, or edits an existing one. */
+const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModalProps) => {
+  const isEdit = !!item;
   const methods = useForm<TUserForm>({
     resolver: zodResolver(userSchema),
     mode: 'onTouched',
-    defaultValues: DEFAULT_VALUES,
+    defaultValues: toFormValues(item),
   });
   const isTeacher = useWatch({ control: methods.control, name: 'isTeacher', });
   const isStudent = useWatch({ control: methods.control, name: 'isStudent', });
@@ -64,30 +67,35 @@ const UserFormModal = ({ isOpen, onClose, canAssignRoles, }: IUserFormModalProps
   const { data: groups, } = useStudentGroupsDictionaryQuery(isOpen && isStudent);
 
   const mutation = useDictionaryMutation({
-    mutationFn: (data: TUserForm) => UsersService.createUser(toPayload(data)),
-    // a new teacher shows up in the teachers lists (departments, lessons)
-    invalidateKeys: [UsersQueryKey.UsersList, DictionaryQueryKey.Teachers],
-    successMessage: 'User created',
+    mutationFn: (data: TUserForm) => {
+      const payload = toPayload(data, canAssignRoles);
+      return item ? UsersService.updateUser(item, payload) : UsersService.createUser(payload);
+    },
+    // teacher profiles feed the teachers lists (departments, lessons)
+    invalidateKeys: [UsersQueryKey.UsersList, DictionaryQueryKey.Teachers, DepartmentsQueryKey.DepartmentsList],
+    successMessage: item ? 'User updated' : 'User created',
     onSuccess: onClose,
   });
 
   useEffect(() => {
     if (isOpen) {
-      methods.reset(DEFAULT_VALUES);
+      methods.reset(toFormValues(item));
       mutation.reset();
     }
-  }, [isOpen]);
+  }, [isOpen, item]);
 
   return (
     <DictionaryModal
       isOpen={isOpen}
       onClose={onClose}
-      title={'New user'}
-      description={'A random password is generated for the account. The user sets their own via a password reset link.'}
+      title={isEdit ? 'Edit user' : 'New user'}
+      description={isEdit
+        ? undefined
+        : 'A random password is generated for the account. The user sets their own via a password reset link.'}
       methods={methods}
       onSubmit={(data: TUserForm) => mutation.mutate(data)}
       isPending={mutation.isPending}
-      isEdit={false}
+      isEdit={isEdit}
     >
       <FormInput<TUserForm>
         name={'fullName'}
@@ -109,7 +117,7 @@ const UserFormModal = ({ isOpen, onClose, canAssignRoles, }: IUserFormModalProps
           options={(roles ?? []).map((role) => ({ value: role.id, label: role.name, }))}
           placeholder={'No roles'}
           searchPlaceholder={'Search role…'}
-          hint={'You can only assign roles within your own role priority'}
+          hint={'You can only assign or remove roles within your own role priority'}
           searchable
         />
       )}

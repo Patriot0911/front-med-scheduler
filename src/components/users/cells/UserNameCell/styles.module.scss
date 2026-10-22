@@ -1,0 +1,18 @@
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  // the column has no fixed width, this keeps it from collapsing on narrow screens
+  min-width: 12rem;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.email {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

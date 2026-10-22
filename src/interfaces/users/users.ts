@@ -1,3 +1,6 @@
+import type { IGenericListResponse } from '../shared/generic-response';
+import type { IFilterParams } from '../shared/services';
+
 export enum UserProfileType {
   Teacher = 'teacher',
   Student = 'student',
@@ -12,8 +15,9 @@ export interface IUsersFilters {
 export interface IUsersToolbarProps {
   search: string;
   onSearchChange: (search: string) => void;
+  /** Applied filters; the toolbar edits a draft of them until "Apply filters" */
   filters: IUsersFilters;
-  onFiltersChange: (filters: IUsersFilters) => void;
+  onFiltersApply: (filters: IUsersFilters) => void;
   /** Roles filter needs the roles dictionary, which requires its own permission */
   canFilterByRoles: boolean;
   canManage: boolean;
@@ -43,17 +47,47 @@ export interface IUser {
   student: IStudentProfile | null;
 };
 
-/** `teacher` / `student` create the matching profile; null or missing means no profile */
-export interface ICreateUserPayload {
+export type IUsersResponse = IGenericListResponse<IUser>;
+
+/** `roleIds` / `profiles` are not supported by GET /users yet, the API drops them */
+export interface IUsersListParams extends IFilterParams, Partial<IUsersFilters> {};
+
+export interface ITeacherProfilePayload {
+  departmentId?: string | null;
+};
+
+export interface IStudentProfilePayload {
+  /** null detaches the student from the group */
+  studentGroupId?: string | null;
+  isGroupMonitor?: boolean;
+};
+
+export interface IEditUserPayload {
   email: string;
   fullName: string;
+  /** Missing keeps the current roles */
   roleIds?: string[];
-  teacher?: { departmentId?: string | null } | null;
-  student?: { studentGroupId?: string; isGroupMonitor?: boolean } | null;
+};
+
+/** `teacher` / `student` set the matching profile; null or missing means no profile */
+export interface IUserPayload extends IEditUserPayload {
+  teacher?: ITeacherProfilePayload | null;
+  student?: IStudentProfilePayload | null;
+};
+
+export interface IUsersTableProps {
+  page: number;
+  search: string;
+  filters: IUsersFilters;
+  canManage: boolean;
+  onPageChange: (page: number) => void;
+  onEdit: (user: IUser) => void;
 };
 
 export interface IUserFormModalProps {
   isOpen: boolean;
+  /** null when creating */
+  item: IUser | null;
   onClose: () => void;
   /** Roles come from the roles dictionary, which requires its own permission */
   canAssignRoles: boolean;

@@ -27,7 +27,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 12px;
+    // shared with Select, so a container can resize both (see .fields-compact)
+    padding: var(--field-padding-y, 10px) 12px;
     border-radius: var(--radius-sm);
     background: var(--color-primary-100);
     border: 1px solid var(--color-neutral-300);

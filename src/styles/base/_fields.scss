@@ -1,0 +1,6 @@
+// Smaller Input / Select / Button for dense places, e.g. toolbars above tables.
+// The components read these variables, so the class works on any container around them.
+.fields-compact {
+  --field-padding-y: 6px;
+  --button-padding-y: 6px;
+}

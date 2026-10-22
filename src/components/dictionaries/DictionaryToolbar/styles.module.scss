@@ -10,6 +10,6 @@
     max-width: 24rem;
   }
   .action-button {
-    padding: 0.65rem 2rem;
+    padding: var(--button-padding-y, 0.65rem) 2rem;
   }
 }

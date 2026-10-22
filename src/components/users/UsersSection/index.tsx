@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { Permission } from '@/interfaces/auth/permission';
-import { IUsersFilters } from '@/interfaces/users/users';
+import { IUser, IUsersFilters } from '@/interfaces/users/users';
 import usePermissions from '@/hooks/queries/auth/usePermissions';
+import useDebouncedValue from '@/hooks/shared/useDebouncedValue';
 import Loading from '@/components/ui/Loading';
 import UsersToolbar from '../UsersToolbar';
+import UsersTable from '../UsersTable';
 import UserFormModal from '../forms/UserFormModal';
 
 import styles from './styles.module.scss';
@@ -16,11 +18,16 @@ const READ_ROLES_PERMISSIONS = [Permission.READ_ROLES, Permission.MANAGE_ROLES, 
 
 const INITIAL_FILTERS: IUsersFilters = { roleIds: [], profiles: [], };
 
+type TFormState = { isOpen: boolean; item: IUser | null };
+
 const UsersSection = () => {
   const { hasAny, isReady, } = usePermissions();
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebouncedValue(search.trim());
   const [filters, setFilters] = useState<IUsersFilters>(INITIAL_FILTERS);
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  // the item is kept after closing so the modal keeps its content during the exit animation
+  const [form, setForm] = useState<TFormState>({ isOpen: false, item: null, });
 
   if (!isReady) {
     return <Loading />;
@@ -35,6 +42,7 @@ const UsersSection = () => {
   }
 
   const canReadRoles = hasAny(READ_ROLES_PERMISSIONS);
+  const canManage = hasAny(MANAGE_PERMISSIONS);
 
   return (
     <section className={styles.section}>
@@ -44,17 +52,33 @@ const UsersSection = () => {
 
       <UsersToolbar
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={(next) => {
+          setSearch(next);
+          setPage(1);
+        }}
         filters={filters}
-        onFiltersChange={setFilters}
+        onFiltersApply={(next) => {
+          setFilters(next);
+          setPage(1);
+        }}
         canFilterByRoles={canReadRoles}
-        canManage={hasAny(MANAGE_PERMISSIONS)}
-        onCreate={() => setIsCreateOpen(true)}
+        canManage={canManage}
+        onCreate={() => setForm({ isOpen: true, item: null, })}
+      />
+
+      <UsersTable
+        page={page}
+        search={debouncedSearch}
+        filters={filters}
+        canManage={canManage}
+        onPageChange={setPage}
+        onEdit={(item) => setForm({ isOpen: true, item, })}
       />
 
       <UserFormModal
-        isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
+        isOpen={form.isOpen}
+        item={form.item}
+        onClose={() => setForm((prev) => ({ ...prev, isOpen: false, }))}
         canAssignRoles={canReadRoles}
       />
     </section>
