@@ -11,6 +11,10 @@ import useUsersTableQuery from '@/hooks/queries/users/useUsersTableQuery';
 import UserNameCell from '../cells/UserNameCell';
 import UserRolesCell from '../cells/UserRolesCell';
 import UserProfilesCell from '../cells/UserProfilesCell';
+import UserDepartmentCell from '../cells/UserDepartmentCell';
+import UserGroupCell from '../cells/UserGroupCell';
+
+import emptyStyles from '../cells/styles/empty.module.scss';
 
 export const USERS_PAGE_SIZE = 10;
 const DATE_FORMAT = 'DD.MM.YYYY';
@@ -24,8 +28,6 @@ const UsersTable = ({ page, search, filters, canManage, onPageChange, onEdit, }:
   const hasFilters = !!search || filters.roleIds.length > 0 || filters.profiles.length > 0;
 
   const columns: ITableColumn<IUser>[] = [
-    // fixed widths keep the columns readable on narrow screens, where the table scrolls instead;
-    // the user column has no width, so it takes the rest of the space
     {
       key: 'name',
       title: 'User',
@@ -40,8 +42,20 @@ const UsersTable = ({ page, search, filters, canManage, onPageChange, onEdit, }:
     {
       key: 'profiles',
       title: 'Profiles',
-      width: '15rem',
+      width: '10rem',
       render: (user) => <UserProfilesCell user={user} />,
+    },
+    {
+      key: 'department',
+      title: 'Department',
+      width: '12rem',
+      render: (user) => <UserDepartmentCell teacher={user.teacher} />,
+    },
+    {
+      key: 'studentGroup',
+      title: 'Student group',
+      width: '10rem',
+      render: (user) => <UserGroupCell student={user.student} />,
     },
     {
       key: 'lastLoginAt',
@@ -49,7 +63,7 @@ const UsersTable = ({ page, search, filters, canManage, onPageChange, onEdit, }:
       width: '7rem',
       render: (user) => user.lastLoginAt
         ? dayjs(user.lastLoginAt).format(DATE_FORMAT)
-        : <span style={{ color: 'var(--color-text-muted)' }}>Never</span>,
+        : <span className={emptyStyles.empty}>Never</span>,
     },
   ];
 
@@ -75,6 +89,7 @@ const UsersTable = ({ page, search, filters, canManage, onPageChange, onEdit, }:
       emptyText={hasFilters ? 'No users match the filters' : 'No users yet'}
       onRowClick={canManage ? onEdit : undefined}
       pageSize={USERS_PAGE_SIZE}
+      rowSize={'lg'}
       pagination={{
         page,
         total,

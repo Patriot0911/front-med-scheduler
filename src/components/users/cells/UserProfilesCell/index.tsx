@@ -1,26 +1,11 @@
-'use client';
-
 import type { IUser } from '@/interfaces/users/users';
-import useDepartmentsDictionaryQuery from '@/hooks/queries/dictionaries/useDepartmentsDictionaryQuery';
-import useStudentGroupsDictionaryQuery from '@/hooks/queries/dictionaries/useStudentGroupsDictionaryQuery';
 import ChipsCell from '@/components/dictionaries/cells/ChipsCell';
 
-/** Teacher / student profiles with their department and group names. */
+/** Which profiles the user has; their department / group have own columns. */
 const UserProfilesCell = ({ user }: { user: IUser }) => {
-  const { teacher, student, } = user;
-  const { data: departments, } = useDepartmentsDictionaryQuery(!!teacher?.departmentId);
-  const { data: groups, } = useStudentGroupsDictionaryQuery(!!student?.studentGroupId);
-
   const items: string[] = [];
-  if (teacher) {
-    const department = departments?.find((item) => item.id === teacher.departmentId)?.name;
-    items.push(teacher.departmentId ? `Teacher · ${department ?? '…'}` : 'Teacher');
-  }
-  if (student) {
-    const group = groups?.find((item) => item.id === student.studentGroupId)?.name;
-    items.push(student.studentGroupId ? `Student · ${group ?? '…'}` : 'Student');
-    if (student.isGroupMonitor) items.push('Group monitor');
-  }
+  if (user.teacher) items.push('Teacher');
+  if (user.student) items.push('Student');
 
   return <ChipsCell items={items} emptyText={'No profile'} />;
 }

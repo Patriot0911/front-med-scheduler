@@ -1,6 +1,24 @@
 .table-wrapper {
-  // fixed body row height, so padding rows match real ones
+  // body row height and cell padding, set by the row size below;
+  // filler rows, skeleton and empty state use the height, so a page keeps its height
   --table-row-height: 3rem;
+  --table-cell-padding-y: 12px;
+
+  // one line of text
+  &.row-sm {
+    --table-row-height: 2.5rem;
+    --table-cell-padding-y: 8px;
+  }
+  // one line of text or chips
+  &.row-md {
+    --table-row-height: 3rem;
+    --table-cell-padding-y: 12px;
+  }
+  // two lines of text, e.g. name + email
+  &.row-lg {
+    --table-row-height: 4rem;
+    --table-cell-padding-y: 12px;
+  }
 
   width: 100%;
   overflow: hidden;

@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
 import { IPaginationProps } from './pagination';
 
+export type TTableRowSize = 'sm' | 'md' | 'lg';
+
 export interface ITableColumn<T> {
   key: string;
   title: ReactNode;
@@ -47,6 +49,8 @@ interface ITableBaseProps<T> {
   emptyComponent?: ReactNode;
   loadingComponent?: ReactNode;
   onRowClick?: (row: T) => void;
+  /** Row density: sm – one text line, md – a line of chips (default), lg – two text lines */
+  rowSize?: TTableRowSize;
   className?: string;
   children: ReactNode;
 };

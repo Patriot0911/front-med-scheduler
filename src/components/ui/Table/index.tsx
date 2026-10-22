@@ -20,6 +20,7 @@ const Table = <T,>({
   loadingComponent,
   onRowClick,
   pagination,
+  rowSize = 'md',
   className,
   children,
 }: ITableProps<T>) => {
@@ -39,7 +40,7 @@ const Table = <T,>({
         onRowClick,
       }}
     >
-      <div className={cn(styles['table-wrapper'], className)}>
+      <div className={cn(styles['table-wrapper'], styles[`row-${rowSize}`], className)}>
         <div className={styles['table-scroll']}>
           <table className={styles.table}>
             {children}
