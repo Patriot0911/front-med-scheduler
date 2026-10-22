@@ -3,6 +3,8 @@ import type { IModalBaseProps } from '../shared/modal';
 export interface IEditMePayload {
   email: string;
   fullName: string;
+  /** Required by the API when the email changes */
+  currentPassword?: string;
 };
 
 export interface IChangePasswordPayload {
@@ -12,6 +14,7 @@ export interface IChangePasswordPayload {
 
 export type IProfileModalProps = IModalBaseProps;
 
-export interface IProfileFormProps {
-  className?: string;
+export interface IProfileSectionFormProps {
+  /** true while the section has unsaved input, so closing the modal can ask first */
+  onDirtyChange: (isDirty: boolean) => void;
 };

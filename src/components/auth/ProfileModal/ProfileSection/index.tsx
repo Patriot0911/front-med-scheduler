@@ -5,23 +5,21 @@ import styles from './styles.module.scss';
 interface IProfileSectionProps extends PropsWithChildren {
   title: string;
   description?: string;
-  /** Submit button, pinned to the bottom so both columns line up */
-  action: ReactNode;
+  /** Shown next to the title, e.g. the "Edit" button of the view mode */
+  headerAction?: ReactNode;
 };
 
-const ProfileSection = ({ title, description, action, children, }: IProfileSectionProps) => {
+const ProfileSection = ({ title, description, headerAction, children, }: IProfileSectionProps) => {
   return (
     <section className={styles.section}>
       <header className={styles.header}>
-        <h3 className={styles.title}>{title}</h3>
-        {description && <p className={styles.description}>{description}</p>}
+        <div className={styles.heading}>
+          <h3 className={styles.title}>{title}</h3>
+          {description && <p className={styles.description}>{description}</p>}
+        </div>
+        {headerAction}
       </header>
-      <div className={styles.fields}>
-        {children}
-      </div>
-      <div className={styles.action}>
-        {action}
-      </div>
+      {children}
     </section>
   );
 }

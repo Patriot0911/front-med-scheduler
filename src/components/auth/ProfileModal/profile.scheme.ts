@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
+/** `currentPassword` is checked on submit: it is required only when the email changes */
 export const profileDataSchema = z.object({
   fullName: z.string().trim().min(1, 'Required'),
   email: z.email('Invalid email'),
+  currentPassword: z.string(),
 });
 
 export const changePasswordSchema = z.object({

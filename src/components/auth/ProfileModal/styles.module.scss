@@ -1,28 +1,60 @@
-@use '../../../styles/abstracts/mixins' as *;
+.sections {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0.5rem;
+}
 
-// stacked on phones, side by side with a divider from md
-.columns {
+// header buttons of the view mode ("Edit", "Change password")
+.section-action {
+  flex-shrink: 0;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.85rem;
+}
+
+// view mode: label / value rows
+.details {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  padding: 1.2rem 0;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 1.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+}
 
-  @include mq('md') {
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
+.detail {
+  display: contents;
+
+  dt {
+    color: var(--color-text-muted);
+  }
+
+  dd {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--color-text-primary);
+    font-weight: 500;
   }
 }
 
-.column {
-  min-width: 0;
+// edit mode: spacing lives inside Collapse, so it animates with the height
+.section-form {
+  padding-top: 0.75rem;
+}
 
-  @include mq('md') {
-    &:first-child {
-      padding-right: 1.5rem;
-    }
-    &:last-child {
-      padding-left: 1.5rem;
-      border-left: 1px solid var(--color-border);
-    }
-  }
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+// pushed to the left, away from "Close"
+.logout {
+  margin-right: auto;
+  color: var(--color-error-400);
 }

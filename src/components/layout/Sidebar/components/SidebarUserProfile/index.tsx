@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { FaUserGraduate } from 'react-icons/fa6';
 import useMeQuery from '@/hooks/queries/auth/useMeQuery';
 import { ISidebarSectionProps } from '@/interfaces/layout/sidebar';
 import ProfileModal from '@/components/auth/ProfileModal';
+import Avatar from '@/components/ui/Avatar';
 
 import styles from './styles.module.scss';
 
@@ -32,9 +32,7 @@ const SidebarUserProfile = ({ isOpen }: ISidebarSectionProps) => {
         // the collapsed sidebar shows only the avatar
         title={isOpen ? undefined : data.fullName}
       >
-        <div className={styles['avatar-wrapper']}>
-          <FaUserGraduate />
-        </div>
+        <Avatar name={data.fullName} />
         {
           isOpen && (
             <div className={styles['user-info']}>
