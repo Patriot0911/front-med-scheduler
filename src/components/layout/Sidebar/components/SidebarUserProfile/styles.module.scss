@@ -39,23 +39,21 @@
       color: var(--color-text-secondary);
     }
   }
-  // .logout-wrapper {
-  //   position: absolute;
-  //   bottom: 100%;
-  //   width: 100%;
-  //   min-width: 140px;
-  //   display: flex;
-  //   flex-direction: column;
-  //   left: 0;
-  //   padding-bottom: 0.5rem;
-  //   opacity: 0;
-  //   transform: translateY(20px);
-  //   transition: opacity cubic-bezier(0.19, 1, 0.22, 1) 0.2s, transform cubic-bezier(0.165, 0.84, 0.44, 1) 0.3s;
-  // }
-  // &:hover {
-  //   .logout-wrapper {
-  //     opacity: 1;
-  //     transform: translateY(0);
-  //   }
-  // }
+
+  // it is a button: reset the native look and give it hover / focus states
+  width: 100%;
+  border: none;
+  font: inherit;
+  text-align: left;
+  transition: box-shadow 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--color-surface-hover);
+    box-shadow: 0 0 0 1px var(--color-primary-200);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(var(--color-primary-rgb), 0.5);
+    outline-offset: 2px;
+  }
 }

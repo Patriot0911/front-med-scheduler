@@ -1,6 +1,7 @@
 import type { ILoginRequestPayload, ILoginResponse } from '@/interfaces/auth/login';
 import type { IRefreshResponse } from '@/interfaces/auth/refresh';
 import { IAuthMeResponse } from '@/interfaces/auth/me';
+import type { IChangePasswordPayload, IEditMePayload } from '@/interfaces/auth/profile';
 import { apiConfig, apiClient, } from '../axios';
 import axios from 'axios';
 
@@ -59,6 +60,14 @@ class AuthService {
 
   static async getMeUser(): Promise<IAuthMeResponse> {
     return apiClient.get('/auth/me');
+  }
+
+  static async editMe(payload: IEditMePayload): Promise<IAuthMeResponse> {
+    return apiClient.put('/auth/me', payload);
+  }
+
+  static async changePassword(payload: IChangePasswordPayload): Promise<boolean> {
+    return apiClient.put('/auth/me/password', payload);
   }
 }
 

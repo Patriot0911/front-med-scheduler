@@ -1,40 +1,55 @@
 'use client';
 
+import { useState } from 'react';
 import { FaUserGraduate } from 'react-icons/fa6';
 import useMeQuery from '@/hooks/queries/auth/useMeQuery';
 import { ISidebarSectionProps } from '@/interfaces/layout/sidebar';
+import ProfileModal from '@/components/auth/ProfileModal';
 
 import styles from './styles.module.scss';
-import useLogoutMutation from '@/hooks/mutations/auth/useLogoutMutation';
-import Button from '@/components/ui/Button';
 
+/** Signed-in user card; opens the profile modal to edit personal data and password. */
 const SidebarUserProfile = ({ isOpen }: ISidebarSectionProps) => {
   const { data, } = useMeQuery();
-  const logoutMutation = useLogoutMutation();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  // a new key per opening remounts the modal, so it starts with fresh forms
+  const [profileKey, setProfileKey] = useState(0);
 
-  const logoutHandle = () => {
-    logoutMutation.mutate();
+  const openProfile = () => {
+    setProfileKey((prev) => prev + 1);
+    setIsProfileOpen(true);
   };
 
   if (!data) return null;
 
   return (
-    <div className={styles['user-profile-wrapper']}>
-      <div className={styles['avatar-wrapper']}>
-        <FaUserGraduate />
-      </div>
-      {
-        isOpen && (
-          <div className={styles['user-info']}>
-            <span className={styles['user-name']}>{data.fullName}</span>
-            <span className={styles['user-role']}>{data.roles[0]}</span>
-          </div>
-        )
-      }
-      {/* <div className={styles['logout-wrapper']}>
-        <Button variant={'danger'} onClick={logoutHandle} disabled={logoutMutation.isPending}>Log out</Button>
-      </div> */}
-    </div>
+    <>
+      <button
+        type={'button'}
+        className={styles['user-profile-wrapper']}
+        onClick={openProfile}
+        aria-label={`Profile of ${data.fullName}`}
+        // the collapsed sidebar shows only the avatar
+        title={isOpen ? undefined : data.fullName}
+      >
+        <div className={styles['avatar-wrapper']}>
+          <FaUserGraduate />
+        </div>
+        {
+          isOpen && (
+            <div className={styles['user-info']}>
+              <span className={styles['user-name']}>{data.fullName}</span>
+              <span className={styles['user-role']}>{data.roles[0]}</span>
+            </div>
+          )
+        }
+      </button>
+      <ProfileModal
+        key={profileKey}
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+      />
+    </>
   );
 }
 
