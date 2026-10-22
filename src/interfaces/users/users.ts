@@ -75,6 +75,11 @@ export interface IUserPayload extends IEditUserPayload {
   student?: IStudentProfilePayload | null;
 };
 
+export interface ICreateUserPayload extends IUserPayload {
+  /** Missing lets the API generate a random one */
+  password?: string;
+};
+
 export interface IUsersTableProps {
   page: number;
   search: string;

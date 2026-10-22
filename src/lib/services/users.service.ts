@@ -1,4 +1,5 @@
 import type {
+  ICreateUserPayload,
   IEditUserPayload,
   IStudentProfile,
   IStudentProfilePayload,
@@ -21,7 +22,7 @@ class UsersService {
     return apiClient.get('/users', { params, paramsSerializer: { indexes: null, }, });
   }
 
-  static async createUser(payload: IUserPayload): Promise<IUser> {
+  static async createUser(payload: ICreateUserPayload): Promise<IUser> {
     return apiClient.post('/users', payload);
   }
 

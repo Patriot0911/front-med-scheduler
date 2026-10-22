@@ -19,6 +19,7 @@ import FormSelect from '@/components/ui/FormSelect';
 import FormMultiSelect from '@/components/ui/FormMultiSelect';
 import FormSwitch from '@/components/ui/FormSwitch';
 import Collapse from '@/components/ui/Collapse';
+import InitialPasswordField from './InitialPasswordField';
 
 import styles from './styles.module.scss';
 
@@ -27,6 +28,7 @@ const NOT_ASSIGNED_OPTION: ISelectOption = { value: '', label: 'Not assigned', }
 const toFormValues = (user: IUser | null): TUserForm => ({
   fullName: user?.fullName ?? '',
   email: user?.email ?? '',
+  password: '',
   roleIds: user?.roleIds ?? [],
   isTeacher: !!user?.teacher,
   departmentId: user?.teacher?.departmentId ?? '',
@@ -69,7 +71,9 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
   const mutation = useDictionaryMutation({
     mutationFn: (data: TUserForm) => {
       const payload = toPayload(data, canAssignRoles);
-      return item ? UsersService.updateUser(item, payload) : UsersService.createUser(payload);
+      return item
+        ? UsersService.updateUser(item, payload)
+        : UsersService.createUser({ ...payload, password: data.password || undefined, });
     },
     // teacher profiles feed the teachers lists (departments, lessons)
     invalidateKeys: [UsersQueryKey.UsersList, DictionaryQueryKey.Teachers, DepartmentsQueryKey.DepartmentsList],
@@ -91,7 +95,7 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
       title={isEdit ? 'Edit user' : 'New user'}
       description={isEdit
         ? undefined
-        : 'A random password is generated for the account. The user sets their own via a password reset link.'}
+        : 'Set an initial password to pass on to the user, or leave it empty to generate a random one.'}
       methods={methods}
       onSubmit={(data: TUserForm) => mutation.mutate(data)}
       isPending={mutation.isPending}
@@ -110,6 +114,7 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
         placeholder={'e.g. john.doe@example.com'}
         required
       />
+      {!isEdit && <InitialPasswordField />}
       {canAssignRoles && (
         <FormMultiSelect<TUserForm, ISelectOption>
           name={'roleIds'}
