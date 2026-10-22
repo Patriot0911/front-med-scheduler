@@ -9,11 +9,26 @@ export interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
   bottomHint?: boolean;
   icon?: ReactNode;
   onIconClick?: () => void;
+  /** Accessible name of the icon button, e.g. "Show password" */
+  iconLabel?: string;
   hideErrorMessage?: boolean;
   touched?: boolean;
 };
 
 export interface IFormInputProps<T extends FieldValues>
   extends Omit<IInputProps, 'name' | 'error' | 'touched'> {
+  name: Path<T>;
+};
+
+export interface IPasswordInputProps extends Omit<IInputProps, 'type' | 'icon' | 'onIconClick' | 'iconLabel'> {
+  /** Show the eye button that reveals the password (default true) */
+  canReveal?: boolean;
+  /** Controlled visibility; uncontrolled when omitted */
+  isRevealed?: boolean;
+  onRevealChange?: (isRevealed: boolean) => void;
+};
+
+export interface IFormPasswordInputProps<T extends FieldValues>
+  extends Omit<IPasswordInputProps, 'name' | 'error' | 'touched'> {
   name: Path<T>;
 };

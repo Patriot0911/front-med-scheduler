@@ -6,6 +6,7 @@ import useLoginMutation from '@/hooks/mutations/auth/useLoginMutation';
 import { AuthLoginButtonDictionary } from '@/configs/auth.dictionary';
 import Modal from '@/components/ui/Modal';
 import FormInput from '@/components/ui/FormInput';
+import FormPasswordInput from '@/components/ui/FormPasswordInput';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, TLoginForm } from './auth.scheme';
 import Button from '@/components/ui/Button';
@@ -66,13 +67,12 @@ const AuthModal = (props: ILogInModalProps) => {
             autoComplete='email'
             disabled={loginMutation.isPending || loginMutation.isSuccess}
           />
-          <FormInput<TLoginForm>
+          <FormPasswordInput<TLoginForm>
             name={'password'}
             label='Password'
-            type='password'
             placeholder={'Enter password provided by manager'}
             required
-            autoComplete='password'
+            autoComplete='current-password'
             disabled={loginMutation.isPending || loginMutation.isSuccess}
           />
           <p className={styles['auth-description']}>

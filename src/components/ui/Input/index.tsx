@@ -10,6 +10,7 @@ const Input = ({
   bottomHint,
   icon,
   onIconClick,
+  iconLabel,
   hideErrorMessage,
   hideHintOnError,
   touched,
@@ -70,7 +71,7 @@ const Input = ({
           aria-describedby={inputId ? `${inputId}-error` : undefined}
         />
         {icon && (
-          <button type="button" className={styles['icon-button']} onClick={onIconClick}>
+          <button type="button" className={styles['icon-button']} onClick={onIconClick} aria-label={iconLabel}>
             {icon}
           </button>
         )}

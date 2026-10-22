@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { IProfileFormProps } from '@/interfaces/auth/profile';
 import useChangePasswordMutation from '@/hooks/mutations/auth/useChangePasswordMutation';
 import Modal from '@/components/ui/Modal';
-import FormInput from '@/components/ui/FormInput';
+import FormPasswordInput from '@/components/ui/FormPasswordInput';
 import Button from '@/components/ui/Button';
 import ProfileSection from '../ProfileSection';
 import { changePasswordSchema, TChangePasswordForm } from '../profile.scheme';
@@ -46,25 +46,22 @@ const ChangePasswordForm = ({ className, }: IProfileFormProps) => {
           </Button>
         )}
       >
-        <FormInput<TChangePasswordForm>
+        <FormPasswordInput<TChangePasswordForm>
           name={'currentPassword'}
           label={'Current password'}
-          type={'password'}
           autoComplete={'current-password'}
           required
         />
-        <FormInput<TChangePasswordForm>
+        <FormPasswordInput<TChangePasswordForm>
           name={'newPassword'}
           label={'New password'}
-          type={'password'}
           autoComplete={'new-password'}
           hint={'Min 8 chars'}
           required
         />
-        <FormInput<TChangePasswordForm>
+        <FormPasswordInput<TChangePasswordForm>
           name={'confirmPassword'}
           label={'Repeat new password'}
-          type={'password'}
           autoComplete={'new-password'}
           required
         />

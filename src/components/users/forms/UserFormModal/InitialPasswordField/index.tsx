@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { LuCopy, LuEye, LuEyeOff, LuRefreshCw } from 'react-icons/lu';
+import { LuCopy, LuRefreshCw } from 'react-icons/lu';
 import { generatePassword } from '@/lib/password';
-import FormInput from '@/components/ui/FormInput';
+import FormPasswordInput from '@/components/ui/FormPasswordInput';
 import Button from '@/components/ui/Button';
 import { TUserForm } from '../user.scheme';
 
@@ -34,14 +34,14 @@ const InitialPasswordField = () => {
 
   return (
     <div className={styles.field}>
-      <FormInput<TUserForm>
+      <FormPasswordInput<TUserForm>
         name={'password'}
         label={'Initial password'}
-        type={isVisible ? 'text' : 'password'}
         placeholder={'Leave empty to generate a random one'}
         autoComplete={'new-password'}
-        icon={isVisible ? <LuEyeOff /> : <LuEye />}
-        onIconClick={() => setIsVisible((prev) => !prev)}
+        // controlled: "Generate" reveals the password
+        isRevealed={isVisible}
+        onRevealChange={setIsVisible}
       />
       <div className={styles.actions}>
         <Button

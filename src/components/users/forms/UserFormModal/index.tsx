@@ -114,18 +114,19 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
         placeholder={'e.g. john.doe@example.com'}
         required
       />
-      {!isEdit && <InitialPasswordField />}
       {canAssignRoles && (
         <FormMultiSelect<TUserForm, ISelectOption>
           name={'roleIds'}
           label={'Roles'}
           options={(roles ?? []).map((role) => ({ value: role.id, label: role.name, }))}
           placeholder={'No roles'}
+          hideErrorMessage
           searchPlaceholder={'Search role…'}
           hint={'You can only assign or remove roles within your own role priority'}
           searchable
         />
       )}
+      {!isEdit && <InitialPasswordField />}
 
       <section className={styles.profile}>
         <FormSwitch<TUserForm>
