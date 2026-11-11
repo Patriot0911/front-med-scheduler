@@ -7,7 +7,7 @@ description: Як будувати модальні вікна у front-med-sche
 
 Усі модалки будуються на базовому компоненті `@/components/ui/Modal`. Еталон — `src/components/auth/AuthModal`. Не пиши власних overlay, порталів, `position: fixed` чи обробки Escape — це вже робить `Modal`.
 
-`src/components/modals/DictionaryModal` — незавершена копія AuthModal з битим імпортом, не бери її за зразок.
+Для create / edit форм довідників є готова оболонка `src/components/modals/DictionaryModal` (Header + FormBody + Cancel / Save). Використовуй її замість ручної композиції, див. `components/dictionaries/forms/SemesterFormModal`. Вона закриває модалку одразу через `onSuccess` мутації і показує toast, а не таймер 1500ms із розділу 5.
 
 ## 1. Де лежать файли
 

@@ -1,0 +1,162 @@
+# front-med-scheduler
+
+Веб-клієнт розкладу занять медичного університету: календар занять, публічний розклад, керування користувачами та довідниками.
+API — сусідній репозиторій `../api-med-scheduler`. Доменна модель і правила доступу описані в `../api-med-scheduler/docs/domain.md`.
+
+## Стек
+
+Next.js 16 (App Router) · React 19 · TypeScript (strict) · TanStack Query 5 · Redux Toolkit (лише стан автентифікації) · axios · react-hook-form + zod · SCSS-модулі + CSS-токени · Tailwind 4 (лише утиліти) · framer-motion · react-big-calendar · dayjs · react-hot-toast · react-icons.
+
+## Команди
+
+```bash
+npm run start:dev   # next dev (README зі згадкою `npm run dev` застарів)
+npm run build
+npm run start
+npm run lint        # eslint (next core-web-vitals + typescript)
+```
+
+- `.env`: `NEXT_PUBLIC_API_URL=http://localhost:3001/api` (з суфіксом `/api`; шляхи в сервісах його не містять).
+- Тестів немає.
+
+## Структура
+
+```
+src/
+  app/
+    layout.tsx                 # шрифти, Providers, Toaster, global.scss
+    providers.tsx              # StoreProvider → QueryClientProvider → AuthProvider
+    (platform)/                # з BaseLayout (сайдбар): / , /lessons, /users, /dictionaries
+    (public)/schedule/         # публічний календар без сайдбару
+  components/
+    ui/                        # дизайн-система: Button, Input, Form*, Select, MultiSelect, Modal, Table, Tabs, Calendar, DatePicker, ...
+    layout/                    # BaseLayout, Sidebar (+ components/), Header, Footer
+    auth/                      # AuthModal, ProfileModal, LogOutModal, RequireAuth, RequirePermission
+    dictionaries/              # DictionarySection, таблиця, тулбар, cells/, forms/<X>FormModal
+    users/                     # UsersSection, UsersTable, UsersToolbar, cells/, forms/UserFormModal
+    lessons/                   # QuerySyncedCalendar → LessonsSection → LessonsCalendar, EventDetailsModal
+    schedule/                  # компоненти сторінки /schedule
+    modals/                    # загальні модалки: ConfirmModal, DictionaryModal
+    providers/                 # StoreProvider, AuthProvider
+  hooks/
+    queries/<domain>/use<X>Query.ts
+    mutations/<domain>/use<X>Mutation.ts
+    redux/                     # типізовані useAppDispatch/useAppSelector + селектори
+    shared/                    # useDebouncedValue, useMediaQuery, useOnClickOutside, usePersistentState
+    calendar/, dictionaries/, forms/, layout/
+  interfaces/<domain>/         # УСІ типи й пропси (не поруч з компонентом); ui/*.d.ts — пропси ui-компонентів
+  configs/                     # декларативні конфіги: dictionaries.config.tsx, sidebar, permissions, *.dictionary.ts (тексти кнопок)
+  lib/
+    axios.ts                   # apiClient з інтерцепторами
+    services/<x>.service.ts    # один клас на ресурс API
+    query-client.ts, cn.ts, dayjs.ts, errors.ts, loading-mappers.ts, password.ts
+  store/                       # makeStore, storeRef (доступ до стору поза React), slices/authSlice
+  styles/                      # abstracts (токени, міксини, брейкпоінти), base, vendors
+  fonts/                       # next/font: geist, jost, oswald
+  mocks/                       # calendar-events.mock.ts
+```
+
+## Потік даних
+
+### HTTP і автентифікація
+
+- `apiClient` (`lib/axios.ts`):
+  - додає `Authorization: Bearer <access>` з пам'яті (`AuthService.getToken()`);
+  - на 401 один раз робить refresh (паралельні запити чекають у черзі), а при невдачі диспатчить `logout()`;
+  - **розгортає обгортку API**: сервіси одразу повертають `data` з `{ status, data }`, тож `apiClient.get<...>()` віддає payload, а не `AxiosResponse`;
+  - помилки reject-ить як `{ status: false, message }`, де `message` — рядок або масив. Текст для користувача отримуй лише через `getErrorMessage(error)` з `lib/errors.ts`.
+- Токени: access — у статичному полі `AuthService` + `localStorage.access_token`, refresh — у `localStorage.refresh_token`.
+- Redux зберігає лише `auth.status`: `'init' | 'guest' | 'authenticated'`. `AuthProvider` на старті викликає `initAuth()`. Дані користувача **не** в Redux, а в query `[AuthQueryKey.Me]` (`useMeQuery`). Логін кладе `user` прямо в кеш через `setQueryData`.
+- Не додавай нових slice-ів для серверних даних — це завжди TanStack Query.
+
+### Сервіси (`lib/services/*.service.ts`)
+
+```ts
+export enum DepartmentsQueryKey {
+  DepartmentsList = 'departmentsList',
+};
+
+class DepartmentsService {
+  static async getDepartments(params: IFilterParams = { page: 1, pageSize: 20 }): Promise<IDepartmentResponse> {
+    return apiClient.get('/departments', { params, });
+  }
+  ...
+}
+
+export default DepartmentsService;
+```
+
+- Клас зі статичними методами, default export; поруч експортується enum `<X>QueryKey`.
+- Типи payload / response — з `interfaces/<domain>/`. Списки: `IGenericListResponse<T>` = `{ items, meta: { count } }`.
+- Масиви в query — `paramsSerializer: { indexes: null }` (`roleIds=a&roleIds=b`), див. `users.service.ts`.
+- `/dictionaries/*` (легкі списки `{ id, name }` для селектів і підписів id → назва) — у `DictionariesService` з окремим enum `DictionaryQueryKey`.
+
+### Query / mutation хуки
+
+- Один хук — один файл, default export: `hooks/queries/<domain>/use<X>Query.ts`.
+- Ключ: `[<X>QueryKey.Y, ...параметри]`. Інвалідація йде за першим елементом (`invalidateQueries({ queryKey: [key] })`).
+- Таблиці: `placeholderData: (prev) => prev`, `staleTime: 30s`; довідники: `staleTime: 5 хв`, параметр `enabled` для ледачого завантаження.
+- Мутації довідників і користувачів — через `useDictionaryMutation({ mutationFn, invalidateKeys, successMessage, onSuccess })`: інвалідація + toast успіху / помилки. Після змін інвалідуй і список таблиці, і відповідний `DictionaryQueryKey`.
+
+### Дозволи на клієнті
+
+- `usePermissions().hasAny([...])` — **OR**, як і на бекенді. Перевіряй тим самим набором дозволів, що в `@Permissions(...)` ендпоінту, включно з `Permission.ADMIN`.
+- `Permission` enum — дзеркало бекенду (`interfaces/auth/permission.ts`); підписи — `configs/permissions.config.ts`. Новий дозвіл додається в обидва файли (і на бекенді, див. `api-med-scheduler/CLAUDE.md`).
+- Секції самі показують заглушку «You don't have access…», якщо `!hasAny(READ_PERMISSIONS)` (див. `UsersSection`, `DictionarySection`).
+- `RequireAuth` — обгортка сторінок платформи. `RequirePermission` перевіряє через `every` (AND), на відміну від `hasAny`.
+
+### Стан у URL
+
+Стан, яким можна поділитися чи який має пережити перезавантаження, живе в query-параметрах: `useCalendarSearchParams` (`?date=YYYY-MM-DD&view=day|week|month`), `useDictionaryTabParam` (`?tab=`). Оновлення — `router.replace(..., { scroll: false })`. Компоненти з `useSearchParams` сторінка обгортає в `<Suspense fallback={<Loading />}>`.
+
+## Довідники — розширюються конфігом
+
+Сторінка `/dictionaries` повністю керується `configs/dictionaries.config.tsx` (`IDictionaryConfig<T>`): назва, іконка, дозволи на читання / керування, колонки, `fetchList`, `remove`, `FormModal`, `rowActions`, `relatedQueryKeys`. Порядок ключів об'єкта = порядок вкладок.
+
+Новий довідник:
+1. `interfaces/dictionaries/<x>.ts` — `I<X>`, `I<X>Payload`, `I<X>Response`.
+2. `lib/services/<x>.service.ts` + `<X>QueryKey`.
+3. `components/dictionaries/forms/<X>FormModal/` — `index.tsx` + `<x>.scheme.ts`; оболонка — `DictionaryModal`, пропси — `IDictionaryFormModalProps<I<X>>` (`item: null` = створення).
+4. Запис `defineDictionary<I<X>>({...})` у `dictionariesConfig`.
+5. Кастомні клітинки — `components/dictionaries/cells/`.
+
+## Форми
+
+- `react-hook-form` + `zodResolver`; схема — `<name>.scheme.ts` поруч з модалкою, тип `T<Name>Form = z.infer<typeof schema>`; `mode: 'onTouched'`.
+- Поля — лише `Form*`-обгортки з `components/ui` (`FormInput`, `FormSelect`, `FormMultiSelect`, `FormSwitch`, `FormCheckboxGroup`, `FormTextarea`, `FormPasswordInput`). Вони беруть контекст форми через `useFormInputProps` і показують помилки за спільними правилами. Generic поля: `<FormInput<TForm> name="..." />`.
+- `toFormValues(item)` мапить сутність у значення форми; при відкритті модалки викликається `methods.reset(toFormValues(item))` + `mutation.reset()`.
+- Порожній селект — `''`, у payload перетворюється на `null` / пропуск.
+- **zod не вказаний у `package.json`**: він потрапляє транзитивно через `eslint-config-next`. Перед оновленням залежностей додай `zod` (v4, у схемах використовується `z.email()`) як пряму залежність.
+
+## Модалки
+
+Окремий skill: [.claude/skills/frontend-modals/SKILL.md](.claude/skills/frontend-modals/SKILL.md). Коротко: лише базовий `ui/Modal` з композицією `FormBody → Header → Content → Footer`, `size` sm / md / lg, пропси `extends IModalBaseProps`, відкритість контролює батько. Щоб під час анімації закриття модалка не втрачала вміст, `item` зберігай у стані і після закриття (`{ isOpen, item }` у `UsersSection`).
+
+## Компоненти та код-стиль
+
+- Папка на компонент: `Name/index.tsx` + `styles.module.scss`; підкомпоненти — у `Name/components/` або сусідніх папках (`cells/`, `forms/`).
+- Компонент — стрілкова функція, `const X = (...) => {}` + `export default X`. `'use client'` — у кожному компоненті з хуками / подіями. Сторінки в `app/` лишаються серверними і лише компонують клієнтські секції.
+- Типи: інтерфейси з префіксом `I`, типи-аліаси з `T`, enum-и в PascalCase. Пропси лежать в `interfaces/<domain>/`, а не в файлі компонента. Імпорт типів — `import type`.
+- Імпорти через `@/`; стилі імпортуються останніми: `import styles from './styles.module.scss'`.
+- Кома після останнього елемента навіть в однорядкових об'єктах: `{ page, pageSize, }`, `const { data, } = ...`.
+- Константи модуля — `UPPER_SNAKE_CASE` угорі файлу (`READ_PERMISSIONS`, `PAGE_SIZE`).
+- Тексти UI — англійською. Тексти кнопок, що залежать від стану мутації, — у `configs/<domain>.dictionary.ts` як `Record<LoadingState, string>`. Назви `LoadingState.Ide` / `Pendding` — історичні опечатки, не перейменовуй точково.
+- Класи: `cn(...)` (clsx + tailwind-merge).
+- Дати — `dayjs` з `@/lib/dayjs` (локаль `en-gb`, тиждень з понеділка). Частина файлів імпортує `'dayjs'` напряму — у новому коді бери `@/lib/dayjs`.
+
+## Стилі
+
+- SCSS-модулі на CSS-змінних із `styles/abstracts`: `--color-*` (primary, secondary, accent, neutral, error / success…), `--radius-*`, `--shadow-*`, `--text-*`, `--font-weight-*`. Хардкод кольорів не допускається.
+- Адаптивність mobile-first: `@use '<відносний шлях>/styles/abstracts/mixins' as *;` → `@include mq('md') { ... }`. Брейкпоінти: sm 576, md 768, lg 992, xl 1200 (у JS — `configs/breakpoints.config.ts`, `useMediaQuery`).
+- Імена класів — kebab-case, звертання `styles['nav-container']`.
+- Tailwind підключений, але використовується лише для дрібних утиліт (`flex-1`). Верстку пиши в SCSS.
+- Глобальні стилі сторонніх бібліотек — `styles/vendors/` (наприклад, `_calendar.scss` для react-big-calendar), а не `:global` у модулях.
+
+## Поточний стан і пастки
+
+- **Календар занять працює на моках** (`src/mocks/calendar-events.mock.ts`): сервісу / хуків для `/lessons` ще немає. Під час інтеграції: `/lessons/list` — для публічного / загального календаря (працює і без токена), `/lessons/my` — для «мого розкладу»; фільтр `dateFrom` / `dateTo` бери з видимого діапазону календаря.
+- Головна сторінка `(platform)/page.tsx` — заглушка.
+- Маршруту `/login` немає: вхід відбувається через `AuthModal` у сайдбарі, а `RequireAuth` / `RequirePermission` за замовчуванням редіректять на `/login` (404). `RequireAuth` рендерить children завжди і лише накриває їх оверлеєм.
+- Пункти сайдбару (`configs/sidebar.config.ts`) ховаються лише за `isAuthenticated`; поле `permissions` в `INavbarItem` оголошене, але `NavLink` його ігнорує.
+- `Dockerfile` копіює `.next/standalone`, а `next.config.ts` не задає `output: 'standalone'`, тож docker-збірка впаде, поки цю опцію не додати.
+- `queryClient`: глобальний `onError` нічого не показує (toast закоментовано). Помилки показують мутації самі.
