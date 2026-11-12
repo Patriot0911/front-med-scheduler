@@ -127,7 +127,6 @@ export default DepartmentsService;
 - Поля — лише `Form*`-обгортки з `components/ui` (`FormInput`, `FormSelect`, `FormMultiSelect`, `FormSwitch`, `FormCheckboxGroup`, `FormTextarea`, `FormPasswordInput`). Вони беруть контекст форми через `useFormInputProps` і показують помилки за спільними правилами. Generic поля: `<FormInput<TForm> name="..." />`.
 - `toFormValues(item)` мапить сутність у значення форми; при відкритті модалки викликається `methods.reset(toFormValues(item))` + `mutation.reset()`.
 - Порожній селект — `''`, у payload перетворюється на `null` / пропуск.
-- **zod не вказаний у `package.json`**: він потрапляє транзитивно через `eslint-config-next`. Перед оновленням залежностей додай `zod` (v4, у схемах використовується `z.email()`) як пряму залежність.
 
 ## Модалки
 
@@ -160,5 +159,5 @@ export default DepartmentsService;
 - Головна сторінка `(platform)/page.tsx` — заглушка.
 - Маршруту `/login` немає: вхід відбувається через `AuthModal` у сайдбарі, а `RequireAuth` / `RequirePermission` за замовчуванням редіректять на `/login` (404). `RequireAuth` рендерить children завжди і лише накриває їх оверлеєм.
 - Пункти сайдбару (`configs/sidebar.config.ts`) ховаються лише за `isAuthenticated`; поле `permissions` в `INavbarItem` оголошене, але `NavLink` його ігнорує.
-- `Dockerfile` копіює `.next/standalone`, а `next.config.ts` не задає `output: 'standalone'`, тож docker-збірка впаде, поки цю опцію не додати.
+- Docker-образ запускає `.next/standalone/server.js` (`output: 'standalone'` у `next.config.ts`). `NEXT_PUBLIC_API_URL` вшивається під час `next build`, тож його треба передавати на етапі збірки образу, а не запуску.
 - `queryClient`: глобальний `onError` нічого не показує (toast закоментовано). Помилки показують мутації самі.

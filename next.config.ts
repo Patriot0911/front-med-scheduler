@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // the Dockerfile runs the self-contained server from .next/standalone
+  output: 'standalone',
 };
 
 export default nextConfig;
