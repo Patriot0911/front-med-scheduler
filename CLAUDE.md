@@ -100,7 +100,8 @@ export default DepartmentsService;
 
 ### Дозволи на клієнті
 
-- `usePermissions().hasAny([...])` — **OR**, як і на бекенді. Перевіряй тим самим набором дозволів, що в `@Permissions(...)` ендпоінту, включно з `Permission.ADMIN`.
+- `usePermissions().hasAny([...])` — **OR**, як і на бекенді. Перевіряй тим самим набором дозволів, що в `@Permissions(...)` ендпоінту, **плюс** `Permission.ADMIN`: на бекенді admin проходить guard автоматично, а `hasAny` такого байпасу не має.
+- Чи можна редагувати конкретного користувача або роль, визначає не дозвіл, а ієрархія ролей на бекенді. Для цього використовуй прапорець `canManage` з відповіді `/users` і `/roles`. Недоступні рядки не ховаються: `Table` приймає `rowLock` (`isLocked` + `reason`), показує замочок із підказкою, вимикає дії й клік по рядку. У довідниках це поле `rowLock` у конфігу (див. roles).
 - `Permission` enum — дзеркало бекенду (`interfaces/auth/permission.ts`); підписи — `configs/permissions.config.ts`. Новий дозвіл додається в обидва файли (і на бекенді, див. `api-med-scheduler/CLAUDE.md`).
 - Секції самі показують заглушку «You don't have access…», якщо `!hasAny(READ_PERMISSIONS)` (див. `UsersSection`, `DictionarySection`).
 - `RequireAuth` — обгортка сторінок платформи. `RequirePermission` перевіряє через `every` (AND), на відміну від `hasAny`.

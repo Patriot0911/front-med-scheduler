@@ -40,6 +40,16 @@
   }
 }
 
+.lock {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  cursor: help;
+}
+
 .btn-danger {
   &:hover:not(:disabled) {
     background-color: var(--color-error-50);

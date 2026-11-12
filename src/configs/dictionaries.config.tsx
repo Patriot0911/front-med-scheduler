@@ -177,6 +177,10 @@ const rolesDictionaryConfig = defineDictionary<IRole>({
   getItemLabel: (role) => role.name,
   deleteWarning: 'Users with this role will lose its permissions.',
   FormModal: RoleFormModal,
+  rowLock: {
+    isLocked: (role) => !role.canManage,
+    reason: 'This role ranks at or above yours, or has permissions you lack',
+  },
   columns: [
     {
       key: 'name',

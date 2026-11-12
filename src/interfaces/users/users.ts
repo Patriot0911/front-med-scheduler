@@ -45,6 +45,8 @@ export interface IUser {
   lastLoginAt: string | null;
   teacher: ITeacherProfile | null;
   student: IStudentProfile | null;
+  /** Whether the current user may edit this user (role hierarchy, decided by the API) */
+  canManage: boolean;
 };
 
 export type IUsersResponse = IGenericListResponse<IUser>;

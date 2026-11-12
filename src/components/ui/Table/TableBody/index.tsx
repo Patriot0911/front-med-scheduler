@@ -16,6 +16,7 @@ export const TableBody = <T,>({ className }: ITableBodyProps) => {
     skeletonRows,
     pageSize,
     onRowClick,
+    rowLock,
     emptyText,
     emptyComponent,
     loadingComponent,
@@ -40,6 +41,11 @@ export const TableBody = <T,>({ className }: ITableBodyProps) => {
         <td colSpan={colSpan} />
       </tr>
     ));
+
+  const getLockReason = (row: T): string | undefined => {
+    if (!rowLock?.isLocked(row)) return undefined;
+    return typeof rowLock.reason === 'function' ? rowLock.reason(row) : rowLock.reason;
+  };
 
   const getCellValue = (row: T, col: typeof columns[number], index: number): ReactNode => {
     if (col.render) return col.render(row, index);
@@ -97,30 +103,35 @@ export const TableBody = <T,>({ className }: ITableBodyProps) => {
 
   return (
     <tbody className={cn(className, styles['body'])}>
-      {data.map((row, index) => (
-        <tr
-          key={getRowKey(row, index)}
-          onClick={() => onRowClick?.(row)}
-          className={cn(onRowClick && styles.clickable)}
-        >
-          {columns.map((col) => (
-            <td
-              key={col.key}
-              style={{ width: col.width }}
-              className={cn(
-                styles['table-cell'],
-                col.align && styles[`align-${col.align}`],
-                col.className,
-              )}
-            >
-              {getCellValue(row, col, index)}
-            </td>
-          ))}
-          {actions?.length ? (
-            <TableActionCell actions={actions} row={row} />
-          ) : null}
-        </tr>
-      ))}
+      {data.map((row, index) => {
+        const lockReason = getLockReason(row);
+        const isClickable = !!onRowClick && !lockReason;
+
+        return (
+          <tr
+            key={getRowKey(row, index)}
+            onClick={isClickable ? () => onRowClick(row) : undefined}
+            className={cn(isClickable && styles.clickable)}
+          >
+            {columns.map((col) => (
+              <td
+                key={col.key}
+                style={{ width: col.width }}
+                className={cn(
+                  styles['table-cell'],
+                  col.align && styles[`align-${col.align}`],
+                  col.className,
+                )}
+              >
+                {getCellValue(row, col, index)}
+              </td>
+            ))}
+            {actions?.length ? (
+              <TableActionCell actions={actions} row={row} lockReason={lockReason} />
+            ) : null}
+          </tr>
+        );
+      })}
       {renderFillerRows(data.length)}
     </tbody>
   );

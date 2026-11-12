@@ -16,6 +16,14 @@ export interface ITableColumn<T> {
 export interface TableActionCellProps<T> {
   actions: ITableAction<T>[];
   row: T;
+  /** Set for a locked row: actions are disabled and a lock with this hint is shown */
+  lockReason?: string;
+};
+
+/** Rows the user sees but may not act on: actions and row click are disabled, a lock explains why */
+export interface ITableRowLock<T> {
+  isLocked: (row: T) => boolean;
+  reason: string | ((row: T) => string);
 };
 
 
@@ -49,6 +57,7 @@ interface ITableBaseProps<T> {
   emptyComponent?: ReactNode;
   loadingComponent?: ReactNode;
   onRowClick?: (row: T) => void;
+  rowLock?: ITableRowLock<T>;
   /** Row density: sm – one text line, md – a line of chips (default), lg – two text lines */
   rowSize?: TTableRowSize;
   className?: string;
@@ -73,6 +82,7 @@ export interface ITableContext<T = unknown> {
   pageSize: number;
   rowKey: keyof T | ((row: T) => string);
   onRowClick?: (row: T) => void;
+  rowLock?: ITableRowLock<T>;
   emptyText?: ReactNode;
   emptyComponent?: ReactNode;
   loadingComponent?: ReactNode;

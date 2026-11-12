@@ -7,6 +7,7 @@ import { Permission } from '@/interfaces/auth/permission';
 import { ITableAction, ITableColumn } from '@/interfaces/ui/table';
 import { IUser, IUsersTableProps } from '@/interfaces/users/users';
 import usePermissions from '@/hooks/queries/auth/usePermissions';
+import useMeQuery from '@/hooks/queries/auth/useMeQuery';
 import useUsersTableQuery from '@/hooks/queries/users/useUsersTableQuery';
 import UserNameCell from '../cells/UserNameCell';
 import UserRolesCell from '../cells/UserRolesCell';
@@ -22,6 +23,7 @@ const READ_ROLES_PERMISSIONS = [Permission.READ_ROLES, Permission.MANAGE_ROLES, 
 
 const UsersTable = ({ page, search, filters, canManage, onPageChange, onEdit, }: IUsersTableProps) => {
   const { hasAny, } = usePermissions();
+  const { data: me, } = useMeQuery();
   const canReadRoles = hasAny(READ_ROLES_PERMISSIONS);
   const { data, isLoading, isFetching, } = useUsersTableQuery(page, USERS_PAGE_SIZE, search, filters);
   const total = data?.meta.count ?? 0;
@@ -88,6 +90,12 @@ const UsersTable = ({ page, search, filters, canManage, onPageChange, onEdit, }:
       isLoading={isLoading}
       emptyText={hasFilters ? 'No users match the filters' : 'No users yet'}
       onRowClick={canManage ? onEdit : undefined}
+      rowLock={canManage ? {
+        isLocked: (user) => !user.canManage,
+        reason: (user) => user.id === me?.id
+          ? 'This is your account: edit it in your profile'
+          : 'This user ranks at or above you',
+      } : undefined}
       pageSize={USERS_PAGE_SIZE}
       rowSize={'lg'}
       pagination={{

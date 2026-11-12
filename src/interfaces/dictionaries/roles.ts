@@ -6,6 +6,8 @@ export interface IRole {
   name: string;
   rolePriority: number;
   permissions: Permission[];
+  /** Whether the current user may edit / delete / grant this role (role hierarchy, decided by the API) */
+  canManage: boolean;
 };
 
 export interface IRolePayload {

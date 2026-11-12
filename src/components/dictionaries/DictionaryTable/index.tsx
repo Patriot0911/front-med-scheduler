@@ -56,6 +56,7 @@ const DictionaryTable = ({
       isLoading={isLoading}
       emptyText={search ? `Nothing found for “${search}”` : `No ${config.title.toLowerCase()} yet`}
       onRowClick={canManage ? onEdit : undefined}
+      rowLock={canManage ? config.rowLock : undefined}
       pagination={{
         page,
         total,

@@ -19,6 +19,7 @@ const Table = <T,>({
   emptyComponent,
   loadingComponent,
   onRowClick,
+  rowLock,
   pagination,
   rowSize = 'md',
   className,
@@ -38,6 +39,7 @@ const Table = <T,>({
         emptyComponent,
         loadingComponent,
         onRowClick,
+        rowLock,
       }}
     >
       <div className={cn(styles['table-wrapper'], styles[`row-${rowSize}`], className)}>

@@ -1,5 +1,5 @@
 import type { dictionariesConfig } from '@/configs/dictionaries.config';
-import type { ITableColumn } from '../ui/table';
+import type { ITableColumn, ITableRowLock } from '../ui/table';
 import type { IGenericListResponse } from '../shared/generic-response';
 import type { IFilterParams } from '../shared/services';
 import type { Permission } from '../auth/permission';
@@ -77,4 +77,6 @@ export interface IDictionaryConfig<T extends IDictionaryRow> {
   FormModal: ComponentType<IDictionaryFormModalProps<T>>;
   /** Shown between Edit and Delete for users who can manage the dictionary */
   rowActions?: IDictionaryRowAction<T>[];
+  /** Rows the user may not change even with the manage permissions */
+  rowLock?: ITableRowLock<T>;
 };
