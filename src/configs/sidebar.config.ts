@@ -32,30 +32,6 @@ export const SIDEBAR_GROUPS: INavbarGroup[] = [
     ],
   },
   {
-    key: 'study',
-    label: 'Study',
-    items: [
-      {
-        href: '/dashboard/study',
-        label: 'My schedule',
-        icon: IoSchoolSharp({}),
-        isVisible: isStudent,
-      },
-    ],
-  },
-  {
-    key: 'teaching',
-    label: 'Teaching',
-    items: [
-      {
-        href: '/dashboard/teaching',
-        label: 'My lessons',
-        icon: FaChalkboardUser({}),
-        isVisible: isTeacher,
-      },
-    ],
-  },
-  {
     key: 'schedule',
     label: 'Schedule',
     items: [
@@ -63,6 +39,18 @@ export const SIDEBAR_GROUPS: INavbarGroup[] = [
         href: '/dashboard/lessons',
         label: 'All lessons',
         icon: IoCalendarSharp({}),
+      },
+      {
+        href: '/dashboard/study',
+        label: 'Studying',
+        icon: IoSchoolSharp({}),
+        isVisible: isStudent,
+      },
+      {
+        href: '/dashboard/teaching',
+        label: 'Teaching',
+        icon: FaChalkboardUser({}),
+        isVisible: isTeacher,
       },
     ],
   },

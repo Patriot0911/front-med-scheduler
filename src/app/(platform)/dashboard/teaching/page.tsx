@@ -6,7 +6,7 @@ import Loading from '@/components/ui/Loading';
 const TeachingPage = () => {
   return (
     <>
-      <Heading level={1}>My lessons</Heading>
+      <Heading level={1}>Teaching lessons</Heading>
       <Suspense fallback={<Loading />}>
         <TeachingLessonsSection />
       </Suspense>
