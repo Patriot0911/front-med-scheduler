@@ -1,3 +1,14 @@
+// fills the free space of a flex parent (page main, section) and centers the spinner in it
+.container {
+  flex: 1;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 12rem;
+}
+
 .loader {
   width: 50px;
   padding: 8px;

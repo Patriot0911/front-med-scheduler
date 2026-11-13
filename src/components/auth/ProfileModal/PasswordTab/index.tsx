@@ -39,7 +39,6 @@ const PasswordTab = ({ onDirtyChange, onCancel, footerStart, }: IProfileTabProps
       ))}
     >
       <Modal.Content>
-        <p className={styles.description}>Use a password you do not use anywhere else.</p>
         <FormPasswordInput<TChangePasswordForm>
           name={'currentPassword'}
           label={'Current password'}
