@@ -8,10 +8,13 @@ export interface ITabItem<T extends string = string> {
   render?: ((item: T) => ReactNode) | ReactNode;
 };
 
+export type TTabsVariant = 'tiles' | 'underline';
+
 export interface ITabsProps<T extends string = string> {
   items: ITabItem<T>[];
   value: string;
   onChange: (value: T) => void;
   renderItem?: (item: ITabItem<T>) => ReactNode;
+  variant?: TTabsVariant;
   className?: string;
 };

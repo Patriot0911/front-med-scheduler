@@ -1,40 +1,62 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { motion, Variants } from 'framer-motion';
 import { LuLogOut } from 'react-icons/lu';
-import { IProfileModalProps } from '@/interfaces/auth/profile';
+import { IProfileModalProps, TProfileTab } from '@/interfaces/auth/profile';
+import { ITabItem } from '@/interfaces/ui/tabs';
 import { LoadingState } from '@/lib/loading-mappers';
 import useLogoutMutation from '@/hooks/mutations/auth/useLogoutMutation';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
+import Tabs from '@/components/ui/Tabs';
 import ConfirmModal from '@/components/modals/ConfirmModal';
 import ProfileSummary from './ProfileSummary';
-import PersonalDataSection from './PersonalDataSection';
-import PasswordSection from './PasswordSection';
+import PersonalDataTab from './PersonalDataTab';
+import PasswordTab from './PasswordTab';
 
 import styles from './styles.module.scss';
 
-type TSectionKey = 'data' | 'password';
+const TABS: ITabItem<TProfileTab>[] = [
+  { key: 'profile', data: 'profile', label: 'Profile', },
+  { key: 'password', data: 'password', label: 'Password', },
+];
+
+// the panel leaves instantly and the next one slides in from its side (`custom`: -1 left, 1 right)
+const PANEL_VARIANTS: Variants = {
+  hidden: (side: number) => ({
+    opacity: 0,
+    x: side * 24,
+    transition: { duration: 0, },
+    transitionEnd: { display: 'none', },
+  }),
+  shown: {
+    display: 'block',
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.22, ease: 'easeOut', },
+  },
+};
 
 /**
- * Profile of the signed-in user: a read-only summary, then sections edited one by one.
- * Remount it per opening (key), so every opening starts in the view mode.
+ * Both tabs stay mounted (inactive one is hidden), so switching tabs keeps unsaved input;
+ * closing with unsaved input in any tab asks to discard it.
+ * Remount it per opening (key), so every opening starts clean.
  */
 const ProfileModal = ({ isOpen, onClose, }: IProfileModalProps) => {
-  const [dirtySections, setDirtySections] = useState<Record<TSectionKey, boolean>>({ data: false, password: false, });
+  const [tab, setTab] = useState<TProfileTab>('profile');
+  const [dirtyTabs, setDirtyTabs] = useState<Record<TProfileTab, boolean>>({ profile: false, password: false, });
   const [isDiscardConfirmOpen, setIsDiscardConfirmOpen] = useState(false);
   const logoutMutation = useLogoutMutation();
-  const hasUnsavedChanges = dirtySections.data || dirtySections.password;
+  const hasUnsavedChanges = dirtyTabs.profile || dirtyTabs.password;
 
-  // stable, so the sections' effects do not rerun on every render
-  const onDataDirtyChange = useCallback((isDirty: boolean) => (
-    setDirtySections((prev) => ({ ...prev, data: isDirty, }))
+  const onProfileDirtyChange = useCallback((isDirty: boolean) => (
+    setDirtyTabs((prev) => ({ ...prev, profile: isDirty, }))
   ), []);
   const onPasswordDirtyChange = useCallback((isDirty: boolean) => (
-    setDirtySections((prev) => ({ ...prev, password: isDirty, }))
+    setDirtyTabs((prev) => ({ ...prev, password: isDirty, }))
   ), []);
 
-  // Close button, overlay and Escape all come here
   const requestClose = () => {
     if (hasUnsavedChanges) {
       setIsDiscardConfirmOpen(true);
@@ -43,29 +65,61 @@ const ProfileModal = ({ isOpen, onClose, }: IProfileModalProps) => {
     onClose();
   };
 
+  const logoutButton = (
+    <Button
+      variant={'ghost'}
+      leftIcon={<LuLogOut />}
+      className={styles.logout}
+      aria-label={'Log out'}
+      disabled={logoutMutation.isPending}
+      onClick={() => logoutMutation.mutate(undefined, { onSuccess: onClose, })}
+    >
+      <span className={styles['logout-label']}>Log out</span>
+    </Button>
+  );
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={requestClose} size={'md'} isLoading={logoutMutation.isPending}>
         <Modal.Header title={'Profile'} />
         <ProfileSummary />
-        <div className={styles.sections}>
-          <PersonalDataSection onDirtyChange={onDataDirtyChange} />
-          <PasswordSection onDirtyChange={onPasswordDirtyChange} />
-        </div>
-        <Modal.Footer>
-          <Button
-            variant={'ghost'}
-            leftIcon={<LuLogOut />}
-            className={styles.logout}
-            disabled={logoutMutation.isPending}
-            onClick={() => logoutMutation.mutate(undefined, { onSuccess: onClose, })}
-          >
-            Log out
-          </Button>
-          <Button variant={'secondary'} onClick={requestClose}>
-            Close
-          </Button>
-        </Modal.Footer>
+        <Tabs<TProfileTab>
+          variant={'underline'}
+          className={styles.tabs}
+          items={TABS}
+          value={tab}
+          onChange={setTab}
+          renderItem={(item) => (
+            <>
+              {item.label}
+              {dirtyTabs[item.data] && <span className={styles['dirty-dot']} aria-label={'Unsaved changes'} />}
+            </>
+          )}
+        />
+        <motion.div
+          custom={-1}
+          variants={PANEL_VARIANTS}
+          initial={false}
+          animate={tab === 'profile' ? 'shown' : 'hidden'}
+        >
+          <PersonalDataTab
+            onDirtyChange={onProfileDirtyChange}
+            onCancel={requestClose}
+            footerStart={logoutButton}
+          />
+        </motion.div>
+        <motion.div
+          custom={1}
+          variants={PANEL_VARIANTS}
+          initial={false}
+          animate={tab === 'password' ? 'shown' : 'hidden'}
+        >
+          <PasswordTab
+            onDirtyChange={onPasswordDirtyChange}
+            onCancel={requestClose}
+            footerStart={logoutButton}
+          />
+        </motion.div>
       </Modal>
 
       <ConfirmModal

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { IModalBaseProps } from '../shared/modal';
 
 export interface IEditMePayload {
@@ -14,7 +15,10 @@ export interface IChangePasswordPayload {
 
 export type IProfileModalProps = IModalBaseProps;
 
-export interface IProfileSectionFormProps {
-  /** true while the section has unsaved input, so closing the modal can ask first */
+export type TProfileTab = 'profile' | 'password';
+
+export interface IProfileTabProps {
   onDirtyChange: (isDirty: boolean) => void;
+  onCancel: () => void;
+  footerStart?: ReactNode;
 };

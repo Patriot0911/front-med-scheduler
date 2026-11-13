@@ -1,4 +1,4 @@
-.tabs {
+.tiles {
   display: flex;
   flex-direction: row;
   border-radius: var(--radius-sm);
@@ -40,5 +40,61 @@
       color: var(--color-neutral-50);
       transition: background-color 0.1s ease-in-out;
     }
+  }
+}
+
+.underline {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  // the base line is a shadow, so the active indicator can cover it without overflowing
+  box-shadow: inset 0 -1px 0 var(--color-border);
+
+  .tab-item {
+    position: relative;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.1rem;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: var(--font-jost);
+    font-size: 0.95rem;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: var(--color-text-primary);
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(var(--color-primary-rgb), 0.5);
+      outline-offset: -2px;
+      border-radius: var(--radius-sm);
+    }
+
+    &.active {
+      color: var(--color-primary);
+    }
+
+    &.disabled {
+      cursor: default;
+      pointer-events: none;
+      color: var(--color-text-muted);
+    }
+  }
+
+  .indicator {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+    background-color: var(--color-primary);
   }
 }

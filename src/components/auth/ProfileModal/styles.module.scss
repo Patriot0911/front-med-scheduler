@@ -1,44 +1,14 @@
-.sections {
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 0.5rem;
+@use '../../../styles/abstracts/mixins' as *;
+
+.tabs {
+  margin-top: 1.25rem;
 }
 
-// header buttons of the view mode ("Edit", "Change password")
-.section-action {
-  flex-shrink: 0;
-  padding: 0.35rem 0.7rem;
-  font-size: 0.85rem;
-}
-
-// view mode: label / value rows
-.details {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.4rem 1.5rem;
-  margin-top: 0.75rem;
-  font-size: 0.9rem;
-}
-
-.detail {
-  display: contents;
-
-  dt {
-    color: var(--color-text-muted);
-  }
-
-  dd {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: var(--color-text-primary);
-    font-weight: 500;
-  }
-}
-
-// edit mode: spacing lives inside Collapse, so it animates with the height
-.section-form {
-  padding-top: 0.75rem;
+.dirty-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-warning);
 }
 
 .fields {
@@ -47,14 +17,47 @@
   gap: 0.8rem;
 }
 
-.form-actions {
+.divider {
   display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.4rem 0 0.1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-border);
+  }
 }
 
-// pushed to the left, away from "Close"
+.description {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+// pushed to the left, away from the form actions
 .logout {
   margin-right: auto;
-  color: var(--color-error-400);
+  background-color: var(--color-error-50);
+  color: var(--color-error-500);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-error-100);
+  }
+}
+
+.logout-label {
+  display: none;
+
+  @include mq('sm') {
+    display: inline;
+  }
 }

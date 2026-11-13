@@ -34,36 +34,37 @@ const ProfileSummary = () => {
 
   return (
     <div className={styles.summary}>
-      <Avatar name={me.fullName} size={'lg'} />
-      <div className={styles.info}>
-        {/* roles follow the name and wrap below it when the row is too narrow */}
-        <div className={styles.heading}>
+      <div className={styles.identity}>
+        <Avatar name={me.fullName} size={'lg'} />
+        <div className={styles.info}>
           <span className={styles.name}>{me.fullName}</span>
-          {me.roles.map((role) => (
-            <span key={role} className={styles.role}>{role}</span>
-          ))}
+          <div className={styles.contacts}>
+            <span className={styles.email}>{me.email}</span>
+            {me.roles.map((role) => (
+              <span key={role} className={styles.role}>{role}</span>
+            ))}
+          </div>
         </div>
-        <span className={styles.email}>{me.email}</span>
-        {(me.teacher || me.student) && (
-          <dl className={styles.profiles}>
-            {me.teacher && (
-              <div className={styles.profile}>
-                <dt>Teacher</dt>
-                <dd>{department ?? (departmentId ? 'Department assigned' : 'No department')}</dd>
-              </div>
-            )}
-            {me.student && (
-              <div className={styles.profile}>
-                <dt>Student</dt>
-                <dd>
-                  {group ?? (groupId ? '…' : 'No group')}
-                  {me.student.isGroupMonitor && <span className={styles.badge}>Monitor</span>}
-                </dd>
-              </div>
-            )}
-          </dl>
-        )}
       </div>
+      {(me.teacher || me.student) && (
+        <dl className={styles.profiles}>
+          {me.teacher && (
+            <div className={styles.profile}>
+              <dt>Teacher</dt>
+              <dd>{department ?? (departmentId ? 'Department assigned' : 'No department')}</dd>
+            </div>
+          )}
+          {me.student && (
+            <div className={styles.profile}>
+              <dt>Student</dt>
+              <dd>
+                {group ?? (groupId ? '…' : 'No group')}
+                {me.student.isGroupMonitor && <span className={styles.badge}>Monitor</span>}
+              </dd>
+            </div>
+          )}
+        </dl>
+      )}
     </div>
   );
 }
