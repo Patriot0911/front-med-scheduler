@@ -1,5 +1,10 @@
 import type { IStudentProfile, ITeacherProfile } from '../users/users';
 
+export interface IAuthTeacherProfile extends ITeacherProfile {
+  /** The department this teacher heads */
+  headOfDepartmentId: string | null;
+};
+
 export interface IAuthUser {
   id: string;
   email: string;
@@ -7,6 +12,6 @@ export interface IAuthUser {
   permissions: string[];
   /** Role names */
   roles: string[];
-  teacher: ITeacherProfile | null;
+  teacher: IAuthTeacherProfile | null;
   student: IStudentProfile | null;
 };

@@ -1,0 +1,63 @@
+@use '../../../../../styles/abstracts/mixins' as *;
+
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.group-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 1.5rem;
+  padding: 0 1rem;
+
+  span {
+    font-family: var(--font-jost);
+    font-size: 0.8rem;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    transition: opacity ease-in-out 0.2s;
+  }
+
+  // a short divider replaces the text in the collapsed sidebar
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.5rem;
+    height: 1px;
+    background-color: var(--color-border-strong);
+    transform: translate(-50%, -50%) scaleX(0);
+    transition: transform ease-in-out 0.2s;
+  }
+
+  &.collapsed {
+    span {
+      opacity: 0;
+    }
+    &::after {
+      transform: translate(-50%, -50%) scaleX(1);
+    }
+  }
+
+  @include mq('md') {
+    span {
+      font-size: 0.7rem;
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text-muted);
+    }
+  }
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

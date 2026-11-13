@@ -1,25 +1,24 @@
-import { SIDEBAR_ITEMS } from '@/configs/sidebar.config';
+'use client';
+
+import useNavbarGroups from '@/hooks/layout/useNavbarGroups';
 import { ISidebarSectionProps } from '@/interfaces/layout/sidebar';
-import NavLink from '../NavLink';
+import NavGroup from '../NavGroup';
 
 import styles from './styles.module.scss';
 
 const Navbar = ({ isOpen }: ISidebarSectionProps) => {
+  const groups = useNavbarGroups();
+
   return (
     <nav className={styles['nav-container']}>
-      <ul className={styles['nav-list']}>
-        {
-          SIDEBAR_ITEMS.map(
-            (item) => (
-              <NavLink
-                {...item}
-                isOpen={isOpen}
-                key={item.href}
-              />
-            )
-          )
-        }
-      </ul>
+      {groups.map((group) => (
+        <NavGroup
+          key={group.key}
+          label={group.label}
+          items={group.items}
+          isOpen={isOpen}
+        />
+      ))}
     </nav>
   );
 }

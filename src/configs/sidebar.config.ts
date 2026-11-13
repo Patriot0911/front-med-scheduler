@@ -1,32 +1,93 @@
-import type { INavbarItem } from '../interfaces/layout/sidebar';
-import { IoSchoolSharp } from "react-icons/io5";
-import { GoHomeFill } from "react-icons/go";
-import { IoLibrary } from "react-icons/io5";
-import { FaUsers } from "react-icons/fa6";
+import type { INavAccess, INavbarGroup } from '../interfaces/layout/sidebar';
+import { Permission } from '../interfaces/auth/permission';
+import { IoCalendarSharp, IoLibrary, IoSchoolSharp } from 'react-icons/io5';
+import { GoHomeFill } from 'react-icons/go';
+import { FaChalkboardUser, FaUsers } from 'react-icons/fa6';
+import { MdEditCalendar } from 'react-icons/md';
 
-export const SIDEBAR_ITEMS: INavbarItem[] = [
+const LESSONS_ADMIN_READ_PERMISSIONS = [Permission.READ_LESSONS, Permission.MANAGE_LESSONS, Permission.ADMIN];
+const USERS_READ_PERMISSIONS = [Permission.READ_USERS, Permission.MANAGE_USERS, Permission.ADMIN];
+// any of the dictionaries' readPermissions in dictionaries.config.tsx
+const DICTIONARIES_READ_PERMISSIONS = [
+  Permission.READ_DEPARTMENTS,
+  Permission.MANAGE_DEPARTMENTS,
+  Permission.READ_GROUPS,
+  Permission.MANAGE_ROLES,
+  Permission.ADMIN,
+];
+
+const isStudent = ({ user, }: INavAccess) => !!user?.student;
+const isTeacher = ({ user, }: INavAccess) => !!user?.teacher;
+
+export const SIDEBAR_GROUPS: INavbarGroup[] = [
   {
-    href: '/dashboard',
-    label: 'Overview',
-    exactPath: true,
-    icon: GoHomeFill({}),
+    key: 'main',
+    items: [
+      {
+        href: '/dashboard',
+        label: 'Overview',
+        exactPath: true,
+        icon: GoHomeFill({}),
+      },
+    ],
   },
   {
-    label: 'Lessons',
-    href: '/dashboard/lessons',
-    icon: IoSchoolSharp({}),
-    isAuthenticated: true,
+    key: 'study',
+    label: 'Study',
+    items: [
+      {
+        href: '/dashboard/study',
+        label: 'My schedule',
+        icon: IoSchoolSharp({}),
+        isVisible: isStudent,
+      },
+    ],
   },
   {
-    label: 'Users',
-    href: '/dashboard/users',
-    icon: FaUsers({}),
-    isAuthenticated: true,
+    key: 'teaching',
+    label: 'Teaching',
+    items: [
+      {
+        href: '/dashboard/teaching',
+        label: 'My lessons',
+        icon: FaChalkboardUser({}),
+        isVisible: isTeacher,
+      },
+    ],
   },
   {
-    label: 'Dictionaries',
-    href: '/dashboard/dictionaries',
-    icon: IoLibrary({}),
-    isAuthenticated: true,
+    key: 'schedule',
+    label: 'Schedule',
+    items: [
+      {
+        href: '/dashboard/lessons',
+        label: 'All lessons',
+        icon: IoCalendarSharp({}),
+      },
+    ],
   },
-] as const;
+  {
+    key: 'administration',
+    label: 'Administration',
+    items: [
+      {
+        href: '/dashboard/admin/lessons',
+        label: 'Lessons',
+        icon: MdEditCalendar({}),
+        isVisible: ({ hasAny, }) => hasAny(LESSONS_ADMIN_READ_PERMISSIONS),
+      },
+      {
+        href: '/dashboard/users',
+        label: 'Users',
+        icon: FaUsers({}),
+        isVisible: ({ hasAny, }) => hasAny(USERS_READ_PERMISSIONS),
+      },
+      {
+        href: '/dashboard/dictionaries',
+        label: 'Dictionaries',
+        icon: IoLibrary({}),
+        isVisible: ({ hasAny, }) => hasAny(DICTIONARIES_READ_PERMISSIONS),
+      },
+    ],
+  },
+];

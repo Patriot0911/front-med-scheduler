@@ -1,10 +1,23 @@
+import type { Permission } from '../auth/permission';
+import type { IAuthUser } from '../auth/user';
+
+export interface INavAccess {
+  user: IAuthUser | null;
+  hasAny: (permissions: Permission[]) => boolean;
+};
+
 export interface INavbarItem {
   label: string;
   href: string;
   exactPath?: boolean;
   icon?: React.ReactNode;
-  permissions?: string[];
-  isAuthenticated?: boolean;
+  isVisible?: (access: INavAccess) => boolean;
+};
+
+export interface INavbarGroup {
+  key: string;
+  label?: string;
+  items: INavbarItem[];
 };
 
 export interface ISidebarHeaderProps {
@@ -20,6 +33,12 @@ export interface ISidebarSectionProps {
   isOpen: boolean;
 };
 
-export interface INavLinkProps extends INavbarItem {
+export interface INavLinkProps extends Omit<INavbarItem, 'isVisible'> {
+  isOpen: boolean;
+};
+
+export interface INavGroupProps {
+  label?: string;
+  items: INavbarItem[];
   isOpen: boolean;
 };

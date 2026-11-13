@@ -33,7 +33,7 @@ src/
     (public)/page.tsx          # Welcome (/): відкрита всім, кнопка входу або «Open dashboard»
     (public)/schedule/         # публічний календар без сайдбару
     (platform)/layout.tsx      # RequireAuth + BaseLayout (сайдбар) для всього дашборду
-    (platform)/dashboard/      # /dashboard (Overview), /dashboard/lessons, /users, /dictionaries
+    (platform)/dashboard/      # /dashboard (Overview), /study, /teaching, /lessons (усі), /admin/lessons, /users, /dictionaries
   components/
     ui/                        # дизайн-система: Button, Input, Form*, Select, MultiSelect, Modal, Table, Tabs, Calendar, DatePicker, ...
     layout/                    # BaseLayout, Sidebar (+ components/), Header, Footer
@@ -41,7 +41,7 @@ src/
     welcome/                   # WelcomeHero
     dictionaries/              # DictionarySection, таблиця, тулбар, cells/, forms/<X>FormModal
     users/                     # UsersSection, UsersTable, UsersToolbar, cells/, forms/UserFormModal
-    lessons/                   # QuerySyncedCalendar → LessonsSection → LessonsCalendar, EventDetailsModal
+    lessons/                   # Study/Teaching/AdminLessonsSection, QuerySyncedCalendar → LessonsSection → LessonsCalendar, EventDetailsModal
     schedule/                  # компоненти сторінки /schedule
     modals/                    # загальні модалки: ConfirmModal, DictionaryModal
     providers/                 # StoreProvider, AuthProvider
@@ -49,8 +49,8 @@ src/
     queries/<domain>/use<X>Query.ts
     mutations/<domain>/use<X>Mutation.ts
     redux/                     # типізовані useAppDispatch/useAppSelector + селектори
-    shared/                    # useDebouncedValue, useMediaQuery, useOnClickOutside, usePersistentState
-    calendar/, dictionaries/, forms/, layout/
+    shared/                    # useDebouncedValue, useMediaQuery, useOnClickOutside, usePersistentState, useTabParam
+    calendar/, forms/, layout/ (useSidebarState, useNavbarGroups)
   interfaces/<domain>/         # УСІ типи й пропси (не поруч з компонентом); ui/*.d.ts — пропси ui-компонентів
   configs/                     # декларативні конфіги: dictionaries.config.tsx, sidebar, permissions, *.dictionary.ts (тексти кнопок)
   lib/
@@ -112,12 +112,27 @@ export default DepartmentsService;
 - `Permission` enum — дзеркало бекенду (`interfaces/auth/permission.ts`); підписи — `configs/permissions.config.ts`. Новий дозвіл додається в обидва файли (і на бекенді, див. `api-med-scheduler/CLAUDE.md`).
 - Секції самі показують заглушку «You don't have access…», якщо `!hasAny(READ_PERMISSIONS)` (див. `UsersSection`, `DictionarySection`).
 - `RequireAuth` стоїть один раз у `(platform)/layout.tsx` і закриває весь `/dashboard/*`: гостя перекидає на `/` (Welcome). У сторінках дашборду його не повторюй. Welcome і `/schedule` guard-ом не закриті. `RequirePermission` перевіряє через `every` (AND), на відміну від `hasAny`.
-- Нова сторінка дашборду: `app/(platform)/dashboard/<name>/page.tsx` + пункт у `configs/sidebar.config.ts` з `href: '/dashboard/<name>'`.
+- Нова сторінка дашборду: `app/(platform)/dashboard/<name>/page.tsx` + пункт у потрібній групі `SIDEBAR_GROUPS` (`configs/sidebar.config.ts`) з `href: '/dashboard/<name>'`.
 - Після успішного входу `AuthModal` викликає `onAuthenticated` (коли спливає таймер 1500ms). Welcome передає туди перехід на `/dashboard`.
+
+### Сайдбар і розділи занять
+
+- `SIDEBAR_GROUPS` — групи за змістом (Study, Teaching, Schedule, Administration) з підписом-заголовком; порядок у масиві = порядок у навбарі.
+- Видимість пункту — предикат `isVisible({ user, hasAny })`, а не масив дозволів: розділи занять залежать від **профілю** (`user.student` / `user.teacher`), бо в домені викладачів `Permission` нічого не вирішує. Адмінські пункти — через `hasAny` з тими ж наборами, що й у секціях. `useNavbarGroups` фільтрує пункти й прибирає порожні групи.
+- Розділи занять:
+
+  | Маршрут | Хто бачить | Дані (після інтеграції) |
+  |---|---|---|
+  | `/dashboard/study` | є `student` | `/lessons/my?scope=studying` |
+  | `/dashboard/teaching` | є `teacher` | `?tab=teaching` → `scope=teaching`; `?tab=department` (лише завідувач, `headOfDepartmentId`) → `scope=department` |
+  | `/dashboard/lessons` | усі | `/lessons/list` |
+  | `/dashboard/admin/lessons` | `read_lessons` / `manage_lessons` / `admin` | `/admin/lessons`: усі заняття без обмежень видимості й доступу; редагування — лише з `manage_lessons` / `admin` |
+
+  Секції ще раз перевіряють профіль і показують заглушку: прихований пункт навбару не закриває маршрут.
 
 ### Стан у URL
 
-Стан, яким можна поділитися чи який має пережити перезавантаження, живе в query-параметрах: `useCalendarSearchParams` (`?date=YYYY-MM-DD&view=day|week|month`), `useDictionaryTabParam` (`?tab=`). Оновлення — `router.replace(..., { scroll: false })`. Компоненти з `useSearchParams` сторінка обгортає в `<Suspense fallback={<Loading />}>`.
+Стан, яким можна поділитися чи який має пережити перезавантаження, живе в query-параметрах: `useCalendarSearchParams` (`?date=YYYY-MM-DD&view=day|week|month`), `useTabParam(availableKeys)` (`?tab=`, недоступне значення → перша вкладка). Оновлення — `router.replace(..., { scroll: false })`. Компоненти з `useSearchParams` сторінка обгортає в `<Suspense fallback={<Loading />}>`.
 
 ## Довідники — розширюються конфігом
 
@@ -168,6 +183,5 @@ export default DepartmentsService;
 - Welcome і Overview (`/dashboard`) поки без контенту.
 - `RequireAuth` рендерить children завжди і лише накриває їх оверлеєм, тож сторінки дашборду монтуються і для гостя на мить до редіректу.
 - `Button` приймає проп `size`, але стилів розмірів для нього немає: проп нічого не змінює.
-- Пункти сайдбару (`configs/sidebar.config.ts`) ховаються лише за `isAuthenticated`; поле `permissions` в `INavbarItem` оголошене, але `NavLink` його ігнорує.
 - Docker-образ запускає `.next/standalone/server.js` (`output: 'standalone'` у `next.config.ts`). `NEXT_PUBLIC_API_URL` вшивається під час `next build`, тож його треба передавати на етапі збірки образу, а не запуску.
 - `queryClient`: глобальний `onError` нічого не показує (toast закоментовано). Помилки показують мутації самі.

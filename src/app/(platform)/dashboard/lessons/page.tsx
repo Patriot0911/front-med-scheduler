@@ -6,7 +6,7 @@ import Loading from '@/components/ui/Loading';
 const LessonsPage = () => {
   return (
     <>
-      <Heading level={1}>Lessons</Heading>
+      <Heading level={1}>All lessons</Heading>
       <Suspense fallback={<Loading />}>
         <QuerySyncedCalendar />
       </Suspense>

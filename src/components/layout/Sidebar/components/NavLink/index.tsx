@@ -3,21 +3,16 @@
 import Link from 'next/link';
 import { cn } from '@/lib/cn';
 import { usePathname } from 'next/navigation';
-import { useAppSelector } from '@/hooks/redux';
 import { INavLinkProps } from '@/interfaces/layout/sidebar';
-import { authStatusSelector } from '@/hooks/redux/auth';
 
 import styles from './styles.module.scss';
 
-const NavLink = ({ href, label, icon, exactPath, isAuthenticated, isOpen, }: INavLinkProps) => {
-  const authStatus = useAppSelector(authStatusSelector);
+const NavLink = ({ href, label, icon, exactPath, isOpen, }: INavLinkProps) => {
   const pathname = usePathname();
 
   const isActive = exactPath
     ? pathname === href
     : pathname.startsWith(href);
-
-  if (isAuthenticated && authStatus !== 'authenticated') return;
 
   return (
     <li

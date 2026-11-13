@@ -5,7 +5,7 @@ import { dictionariesConfig } from '@/configs/dictionaries.config';
 import { TDictionaryKey } from '@/interfaces/dictionaries/tables';
 import { ITabItem } from '@/interfaces/ui/tabs';
 import usePermissions from '@/hooks/queries/auth/usePermissions';
-import useDictionaryTabParam from '@/hooks/dictionaries/useDictionaryTabParam';
+import useTabParam from '@/hooks/shared/useTabParam';
 import Tabs from '@/components/ui/Tabs';
 import Loading from '@/components/ui/Loading';
 import DictionaryTabItem from '../DictionaryTabItem';
@@ -22,7 +22,7 @@ const DictionarySection = () => {
     () => ALL_DICTIONARY_KEYS.filter((key) => hasAny(dictionariesConfig[key].readPermissions)),
     [hasAny],
   );
-  const { tab, setTab, } = useDictionaryTabParam(availableKeys);
+  const { tab, setTab, } = useTabParam(availableKeys);
 
   if (!isReady) {
     return <Loading />;
