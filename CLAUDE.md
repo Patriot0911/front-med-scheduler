@@ -26,12 +26,15 @@ src/
   app/
     layout.tsx                 # шрифти, Providers, Toaster, global.scss
     providers.tsx              # StoreProvider → QueryClientProvider → AuthProvider
-    (platform)/                # з BaseLayout (сайдбар): / , /lessons, /users, /dictionaries
+    (public)/page.tsx          # Welcome (/): відкрита всім, кнопка входу або «Open dashboard»
     (public)/schedule/         # публічний календар без сайдбару
+    (platform)/layout.tsx      # RequireAuth + BaseLayout (сайдбар) для всього дашборду
+    (platform)/dashboard/      # /dashboard (Overview), /dashboard/lessons, /users, /dictionaries
   components/
     ui/                        # дизайн-система: Button, Input, Form*, Select, MultiSelect, Modal, Table, Tabs, Calendar, DatePicker, ...
     layout/                    # BaseLayout, Sidebar (+ components/), Header, Footer
     auth/                      # AuthModal, ProfileModal, LogOutModal, RequireAuth, RequirePermission
+    welcome/                   # WelcomeHero
     dictionaries/              # DictionarySection, таблиця, тулбар, cells/, forms/<X>FormModal
     users/                     # UsersSection, UsersTable, UsersToolbar, cells/, forms/UserFormModal
     lessons/                   # QuerySyncedCalendar → LessonsSection → LessonsCalendar, EventDetailsModal
@@ -104,7 +107,9 @@ export default DepartmentsService;
 - Чи можна редагувати конкретного користувача або роль, визначає не дозвіл, а ієрархія ролей на бекенді. Для цього використовуй прапорець `canManage` з відповіді `/users` і `/roles`. Недоступні рядки не ховаються: `Table` приймає `rowLock` (`isLocked` + `reason`), показує замочок із підказкою, вимикає дії й клік по рядку. У довідниках це поле `rowLock` у конфігу (див. roles).
 - `Permission` enum — дзеркало бекенду (`interfaces/auth/permission.ts`); підписи — `configs/permissions.config.ts`. Новий дозвіл додається в обидва файли (і на бекенді, див. `api-med-scheduler/CLAUDE.md`).
 - Секції самі показують заглушку «You don't have access…», якщо `!hasAny(READ_PERMISSIONS)` (див. `UsersSection`, `DictionarySection`).
-- `RequireAuth` — обгортка сторінок платформи. `RequirePermission` перевіряє через `every` (AND), на відміну від `hasAny`.
+- `RequireAuth` стоїть один раз у `(platform)/layout.tsx` і закриває весь `/dashboard/*`: гостя перекидає на `/` (Welcome). У сторінках дашборду його не повторюй. Welcome і `/schedule` guard-ом не закриті. `RequirePermission` перевіряє через `every` (AND), на відміну від `hasAny`.
+- Нова сторінка дашборду: `app/(platform)/dashboard/<name>/page.tsx` + пункт у `configs/sidebar.config.ts` з `href: '/dashboard/<name>'`.
+- Після успішного входу `AuthModal` викликає `onAuthenticated` (коли спливає таймер 1500ms). Welcome передає туди перехід на `/dashboard`.
 
 ### Стан у URL
 
@@ -140,7 +145,7 @@ export default DepartmentsService;
 - Імпорти через `@/`; стилі імпортуються останніми: `import styles from './styles.module.scss'`.
 - Кома після останнього елемента навіть в однорядкових об'єктах: `{ page, pageSize, }`, `const { data, } = ...`.
 - Константи модуля — `UPPER_SNAKE_CASE` угорі файлу (`READ_PERMISSIONS`, `PAGE_SIZE`).
-- Коментарі — мінімально, лише там, де без них складну логіку не зрозуміти. Не коментуй те, що вже зрозуміло з назв. Наявні в коді рясні коментарі — не зразок для нового коду.
+- **Коментарі — лише ситуативно.** Елементарний код (прості компоненти, пропси, обробники, стилі, конфіги, очевидні умови) не коментуємо взагалі, навіть JSDoc. Коментар доречний тільки як опис справді складного компонента чи логіки, яку без нього не зрозуміти. Не коментуй те, що видно з назв. Наявні в коді рясні коментарі — не зразок для нового коду.
 - Тексти UI — англійською. Тексти кнопок, що залежать від стану мутації, — у `configs/<domain>.dictionary.ts` як `Record<LoadingState, string>`. Назви `LoadingState.Ide` / `Pendding` — історичні опечатки, не перейменовуй точково.
 - Класи: `cn(...)` (clsx + tailwind-merge).
 - Дати — `dayjs` з `@/lib/dayjs` (локаль `en-gb`, тиждень з понеділка). Частина файлів імпортує `'dayjs'` напряму — у новому коді бери `@/lib/dayjs`.
@@ -156,8 +161,9 @@ export default DepartmentsService;
 ## Поточний стан і пастки
 
 - **Календар занять працює на моках** (`src/mocks/calendar-events.mock.ts`): сервісу / хуків для `/lessons` ще немає. Під час інтеграції: `/lessons/list` — для публічного / загального календаря (працює і без токена), `/lessons/my` — для «мого розкладу»; фільтр `dateFrom` / `dateTo` бери з видимого діапазону календаря.
-- Головна сторінка `(platform)/page.tsx` — заглушка.
-- Маршруту `/login` немає: вхід відбувається через `AuthModal` у сайдбарі, а `RequireAuth` / `RequirePermission` за замовчуванням редіректять на `/login` (404). `RequireAuth` рендерить children завжди і лише накриває їх оверлеєм.
+- Welcome і Overview (`/dashboard`) поки без контенту.
+- `RequireAuth` рендерить children завжди і лише накриває їх оверлеєм, тож сторінки дашборду монтуються і для гостя на мить до редіректу.
+- `Button` приймає проп `size`, але стилів розмірів для нього немає: проп нічого не змінює.
 - Пункти сайдбару (`configs/sidebar.config.ts`) ховаються лише за `isAuthenticated`; поле `permissions` в `INavbarItem` оголошене, але `NavLink` його ігнорує.
 - Docker-образ запускає `.next/standalone/server.js` (`output: 'standalone'` у `next.config.ts`). `NEXT_PUBLIC_API_URL` вшивається під час `next build`, тож його треба передавати на етапі збірки образу, а не запуску.
 - `queryClient`: глобальний `onError` нічого не показує (toast закоментовано). Помилки показують мутації самі.

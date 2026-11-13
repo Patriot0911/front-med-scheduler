@@ -29,7 +29,6 @@ const WelcomeHero = () => {
         Schedule of lessons, lectures, exams and events
       </p>
 
-      {/* the actions wait for the stored session to be read, so the wrong button never flashes */}
       <div className={styles.actions}>
         {status === 'authenticated' && (
           <Button leftIcon={<LuLayoutDashboard />} onClick={() => router.push(DASHBOARD_PATH)}>
