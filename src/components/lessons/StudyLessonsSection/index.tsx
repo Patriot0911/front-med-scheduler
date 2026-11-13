@@ -2,7 +2,7 @@
 
 import useMeQuery from '@/hooks/queries/auth/useMeQuery';
 import Loading from '@/components/ui/Loading';
-import QuerySyncedCalendar from '../QuerySyncedCalendar';
+import LessonsBrowser from '../LessonsBrowser';
 
 import styles from './styles.module.scss';
 
@@ -34,7 +34,7 @@ const StudyLessonsSection = () => {
       <p className={styles.description}>
         Lessons of your student group.
       </p>
-      <QuerySyncedCalendar />
+      <LessonsBrowser view={'study'} />
     </section>
   );
 }

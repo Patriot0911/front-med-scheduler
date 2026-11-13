@@ -3,7 +3,7 @@
 import { Permission } from '@/interfaces/auth/permission';
 import usePermissions from '@/hooks/queries/auth/usePermissions';
 import Loading from '@/components/ui/Loading';
-import QuerySyncedCalendar from '../QuerySyncedCalendar';
+import LessonsBrowser from '../LessonsBrowser';
 
 import styles from './styles.module.scss';
 
@@ -32,7 +32,7 @@ const AdminLessonsSection = () => {
           ? 'Every lesson of the platform, public or not, whoever teaches it. You can edit any of them.'
           : 'Every lesson of the platform, public or not, whoever teaches it. View only.'}
       </p>
-      <QuerySyncedCalendar />
+      <LessonsBrowser view={'admin'} />
     </section>
   );
 }

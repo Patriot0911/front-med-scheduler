@@ -1,0 +1,61 @@
+@use '../../../styles/abstracts/mixins' as *;
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(var(--color-dark-rgb), 0.5);
+  font-family: var(--font-jost);
+}
+
+.panel {
+  --side-modal-width: 400px;
+  --side-modal-padding-x: 16px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+  padding: 20px var(--side-modal-padding-x) 16px;
+  overflow: hidden;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+
+  @include mq('sm') {
+    --side-modal-padding-x: 24px;
+
+    max-width: min(var(--side-modal-width), calc(100vw - 48px));
+    padding: 24px var(--side-modal-padding-x) 20px;
+    border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  }
+
+  &.sm {
+    --side-modal-width: 400px;
+  }
+  &.md {
+    --side-modal-width: 520px;
+  }
+  &.lg {
+    --side-modal-width: 680px;
+  }
+  &.xl {
+    --side-modal-width: 880px;
+  }
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(var(--color-light-rgb), 0.7);
+  backdrop-filter: blur(1px);
+
+  &--hidden {
+    pointer-events: none;
+  }
+}

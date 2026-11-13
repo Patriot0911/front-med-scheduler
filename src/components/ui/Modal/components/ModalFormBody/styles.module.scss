@@ -4,3 +4,9 @@
   gap: 0.3rem;
   font-family: var(--font-jost);
 }
+
+// fills the side panel, so the content scrolls between the pinned header and footer
+.modal-body--side {
+  flex: 1;
+  min-height: 0;
+}

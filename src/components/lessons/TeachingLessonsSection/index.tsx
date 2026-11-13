@@ -6,7 +6,7 @@ import Loading from '@/components/ui/Loading';
 import Tabs from '@/components/ui/Tabs';
 import type { ITabItem } from '@/interfaces/ui/tabs';
 import type { TTeachingLessonsTab } from '@/interfaces/lessons/sections';
-import QuerySyncedCalendar from '../QuerySyncedCalendar';
+import LessonsBrowser from '../LessonsBrowser';
 
 import styles from './styles.module.scss';
 
@@ -53,7 +53,7 @@ const TeachingLessonsSection = () => {
       <p className={styles.description}>
         {DESCRIPTIONS[tab]}
       </p>
-      <QuerySyncedCalendar />
+      <LessonsBrowser view={tab} />
     </section>
   );
 }

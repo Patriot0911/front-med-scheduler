@@ -142,6 +142,7 @@ const semestersDictionaryConfig = defineDictionary<ISemester>({
   getItemLabel: (semester) => semester.name,
   deleteWarning: 'A semester that already has lessons cannot be deleted.',
   FormModal: SemesterFormModal,
+  relatedQueryKeys: [DictionaryQueryKey.Semesters],
   columns: [
     {
       key: 'name',

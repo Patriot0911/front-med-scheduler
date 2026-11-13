@@ -35,7 +35,7 @@ src/
     (platform)/layout.tsx      # RequireAuth + BaseLayout (сайдбар) для всього дашборду
     (platform)/dashboard/      # /dashboard (Overview), /study, /teaching, /lessons (усі), /admin/lessons, /users, /dictionaries
   components/
-    ui/                        # дизайн-система: Button, Input, Form*, Select, MultiSelect, Modal, Table, Tabs, Calendar, DatePicker, ...
+    ui/                        # дизайн-система: Button, Input, Form*, Select, MultiSelect, Modal, SideModal, Table, Tabs, Calendar, DatePicker, ...
     layout/                    # BaseLayout, Sidebar (+ components/), Header, Footer
     auth/                      # AuthModal, ProfileModal, LogOutModal, RequireAuth, RequirePermission
     welcome/                   # WelcomeHero
@@ -130,6 +130,13 @@ export default DepartmentsService;
 
   Секції ще раз перевіряють профіль і показують заглушку: прихований пункт навбару не закриває маршрут.
 
+### Фільтри занять
+
+- Кожен розділ рендерить `LessonsBrowser view={...}` (`study` | `teaching` | `department` | `all` | `admin`). Набір фільтрів погляду — `LESSONS_VIEWS` у `configs/lessons-views.config.ts`; підписи мультиселектів — `LESSONS_LIST_FILTERS`. Новий фільтр: поле в `ILessonsFilters` (= ім'я query-параметра бекенду) → `EMPTY_LESSONS_FILTERS` / `LESSONS_LIST_FILTERS` → довідник у `useLessonsFilterOptions` → ключ у потрібних поглядах.
+- Стан — у URL через `useLessonsFiltersParams(keys)`: `?search=` і повторювані ключі масивів (`teacherIds=a&teacherIds=b`), ті самі імена, що й у API. Хук читає й пише лише ключі свого погляду.
+- `LessonsToolbar`: пошук (debounce → URL) і кнопка «Filters» з лічильником, що відкриває `LessonsFiltersModal` (`SideModal`, щоб календар не зсувався, а випадні списки не обрізались). Чернетка живе в `LessonsFiltersForm`, яка монтується лише при відкритій модалці, тож кожне відкриття починається із застосованих фільтрів; застосовує лише «Apply filters». Довідники вантажаться лише при відкритій модалці й лише для фільтрів погляду.
+- `/dictionaries/*`, з яких беруться опції, доступні будь-якому токену (зокрема `departments`), тож фільтри працюють і для студентів.
+
 ### Стан у URL
 
 Стан, яким можна поділитися чи який має пережити перезавантаження, живе в query-параметрах: `useCalendarSearchParams` (`?date=YYYY-MM-DD&view=day|week|month`), `useTabParam(availableKeys)` (`?tab=`, недоступне значення → перша вкладка). Оновлення — `router.replace(..., { scroll: false })`. Компоненти з `useSearchParams` сторінка обгортає в `<Suspense fallback={<Loading />}>`.
@@ -154,7 +161,7 @@ export default DepartmentsService;
 
 ## Модалки
 
-Окремий skill: [.claude/skills/frontend-modals/SKILL.md](.claude/skills/frontend-modals/SKILL.md). Коротко: лише базовий `ui/Modal` з композицією `FormBody → Header → Content → Footer`, `size` sm / md / lg, пропси `extends IModalBaseProps`, відкритість контролює батько. Щоб під час анімації закриття модалка не втрачала вміст, `item` зберігай у стані і після закриття (`{ isOpen, item }` у `UsersSection`).
+Окремий skill: [.claude/skills/frontend-modals/SKILL.md](.claude/skills/frontend-modals/SKILL.md). Коротко: лише базові `ui/Modal` (центрована, `size` sm / md / lg) або `ui/SideModal` (бічна панель справа на всю висоту, `size` sm / md / lg / xl — для фільтрів і форм із багатьма селектами) з композицією `FormBody → Header → Content → Footer`, пропси `extends IModalBaseProps`, відкритість контролює батько. Щоб під час анімації закриття модалка не втрачала вміст, `item` зберігай у стані і після закриття (`{ isOpen, item }` у `UsersSection`).
 
 ## Компоненти та код-стиль
 

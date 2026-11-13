@@ -3,7 +3,7 @@
 import type { IModalProps } from '@/interfaces/shared/modal';
 import { AnimatePresence, motion, } from 'framer-motion';
 import { createPortal } from 'react-dom';
-import { useEffect } from 'react';
+import useModalDismiss from '@/hooks/shared/useModalDismiss';
 import Loading from '../Loading';
 import { cn } from '@/lib/cn';
 
@@ -24,22 +24,7 @@ const modalVariants = {
 };
 
 const Modal = ({ children, isOpen, isLoading, className, size, onClose, }: IModalProps) => {
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const onEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
-    document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', onEsc);
-
-    return () => {
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', onEsc);
-    };
-  }, [isOpen, onClose]);
+  useModalDismiss(isOpen, onClose);
 
   if (typeof window !== 'object') return null;
 

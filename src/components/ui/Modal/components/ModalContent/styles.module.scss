@@ -5,3 +5,13 @@
   font-family: var(--font-jost);
   padding: 1.2rem 0;
 }
+
+// the only scrolling part of the side panel
+.modal-content--side {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  // full-width scroll area: the scrollbar sits at the panel edge, the content keeps the panel padding
+  margin: 0 calc(-1 * var(--side-modal-padding-x, 24px));
+  padding: 1.2rem var(--side-modal-padding-x, 24px);
+}

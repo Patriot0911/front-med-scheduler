@@ -25,6 +25,17 @@ export interface IModalContentProps extends
 export interface IModalFooterProps extends PropsWithChildren {
 };
 
+/** Where Modal.Header / FormBody / Content / Footer are rendered: a centered dialog or a full-height side panel */
+export type TModalLayout = 'dialog' | 'side';
+
+export type TSideModalSize = 'sm' | 'md' | 'lg' | 'xl';
+
+export interface ISideModalProps extends IModalBaseProps, PropsWithChildren {
+  isLoading?: boolean;
+  className?: string;
+  size?: TSideModalSize;
+};
+
 export interface IModalProps extends IModalBaseProps, PropsWithChildren {
   isLoading?: boolean;
   className?: string;
