@@ -18,6 +18,7 @@ const LessonsToolbar = ({
   onSearchChange,
   filters,
   onFiltersApply,
+  children,
 }: ILessonsToolbarProps) => {
   const [searchInput, setSearchInput] = useState(search);
   const debouncedSearch = useDebouncedValue(searchInput.trim());
@@ -56,6 +57,7 @@ const LessonsToolbar = ({
           Filters
           {activeCount > 0 && <span className={styles.count}>{activeCount}</span>}
         </Button>
+        {children}
       </div>
       <LessonsFiltersModal
         isOpen={isFiltersOpen}

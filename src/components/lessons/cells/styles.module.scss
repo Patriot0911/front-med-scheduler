@@ -1,0 +1,47 @@
+.empty {
+  color: var(--color-text-muted);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.primary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.secondary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.badge {
+  align-self: flex-start;
+  padding: 0 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  background-color: var(--color-primary-50);
+
+  &--involved {
+    color: var(--color-accent-500);
+    background-color: var(--color-accent-50);
+  }
+
+  &--moved {
+    color: var(--color-warning);
+    background-color: rgba(var(--color-warning-rgb), 0.12);
+  }
+}

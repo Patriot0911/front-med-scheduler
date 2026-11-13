@@ -136,6 +136,13 @@ export default DepartmentsService;
 - `LessonsToolbar`: пошук (debounce → URL) і кнопка «Filters» з лічильником, що відкриває `LessonsFiltersModal` (`SideModal`, щоб календар не зсувався, а випадні списки не обрізались). Чернетка живе в `LessonsFiltersForm`, яка монтується лише при відкритій модалці, тож кожне відкриття починається із застосованих фільтрів; застосовує лише «Apply filters». Довідники вантажаться лише при відкритій модалці й лише для фільтрів погляду.
 - `/dictionaries/*`, з яких беруться опції, доступні будь-якому токену (зокрема `departments`), тож фільтри працюють і для студентів.
 
+### Календар / список (адмінка)
+
+- `/dashboard/admin/lessons`: `?mode=calendar|list` (`LessonsModeSwitch`, `useTabParam(MODES, 'mode')`). Пошук і фільтри в URL спільні для обох режимів.
+- Список має вкладки `?tab=lessons|lesson-groups`: `LessonsBrowser mode="list"` (тулбар + `LessonsTable` з пагінацією, за замовчуванням лише майбутні — `dateFrom` = сьогодні, перемикач «Include past lessons») і `AdminLessonGroupsList` (пошук + `LessonGroupsTable` з `/admin/lessons-groups`).
+- Сторінка списку скидається на першу при зміні запиту без ефекту: `{ key, page }` у стані, де `key` — серіалізовані параметри.
+- `useTabParam(keys, param = 'tab')` — для будь-якого параметра-перемикача в URL.
+
 ### Дані календаря
 
 - `QuerySyncedCalendar view={...} filters search` — контейнер даних: дата й вид з URL (`useCalendarSearchParams`) → `getCalendarRange` (видимі дні; у місяці — разом із крайніми тижнями сусідніх місяців) → `useLessonsQuery(view, params)` → `lessonToCalendarEvent`. Без `page` API віддає весь діапазон.

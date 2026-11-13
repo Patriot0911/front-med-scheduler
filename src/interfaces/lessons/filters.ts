@@ -1,4 +1,5 @@
-import type { LessonVisibility, TLessonScope } from './lesson';
+import type { ReactNode } from 'react';
+import type { ILessonsListParams, LessonVisibility, TLessonScope } from './lesson';
 
 export interface ILessonsFilters {
   lessonGroupIds: string[];
@@ -30,8 +31,24 @@ export interface ILessonsListFilterConfig {
   searchPlaceholder: string;
 };
 
+export type TLessonsMode = 'calendar' | 'list';
+
 export interface ILessonsBrowserProps {
   view: TLessonsView;
+  mode?: TLessonsMode;
+};
+
+export interface ILessonsModeSwitchProps {
+  value: TLessonsMode;
+  onChange: (mode: TLessonsMode) => void;
+};
+
+export interface ILessonsTableProps {
+  view: TLessonsView;
+  /** Filters, search and date bounds; the table adds the page */
+  params: ILessonsListParams;
+  page: number;
+  onPageChange: (page: number) => void;
 };
 
 export interface ILessonsToolbarProps {
@@ -40,4 +57,6 @@ export interface ILessonsToolbarProps {
   onSearchChange: (search: string) => void;
   filters: ILessonsFilters;
   onFiltersApply: (filters: ILessonsFilters) => void;
+  /** Extra controls in the toolbar row, e.g. view-specific switches */
+  children?: ReactNode;
 };
