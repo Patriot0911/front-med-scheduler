@@ -1,57 +1,56 @@
-@use '../../../../../styles/abstracts/mixins' as *;
-@use '../../tokens' as tokens;
+// mirrors NavLink, but quieter: it is an action, not a page
+.toggle-wrapper {
+}
 
 .toggle-button {
-  position: fixed;
-  bottom: 1.1rem;
-  left: calc(#{tokens.$sidebar-collapsed-width} + 0.75rem);
-  z-index: 60;
-
   display: flex;
-  justify-content: center;
   align-items: center;
-
-  width: 2.75rem;
-  height: 2.75rem;
-
-  padding: 0;
+  width: 100%;
+  padding: 0.8rem 1rem;
+  gap: 0.7rem;
   border: none;
-  border-radius: var(--radius-md);
-  background-color: var(--color-surface);
-  box-shadow: 0 0 0 1px var(--color-border), var(--shadow-sm);
-  color: var(--color-primary);
-  font-size: 1.25rem;
+  background-color: transparent;
   cursor: pointer;
-
-  opacity: 0.35;
+  font-family: var(--font-jost);
+  color: var(--color-text-secondary);
+  opacity: 0.5;
   transition:
-    left ease-in-out 0.3s,
     opacity ease-in-out 0.2s,
-    transform ease-in-out 0.15s,
-    box-shadow ease-in-out 0.2s;
+    padding ease-in-out 0.3s,
+    gap ease-in-out 0.3s;
+
+  svg {
+    flex-shrink: 0;
+    font-size: 1.1rem;
+  }
+
+  span {
+    font-size: 0.95rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 140px;
+    opacity: 1;
+    transition: max-width ease-in-out 0.3s, opacity ease-in-out 0.2s;
+  }
 
   &:hover,
   &:focus-visible {
     opacity: 1;
-    transform: scale(1.06);
-    box-shadow: 0 0 0 1px var(--color-border-strong), var(--shadow-md);
   }
 
-  &:active {
-    transform: scale(0.96);
+  &:focus-visible {
+    outline: 2px solid rgba(var(--color-primary-rgb), 0.5);
+    outline-offset: -2px;
   }
 
-  &.toggle-open {
-    left: calc(100dvw - 3.5rem);
-  }
+  &.collapsed {
+    padding: 0.9rem 1.95rem;
+    gap: 0;
 
-  @include mq('md') {
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 1.15rem;
-
-    &.toggle-open {
-      left: calc(#{tokens.$sidebar-expanded-width} + 0.75rem);
+    span {
+      max-width: 0;
+      opacity: 0;
     }
   }
 }

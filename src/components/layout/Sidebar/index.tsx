@@ -23,9 +23,9 @@ const Sidebar = () => {
       <aside className={cn(styles['sidebar'], isOpen && styles['sidebar-open'])}>
         <SidebarHeader isOpen={isOpen} />
         <Navbar isOpen={isOpen} />
+        <SidebarToggle isOpen={isOpen} changeOpen={toggle} />
         <UserSection isOpen={isOpen} />
       </aside>
-      <SidebarToggle isOpen={isOpen} changeOpen={toggle} />
     </div>
   );
 }
