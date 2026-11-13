@@ -12,7 +12,7 @@ const RequirePermission = ({ children, fallback, permissions, redirectPath, shou
   const status = useAppSelector(authStatusSelector);
   const { data: meData, } = useMeQuery();
   const router = useRouter();
-  const redirectTo = redirectPath || '/login';
+  const redirectTo = redirectPath || '/';
 
   const hasPermission = useMemo(() => {
     if (!meData) return false;

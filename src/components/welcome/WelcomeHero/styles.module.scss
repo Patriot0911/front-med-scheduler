@@ -1,0 +1,48 @@
+@use '../../../styles/abstracts/mixins' as *;
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 560px;
+  padding: 0 16px;
+  text-align: center;
+}
+
+.logo {
+  display: inline-flex;
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 36px;
+  background-color: rgba(var(--color-light-rgb), 0.7);
+  box-shadow:
+    0 0 0 1px var(--color-primary-100),
+    0 12px 32px rgba(var(--color-primary-rgb), 0.25);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+
+  @include mq('md') {
+    font-size: 2.25rem;
+  }
+}
+
+.subtitle {
+  margin: 0;
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  // keeps the page from jumping while the session is being read
+  min-height: 48px;
+  margin-top: 16px;
+}

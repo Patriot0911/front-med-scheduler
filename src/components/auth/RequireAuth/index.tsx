@@ -14,7 +14,7 @@ import styles from './styles.module.scss';
 const RequireAuth = ({ children, fallback, redirectPath, shouldRedirect = false }: IRequireAuthProps) => {
   const status = useAppSelector(authStatusSelector);
   const router = useRouter();
-  const redirectTo = redirectPath || '/login';
+  const redirectTo = redirectPath || '/';
   const isReady = status !== 'init' && status !== 'guest';
 
   useEffect(() => {

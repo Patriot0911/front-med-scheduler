@@ -13,7 +13,7 @@ import Button from '@/components/ui/Button';
 
 import styles from './styles.module.scss'
 
-const AuthModal = (props: ILogInModalProps) => {
+const AuthModal = ({ onAuthenticated, ...props }: ILogInModalProps) => {
   const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const loginMutation = useLoginMutation();
   const methods = useForm<TLoginForm>({
@@ -42,6 +42,7 @@ const AuthModal = (props: ILogInModalProps) => {
 
     fadeTimer.current = setTimeout(() => {
       props.onClose();
+      onAuthenticated?.();
     }, 1500);
 
     return () => {
