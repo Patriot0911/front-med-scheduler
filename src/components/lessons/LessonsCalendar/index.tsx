@@ -1,34 +1,33 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Calendar from '@/components/ui/Calendar';
-import EventDetailsModal from '../EventDetailsModal';
-import { ICalendarEvent } from '@/interfaces/ui/calendar';
-import { ILessonsCalendarProps } from '@/interfaces/lessons/calendar';
-import { getMockCalendarEvents } from '@/mocks/calendar-events.mock';
+import { cn } from '@/lib/cn';
+import type { ILesson } from '@/interfaces/lessons/lesson';
+import type { ILessonsCalendarProps } from '@/interfaces/lessons/calendar';
+import LessonDetailsModal from '../LessonDetailsModal';
 
-const LessonsCalendar = (props: ILessonsCalendarProps) => {
-  const events = useMemo(() => getMockCalendarEvents(), []);
-  const [selectedEvent, setSelectedEvent] = useState<ICalendarEvent | null>(null);
-  const [isShownDetailsModal, setIsShownDetailsModal] = useState(false);
+import styles from './styles.module.scss';
 
-  const openDetails = (event: ICalendarEvent) => {
-    setSelectedEvent(event);
-    setIsShownDetailsModal(true);
-  };
+type TDetailsState = { isOpen: boolean; lesson: ILesson | null };
+
+const LessonsCalendar = ({ events, isFetching, ...props }: ILessonsCalendarProps) => {
+  // the lesson is kept after closing so the modal keeps its content during the exit animation
+  const [details, setDetails] = useState<TDetailsState>({ isOpen: false, lesson: null, });
 
   return (
     <>
-      <Calendar
+      <Calendar<ILesson>
         {...props}
+        className={cn(styles.calendar, isFetching && styles.fetching)}
         events={events}
-        defaultView="week"
-        onEventClick={openDetails}
+        defaultView={'week'}
+        onEventClick={(event) => setDetails({ isOpen: true, lesson: event.resource ?? null, })}
       />
-      <EventDetailsModal
-        isOpen={isShownDetailsModal}
-        event={selectedEvent}
-        onClose={() => setIsShownDetailsModal(false)}
+      <LessonDetailsModal
+        isOpen={details.isOpen}
+        lesson={details.lesson}
+        onClose={() => setDetails((prev) => ({ ...prev, isOpen: false, }))}
       />
     </>
   );

@@ -21,20 +21,21 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
 
-  &__lecture {
+  &__involved {
     --badge-color: var(--color-accent-500);
     --badge-bg: var(--color-accent-50);
   }
 
-  &__exam {
-    --badge-color: var(--color-error-500);
-    --badge-bg: var(--color-error-50);
+  &__moved {
+    --badge-color: var(--color-warning);
+    --badge-bg: rgba(var(--color-warning-rgb), 0.12);
   }
+}
 
-  &__event {
-    --badge-color: var(--color-success-500);
-    --badge-bg: var(--color-success-50);
-  }
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .details {

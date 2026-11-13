@@ -1,4 +1,4 @@
-import type { LessonVisibility } from './lesson';
+import type { LessonVisibility, TLessonScope } from './lesson';
 
 export interface ILessonsFilters {
   lessonGroupIds: string[];
@@ -15,7 +15,12 @@ export type TLessonsListFilterKey = Exclude<TLessonsFilterKey, 'visibility'>;
 
 export type TLessonsView = 'study' | 'teaching' | 'department' | 'all' | 'admin';
 
+/** list: /lessons/list (everything the user may see), my: /lessons/my with a scope, admin: /admin/lessons */
+export type TLessonsSource = 'list' | 'my' | 'admin';
+
 export interface ILessonsViewConfig {
+  source: TLessonsSource;
+  scope?: TLessonScope;
   filters: readonly TLessonsFilterKey[];
 };
 

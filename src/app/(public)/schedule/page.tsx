@@ -19,7 +19,7 @@ const SchedulePage = () => {
       <ScheduleHero />
       <main className={styles.content}>
         <Suspense fallback={<Loading />}>
-          <QuerySyncedCalendar height={CALENDAR_HEIGHT} />
+          <QuerySyncedCalendar height={CALENDAR_HEIGHT} view={'all'} />
         </Suspense>
       </main>
       <BackToPlatformButton />

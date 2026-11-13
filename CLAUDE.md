@@ -41,7 +41,7 @@ src/
     welcome/                   # WelcomeHero
     dictionaries/              # DictionarySection, таблиця, тулбар, cells/, forms/<X>FormModal
     users/                     # UsersSection, UsersTable, UsersToolbar, cells/, forms/UserFormModal
-    lessons/                   # Study/Teaching/AdminLessonsSection, QuerySyncedCalendar → LessonsSection → LessonsCalendar, EventDetailsModal
+    lessons/                   # *LessonsSection → LessonsBrowser (тулбар + QuerySyncedCalendar → LessonsSection → LessonsCalendar), LessonDetailsModal
     schedule/                  # компоненти сторінки /schedule
     modals/                    # загальні модалки: ConfirmModal, DictionaryModal
     providers/                 # StoreProvider, AuthProvider
@@ -60,7 +60,6 @@ src/
   store/                       # makeStore, storeRef (доступ до стору поза React), slices/authSlice
   styles/                      # abstracts (токени, міксини, брейкпоінти), base, vendors
   fonts/                       # next/font: geist, jost, oswald
-  mocks/                       # calendar-events.mock.ts
 ```
 
 ## Потік даних
@@ -137,6 +136,12 @@ export default DepartmentsService;
 - `LessonsToolbar`: пошук (debounce → URL) і кнопка «Filters» з лічильником, що відкриває `LessonsFiltersModal` (`SideModal`, щоб календар не зсувався, а випадні списки не обрізались). Чернетка живе в `LessonsFiltersForm`, яка монтується лише при відкритій модалці, тож кожне відкриття починається із застосованих фільтрів; застосовує лише «Apply filters». Довідники вантажаться лише при відкритій модалці й лише для фільтрів погляду.
 - `/dictionaries/*`, з яких беруться опції, доступні будь-якому токену (зокрема `departments`), тож фільтри працюють і для студентів.
 
+### Дані календаря
+
+- `QuerySyncedCalendar view={...} filters search` — контейнер даних: дата й вид з URL (`useCalendarSearchParams`) → `getCalendarRange` (видимі дні; у місяці — разом із крайніми тижнями сусідніх місяців) → `useLessonsQuery(view, params)` → `lessonToCalendarEvent`. Без `page` API віддає весь діапазон.
+- Джерело — `source` / `scope` погляду в `LESSONS_VIEWS`: `list` → `/lessons/list` (працює й без токена, ним користується `/schedule`), `my` → `/lessons/my?scope=`, `admin` → `/admin/lessons`. Ключі запитів — `LessonsQueryKey.List | My | Admin`; мутації занять мають інвалідовувати всі три.
+- Заняття стоїть у календарі на **фактичній** даті `delayedDate ?? date` (`getLessonStart`); бекенд фільтрує й сортує за нею ж. Назви викладачів, груп, курсу й кафедри приходять у самому занятті (`teachers`, `studentGroups`, `lessonGroupName`, `departmentName`), довідники для показу не потрібні.
+
 ### Стан у URL
 
 Стан, яким можна поділитися чи який має пережити перезавантаження, живе в query-параметрах: `useCalendarSearchParams` (`?date=YYYY-MM-DD&view=day|week|month`), `useTabParam(availableKeys)` (`?tab=`, недоступне значення → перша вкладка). Оновлення — `router.replace(..., { scroll: false })`. Компоненти з `useSearchParams` сторінка обгортає в `<Suspense fallback={<Loading />}>`.
@@ -186,7 +191,7 @@ export default DepartmentsService;
 
 ## Поточний стан і пастки
 
-- **Календар занять працює на моках** (`src/mocks/calendar-events.mock.ts`): сервісу / хуків для `/lessons` ще немає. Під час інтеграції: `/lessons/list` — усі доступні заняття (працює і без токена), `/lessons/my?scope=teaching|department|studying` — «мої» заняття; обидва повертають `{ items, meta }`, фільтри й `scope` описані в `../api-med-scheduler/docs/domain.md`. Для календаря `dateFrom` / `dateTo` бери з видимого діапазону і не передавай `page`. Завідувача видно з `me.teacher.headOfDepartmentId`.
+- Створення й редагування занять ще не підключені: календар лише показує заняття і `LessonDetailsModal`. `ILesson.canEdit` уже приходить з API.
 - Welcome і Overview (`/dashboard`) поки без контенту.
 - `RequireAuth` рендерить children завжди і лише накриває їх оверлеєм, тож сторінки дашборду монтуються і для гостя на мить до редіректу.
 - `Button` приймає проп `size`, але стилів розмірів для нього немає: проп нічого не змінює.

@@ -1,9 +1,9 @@
 import { IModalBaseProps } from '../shared/modal';
-import { ICalendarEvent } from '../ui/calendar';
 import type { ILessonsFilters, TLessonsFilterKey } from './filters';
+import type { ILesson } from './lesson';
 
-export interface IEventDetailsModalProps extends IModalBaseProps {
-  event: ICalendarEvent | null;
+export interface ILessonDetailsModalProps extends IModalBaseProps {
+  lesson: ILesson | null;
 };
 
 export interface ILessonsFiltersModalProps extends IModalBaseProps {

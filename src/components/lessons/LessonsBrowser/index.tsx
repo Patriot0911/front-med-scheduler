@@ -21,7 +21,7 @@ const LessonsBrowser = ({ view, }: ILessonsBrowserProps) => {
         filters={filters}
         onFiltersApply={setFilters}
       />
-      <QuerySyncedCalendar />
+      <QuerySyncedCalendar view={view} filters={filters} search={search} />
     </div>
   );
 }

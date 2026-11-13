@@ -21,18 +21,26 @@ export const LESSONS_LIST_FILTERS: Record<TLessonsListFilterKey, ILessonsListFil
 
 export const LESSONS_VIEWS: Record<TLessonsView, ILessonsViewConfig> = {
   study: {
+    source: 'my',
+    scope: 'studying',
     filters: ['lessonGroupIds', 'teacherIds', 'semesterIds'],
   },
   teaching: {
+    source: 'my',
+    scope: 'teaching',
     filters: ['lessonGroupIds', 'studentGroupIds', 'groupTagIds', 'semesterIds', 'visibility'],
   },
   department: {
+    source: 'my',
+    scope: 'department',
     filters: ['lessonGroupIds', 'teacherIds', 'studentGroupIds', 'groupTagIds', 'semesterIds', 'visibility'],
   },
   all: {
+    source: 'list',
     filters: ['teacherIds', 'studentGroupIds', 'departmentIds'],
   },
   admin: {
+    source: 'admin',
     filters: ['lessonGroupIds', 'teacherIds', 'studentGroupIds', 'groupTagIds', 'departmentIds', 'semesterIds'],
   },
 };
