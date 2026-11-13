@@ -3,6 +3,10 @@
 Веб-клієнт розкладу занять медичного університету: календар занять, публічний розклад, керування користувачами та довідниками.
 API — сусідній репозиторій `../api-med-scheduler`. Доменна модель і правила доступу описані в `../api-med-scheduler/docs/domain.md`.
 
+## Git
+
+- **Не комітити й не пушити без прямого прохання.** Зміни лишаються в робочому дереві, доки користувач сам не попросить коміт. Дозвіл на один коміт не поширюється на наступні.
+
 ## Стек
 
 Next.js 16 (App Router) · React 19 · TypeScript (strict) · TanStack Query 5 · Redux Toolkit (лише стан автентифікації) · axios · react-hook-form + zod · SCSS-модулі + CSS-токени · Tailwind 4 (лише утиліти) · framer-motion · react-big-calendar · dayjs · react-hot-toast · react-icons.
@@ -160,7 +164,7 @@ export default DepartmentsService;
 
 ## Поточний стан і пастки
 
-- **Календар занять працює на моках** (`src/mocks/calendar-events.mock.ts`): сервісу / хуків для `/lessons` ще немає. Під час інтеграції: `/lessons/list` — для публічного / загального календаря (працює і без токена), `/lessons/my` — для «мого розкладу»; фільтр `dateFrom` / `dateTo` бери з видимого діапазону календаря.
+- **Календар занять працює на моках** (`src/mocks/calendar-events.mock.ts`): сервісу / хуків для `/lessons` ще немає. Під час інтеграції: `/lessons/list` — усі доступні заняття (працює і без токена), `/lessons/my?scope=teaching|department|studying` — «мої» заняття; обидва повертають `{ items, meta }`, фільтри й `scope` описані в `../api-med-scheduler/docs/domain.md`. Для календаря `dateFrom` / `dateTo` бери з видимого діапазону і не передавай `page`. Завідувача видно з `me.teacher.headOfDepartmentId`.
 - Welcome і Overview (`/dashboard`) поки без контенту.
 - `RequireAuth` рендерить children завжди і лише накриває їх оверлеєм, тож сторінки дашборду монтуються і для гостя на мить до редіректу.
 - `Button` приймає проп `size`, але стилів розмірів для нього немає: проп нічого не змінює.
