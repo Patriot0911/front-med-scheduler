@@ -11,8 +11,6 @@
 
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-neutral-300) transparent;
 
   @include mq('md') {
     overflow-x: visible;

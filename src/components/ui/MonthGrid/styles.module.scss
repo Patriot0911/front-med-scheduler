@@ -1,0 +1,246 @@
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-jost);
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+}
+
+.weekdays,
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.weekday {
+  padding: 4px 0;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
+.week {
+  border-radius: var(--radius-sm);
+}
+
+.blank {
+  height: 34px;
+}
+
+.day {
+  position: relative;
+  z-index: 0;
+  height: 34px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+
+  &:focus-visible {
+    outline: 2px solid rgba(var(--color-primary-rgb), 0.5);
+    outline-offset: 1px;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-50);
+    color: var(--color-primary);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &__outside {
+    color: var(--color-text-muted);
+  }
+
+  &__today {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    box-shadow: inset 0 0 0 1px var(--color-primary-200);
+  }
+
+  &__selected,
+  &__selected:hover:not(:disabled) {
+    background-color: var(--color-primary);
+    color: var(--color-light);
+    box-shadow: none;
+  }
+
+  // the fixed day of a selection: a ring marks that it can't be unpicked
+  &__locked {
+    box-shadow: inset 0 0 0 2px rgba(var(--color-light-rgb), 0.6);
+  }
+
+}
+
+// neighbour-month days: a solid light background, lighter than the disabled ones
+.grid__shaded .day__outside {
+  border-radius: 0;
+  background-color: var(--color-neutral-100);
+  color: var(--color-text-secondary);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-50);
+  }
+
+  // the cell stays part of the grey strip; the selection is a rounded layer on top, as in a range
+  &.day__selected,
+  &.day__selected:hover:not(:disabled) {
+    background-color: var(--color-neutral-100);
+    color: var(--color-light);
+  }
+
+  &.day__selected:not(.day__join-prev):not(.day__join-next)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: var(--radius-sm);
+    background-color: rgba(var(--color-primary-rgb), 0.7);
+  }
+
+  &.day__locked:not(.day__join-prev):not(.day__join-next)::after {
+    box-shadow: inset 0 0 0 2px rgba(var(--color-light-rgb), 0.6);
+  }
+}
+
+// a disabled day that is not selected: before the allowed range
+.grid:not(.grid__readonly) .day:disabled:not(.day__selected) {
+  color: var(--color-text-muted);
+  opacity: 0.5;
+}
+
+.grid__week {
+  .week {
+    cursor: pointer;
+    transition: background-color 0.12s ease;
+
+    &:hover {
+      background-color: var(--color-primary-50);
+
+      .day {
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  .day {
+    border-radius: 0;
+
+    &:hover:not(:disabled) {
+      background-color: transparent;
+    }
+
+    &:first-child {
+      border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+    }
+
+    &:last-child {
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+  }
+
+  .week__selected,
+  .week__selected:hover {
+    background-color: var(--color-primary);
+
+    .day {
+      color: var(--color-light);
+      box-shadow: none;
+    }
+
+    .day__outside {
+      color: rgba(var(--color-light-rgb), 0.7);
+    }
+  }
+}
+
+// consecutive selected days of a week read as a range: solid ends, a lower and lighter band between them.
+// Only the look: every day of it is still selected on its own.
+// The button's own background would sit under the band, so in a range both layers are pseudo-elements:
+// ::before is the band, ::after the solid end on top of it; the text stays above both.
+.grid {
+  // how much lower than a day the band is, top and bottom
+  --range-inset: 1px;
+
+  .day__selected.day__join-prev,
+  .day__selected.day__join-next,
+  .day__selected.day__join-prev:hover:not(:disabled),
+  .day__selected.day__join-next:hover:not(:disabled) {
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .day__join-prev::before,
+  .day__join-next::before {
+    content: '';
+    position: absolute;
+    inset: var(--range-inset) 0;
+    z-index: -1;
+    background-color: var(--color-primary-100);
+  }
+
+  // the band leaves an end only towards its neighbour
+  .day__join-next:not(.day__join-prev)::before {
+    left: 50%;
+  }
+
+  .day__join-prev:not(.day__join-next)::before {
+    right: 50%;
+  }
+
+  .day__join-next:not(.day__join-prev)::after,
+  .day__join-prev:not(.day__join-next)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-primary);
+  }
+
+  // an end is rounded only on its outer side
+  .day__join-next:not(.day__join-prev)::after {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .day__join-prev:not(.day__join-next)::after {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .day__outside.day__join-next:not(.day__join-prev)::after,
+  .day__outside.day__join-prev:not(.day__join-next)::after {
+    background-color: rgba(var(--color-primary-rgb), 0.7);
+  }
+
+  .day__locked.day__join-next::after,
+  .day__locked.day__join-prev::after {
+    box-shadow: inset 0 0 0 2px rgba(var(--color-light-rgb), 0.6);
+  }
+
+  &.grid__shaded .day__outside.day__selected.day__join-prev,
+  &.grid__shaded .day__outside.day__selected.day__join-next {
+    background-color: var(--color-neutral-100);
+  }
+
+  // between the ends: the band only
+  .day.day__selected.day__join-prev.day__join-next,
+  .day.day__selected.day__join-prev.day__join-next:hover:not(:disabled) {
+    color: var(--color-primary-500);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .day.day__locked.day__join-prev.day__join-next {
+    box-shadow: inset 0 0 0 2px var(--color-primary-300);
+  }
+}

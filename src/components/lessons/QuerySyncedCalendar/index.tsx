@@ -18,6 +18,7 @@ const QuerySyncedCalendar = ({
   view: lessonsView,
   filters = EMPTY_LESSONS_FILTERS,
   search = '',
+  onSlotSelect,
 }: IQuerySyncedCalendarProps) => {
   const { date, view, setDate, setView, } = useCalendarSearchParams();
 
@@ -43,6 +44,7 @@ const QuerySyncedCalendar = ({
         onViewChange={setView}
         events={events}
         isFetching={isFetching}
+        onSlotSelect={onSlotSelect}
       />
     </div>
   );

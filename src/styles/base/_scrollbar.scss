@@ -1,0 +1,30 @@
+// One thin, plain scrollbar everywhere. Firefox reads the standard properties, Chromium and Safari the
+// ::-webkit-scrollbar ones; Chromium ignores the latter as soon as scrollbar-width / -color are set,
+// so the standard ones go only where ::-webkit-scrollbar does not exist. Don't set scrollbar-width locally,
+// except `none` to hide one.
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-neutral-300) transparent;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-full);
+  background-color: var(--color-neutral-300);
+
+  &:hover {
+    background-color: var(--color-neutral-400);
+  }
+}

@@ -1,12 +1,14 @@
-import { useMemo, useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
+import { useState } from 'react';
+import type { Dayjs } from 'dayjs';
+import dayjs from '@/lib/dayjs';
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import { IDatePickerProps, TDatePickerLevel } from '@/interfaces/ui/date-picker';
 import { cn } from '@/lib/cn';
+import { startOfWeek } from '@/lib/calendar-grid';
+import MonthGrid from '@/components/ui/MonthGrid';
 
 import styles from './styles.module.scss';
 
-const WEEKDAYS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const YEARS_PER_PAGE = 12;
 
@@ -21,18 +23,9 @@ const UPPER_LEVEL: Partial<Record<TDatePickerLevel, TDatePickerLevel>> = {
   months: 'years',
 };
 
-const startOfWeek = (date: Dayjs) => date.startOf('day').subtract((date.day() + 6) % 7, 'day');
-
-const getMonthWeeks = (month: Dayjs) => {
-  const first = startOfWeek(month.startOf('month'));
-  return Array.from({ length: 6 }, (_, week) =>
-    Array.from({ length: 7 }, (_, day) => first.add(week * 7 + day, 'day'))
-  );
-};
-
 const getYearsPageStart = (year: number) => Math.floor(year / YEARS_PER_PAGE) * YEARS_PER_PAGE;
 
-const DatePicker = ({ value, mode = 'day', onChange, className }: IDatePickerProps) => {
+const DatePicker = ({ value, mode = 'day', onChange, embedded, className }: IDatePickerProps) => {
   const selected = dayjs(value);
   const today = dayjs();
   const baseLevel: TDatePickerLevel = mode === 'month' ? 'months' : 'days';
@@ -40,7 +33,6 @@ const DatePicker = ({ value, mode = 'day', onChange, className }: IDatePickerPro
   const [level, setLevel] = useState<TDatePickerLevel>(baseLevel);
   const [viewDate, setViewDate] = useState(() => selected.startOf('month'));
 
-  const weeks = useMemo(() => getMonthWeeks(viewDate), [viewDate]);
   const yearsPageStart = getYearsPageStart(viewDate.year());
   const upperLevel = UPPER_LEVEL[level];
 
@@ -73,7 +65,7 @@ const DatePicker = ({ value, mode = 'day', onChange, className }: IDatePickerPro
   const isSelectedWeek = (week: Dayjs[]) => mode === 'week' && startOfWeek(selected).isSame(week[0], 'day');
 
   return (
-    <div className={cn(styles['date-picker'], className)}>
+    <div className={cn(styles['date-picker'], embedded && styles['date-picker__embedded'], className)}>
       <div className={styles.header}>
         <button
           type="button"
@@ -143,35 +135,13 @@ const DatePicker = ({ value, mode = 'day', onChange, className }: IDatePickerPro
       )}
 
       {level === 'days' && (
-        <div className={cn(styles.grid, mode === 'week' && styles['grid__week'])}>
-          <div className={styles.weekdays}>
-            {WEEKDAYS.map((day) => (
-              <span key={day} className={styles.weekday}>{day}</span>
-            ))}
-          </div>
-          {weeks.map((week) => (
-            <div
-              key={week[0].valueOf()}
-              className={cn(styles.week, isSelectedWeek(week) && styles['week__selected'])}
-            >
-              {week.map((day) => (
-                <button
-                  key={day.valueOf()}
-                  type="button"
-                  className={cn(
-                    styles.day,
-                    !day.isSame(viewDate, 'month') && styles['day__outside'],
-                    day.isSame(today, 'day') && styles['day__today'],
-                    isSelectedDay(day) && styles['day__selected'],
-                  )}
-                  onClick={() => onChange((mode === 'week' ? startOfWeek(day) : day).toDate())}
-                >
-                  {day.date()}
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
+        <MonthGrid
+          month={viewDate}
+          weekMode={mode === 'week'}
+          isDaySelected={isSelectedDay}
+          isWeekSelected={isSelectedWeek}
+          onDayClick={(day) => onChange((mode === 'week' ? startOfWeek(day) : day).toDate())}
+        />
       )}
     </div>
   );

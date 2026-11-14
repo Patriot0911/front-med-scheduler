@@ -17,23 +17,6 @@
   cursor: default;
 
   animation: dropdown-in 0.15s ease;
-
-  &::-webkit-scrollbar {
-    width: 7px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: var(--color-neutral-100);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: var(--color-neutral-300);
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: var(--color-neutral-400);
-  }
 }
 
 @keyframes dropdown-in {

@@ -43,7 +43,9 @@ const COLUMNS: ITableColumn<ILesson>[] = [
     render: (lesson) => (
       <div className={cells.stack}>
         <span className={cells.primary} title={lesson.name}>{lesson.name}</span>
-        <span className={cells.secondary} title={lesson.lessonGroupName}>{lesson.lessonGroupName}</span>
+        {lesson.lessonGroupName && (
+          <span className={cells.secondary} title={lesson.lessonGroupName}>{lesson.lessonGroupName}</span>
+        )}
       </div>
     ),
   },
@@ -62,11 +64,11 @@ const COLUMNS: ITableColumn<ILesson>[] = [
       : emptyCell,
   },
   {
-    key: 'department',
-    title: 'Department',
+    key: 'departments',
+    title: 'Departments',
     width: '11rem',
-    render: (lesson) => lesson.departmentName
-      ? <span className={cells.secondary} title={lesson.departmentName}>{lesson.departmentName}</span>
+    render: (lesson) => lesson.departments.length
+      ? <span className={cells.secondary} title={names(lesson.departments)}>{names(lesson.departments)}</span>
       : emptyCell,
   },
   {

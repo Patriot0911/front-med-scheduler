@@ -1,4 +1,4 @@
-import type { ILessonsListParams, ILessonsResponse, IMyLessonsParams } from '@/interfaces/lessons/lesson';
+import type { ICreateLessonPayload, ILesson, ILessonsListParams, ILessonsResponse, IMyLessonsParams } from '@/interfaces/lessons/lesson';
 import { apiClient } from '../axios';
 
 export enum LessonsQueryKey {
@@ -17,6 +17,10 @@ class LessonsService {
 
   static async getMyLessons(params: IMyLessonsParams): Promise<ILessonsResponse> {
     return apiClient.get('/lessons/my', { params, paramsSerializer: PARAMS_SERIALIZER, });
+  }
+
+  static async createLesson(payload: ICreateLessonPayload): Promise<ILesson> {
+    return apiClient.post('/lessons', payload);
   }
 
   static async getAdminLessons(params: ILessonsListParams): Promise<ILessonsResponse> {

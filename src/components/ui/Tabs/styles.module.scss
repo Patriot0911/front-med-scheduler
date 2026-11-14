@@ -49,6 +49,10 @@
   width: 100%;
   overflow-x: auto;
   scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
   // the base line is a shadow, so the active indicator can cover it without overflowing
   box-shadow: inset 0 -1px 0 var(--color-border);
 

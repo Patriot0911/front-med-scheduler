@@ -21,10 +21,12 @@ export interface ILesson {
   duration: number;
   note: string | null;
   semesterId: string | null;
-  lessonGroupId: string;
-  lessonGroupName: string;
-  departmentId: string | null;
-  departmentName: string | null;
+  /** Optional: a series or lessons that belong together */
+  lessonGroupId: string | null;
+  lessonGroupName: string | null;
+  /** The head of each of them can edit the lesson */
+  departmentIds: string[];
+  departments: ILessonRef[];
   teacherIds: string[];
   studentGroupIds: string[];
   teachers: ILessonRef[];
@@ -52,4 +54,38 @@ export interface ILessonsListParams {
 
 export interface IMyLessonsParams extends ILessonsListParams {
   scope?: TLessonScope;
+};
+
+export interface ICreateLessonPayload {
+  name: string;
+  date: string;
+  duration: number;
+  lessonGroupId?: string | null;
+  teacherIds: string[];
+  studentGroupIds: string[];
+  semesterId?: string | null;
+  departmentIds?: string[];
+  visibility?: LessonVisibility;
+  note?: string;
+};
+
+/**
+ * How a series repeats: not at all (the group gets only this lesson, more are added later), every day,
+ * chosen weekdays every week or every other week, or hand-picked days
+ */
+export type TRecurrencePattern = 'none' | 'daily' | 'weekly' | 'biweekly' | 'custom';
+
+/** A new lesson group with a lesson at each date; every lesson shares the `lesson` fields */
+export interface ICreateLessonSeriesPayload {
+  lessonGroup: { name: string; note?: string };
+  lesson: Omit<ICreateLessonPayload, 'date' | 'lessonGroupId'>;
+  dates: string[];
+};
+
+export type IAddLessonsToGroupPayload = Omit<ICreateLessonSeriesPayload, 'lessonGroup'>;
+
+/** Where a new lesson starts: a clicked / selected calendar slot or now */
+export interface ILessonDraft {
+  start: Date;
+  duration: number;
 };

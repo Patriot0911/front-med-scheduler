@@ -1,0 +1,104 @@
+// the same field look as Input
+.controller {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+
+  .label-wrapper {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    label {
+      font-family: var(--font-geist-sans);
+      font-size: 0.8rem;
+      line-height: 0.9rem;
+      letter-spacing: 0.04em;
+      color: var(--color-text-secondary);
+      font-weight: 700;
+
+      &.error-state {
+        color: var(--color-error-400);
+      }
+    }
+  }
+
+  .controller-input {
+    display: flex;
+    padding: var(--field-padding-y, 10px) 12px;
+    border-radius: var(--radius-sm);
+    background: var(--color-primary-100);
+    border: 1px solid var(--color-neutral-300);
+    box-shadow: inset 0px 0px 2px var(--color-secondary-400);
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+
+    &__touched {
+      border-color: var(--color-neutral-300);
+    }
+
+    &__error {
+      box-shadow: 0px 0px 2px 1px rgba(var(--color-error-rgb), 0.1);
+      border-color: var(--color-error-100);
+      background: var(--color-error-50);
+    }
+
+    &__disabled {
+      border-color: transparent;
+      box-shadow: none;
+
+      textarea {
+        color: var(--color-text-secondary);
+      }
+    }
+
+    textarea {
+      --textarea-line-height: 1.4;
+
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      resize: vertical;
+      font-family: var(--font-geist-sans);
+      font-size: 0.8rem;
+      line-height: var(--textarea-line-height);
+      color: var(--color-text-primary);
+      font-weight: 600;
+
+      &::placeholder {
+        font-size: 0.8rem;
+        font-family: var(--font-geist-sans);
+        color: var(--color-text-secondary);
+        font-weight: 700;
+        opacity: 0.5;
+        letter-spacing: 0.04em;
+      }
+
+      &.auto-grow {
+        resize: none;
+        overflow-y: auto;
+        max-height: calc(var(--textarea-max-rows) * var(--textarea-line-height) * 1em);
+      }
+    }
+  }
+
+  .hint {
+    font-size: 0.75rem;
+    line-height: 1;
+    font-family: var(--font-geist-sans);
+    color: var(--color-text-secondary);
+    font-weight: 800;
+    opacity: 0.8;
+    font-style: italic;
+  }
+
+  .controller-error {
+    line-height: 1rem;
+    font-size: 0.75rem;
+    color: var(--color-error-400);
+    font-weight: 600;
+    opacity: 0.8;
+  }
+}

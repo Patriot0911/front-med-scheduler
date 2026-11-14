@@ -49,7 +49,7 @@ const LessonDetailsModal = ({ lesson, ...props }: ILessonDetailsModalProps) => {
         : []),
       { key: 'teachers', icon: <LuUser />, label: 'Teachers', value: joinNames(lesson.teachers), },
       { key: 'groups', icon: <LuUsers />, label: 'Groups', value: joinNames(lesson.studentGroups), },
-      { key: 'department', icon: <LuBuilding2 />, label: 'Department', value: lesson.departmentName, },
+      { key: 'departments', icon: <LuBuilding2 />, label: 'Departments', value: joinNames(lesson.departments), },
     ]
     : [];
 
@@ -57,7 +57,7 @@ const LessonDetailsModal = ({ lesson, ...props }: ILessonDetailsModalProps) => {
     <Modal {...props} size={'md'}>
       {lesson && (
         <>
-          <Modal.Header title={lesson.name} description={lesson.lessonGroupName} />
+          <Modal.Header title={lesson.name} description={lesson.lessonGroupName ?? undefined} />
           <Modal.Content>
             <div className={styles.content}>
               <div className={styles.badges}>

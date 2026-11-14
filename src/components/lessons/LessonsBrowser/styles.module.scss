@@ -4,3 +4,8 @@
   gap: 1rem;
   min-width: 0;
 }
+
+.create-button {
+  margin-left: auto;
+  padding: var(--button-padding-y, 0.65rem) 1.5rem;
+}

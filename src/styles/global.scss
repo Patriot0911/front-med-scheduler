@@ -2,6 +2,7 @@
 @use './abstracts/variables';
 @use './base/reset';
 @use './base/fields';
+@use './base/scrollbar';
 @use './vendors/calendar';
 
 @use 'tailwindcss';

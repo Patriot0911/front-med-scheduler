@@ -5,16 +5,26 @@ import dayjs from '@/lib/dayjs';
 import { LESSONS_VIEWS } from '@/configs/lessons-views.config';
 import useLessonsFiltersParams from '@/hooks/lessons/useLessonsFiltersParams';
 import { toLessonsParams } from '@/lib/lessons-filters';
+import { nextHourLessonDraft, slotToLessonDraft } from '@/lib/lessons-calendar';
+import type { ILessonDraft } from '@/interfaces/lessons/lesson';
 import type { ILessonsBrowserProps } from '@/interfaces/lessons/filters';
+import { LuPlus } from 'react-icons/lu';
+import Button from '@/components/ui/Button';
 import Switch from '@/components/ui/Switch';
+import LessonFormModal from '../LessonFormModal';
 import LessonsToolbar from '../LessonsToolbar';
 import LessonsTable from '../LessonsTable';
 import QuerySyncedCalendar from '../QuerySyncedCalendar';
 
 import styles from './styles.module.scss';
 
+type TFormState = { isOpen: boolean; draft: ILessonDraft | null };
+
 const LessonsBrowser = ({ view, mode = 'calendar', }: ILessonsBrowserProps) => {
-  const filterKeys = LESSONS_VIEWS[view].filters;
+  const { filters: filterKeys, canCreate, } = LESSONS_VIEWS[view];
+  // the draft is kept after closing so the modal keeps its content during the exit animation
+  const [form, setForm] = useState<TFormState>({ isOpen: false, draft: null, });
+  const openForm = (draft: ILessonDraft) => setForm({ isOpen: true, draft, });
   const { filters, search, setFilters, setSearch, } = useLessonsFiltersParams(filterKeys);
   const [includePast, setIncludePast] = useState(false);
 
@@ -44,9 +54,25 @@ const LessonsBrowser = ({ view, mode = 'calendar', }: ILessonsBrowserProps) => {
             label={'Include past lessons'}
           />
         )}
+        {canCreate && (
+          <Button
+            leftIcon={<LuPlus />}
+            onClick={() => openForm(nextHourLessonDraft())}
+            className={styles['create-button']}
+          >
+            Add lesson
+          </Button>
+        )}
       </LessonsToolbar>
       {mode === 'calendar'
-        ? <QuerySyncedCalendar view={view} filters={filters} search={search} />
+        ? (
+          <QuerySyncedCalendar
+            view={view}
+            filters={filters}
+            search={search}
+            onSlotSelect={canCreate ? (slot) => openForm(slotToLessonDraft(slot)) : undefined}
+          />
+        )
         : (
           <LessonsTable
             view={view}
@@ -55,6 +81,14 @@ const LessonsBrowser = ({ view, mode = 'calendar', }: ILessonsBrowserProps) => {
             onPageChange={(next) => setPageState({ key: paramsKey, page: next, })}
           />
         )}
+      {canCreate && (
+        <LessonFormModal
+          isOpen={form.isOpen}
+          draft={form.draft}
+          isDepartmentLesson={view === 'department'}
+          onClose={() => setForm((prev) => ({ ...prev, isOpen: false, }))}
+        />
+      )}
     </div>
   );
 }

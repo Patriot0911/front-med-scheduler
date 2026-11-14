@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, ReactNode } from 'react';
+import { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
 import { FieldValues, Path } from 'react-hook-form';
 
 export interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -30,5 +30,20 @@ export interface IPasswordInputProps extends Omit<IInputProps, 'type' | 'icon' |
 
 export interface IFormPasswordInputProps<T extends FieldValues>
   extends Omit<IPasswordInputProps, 'name' | 'error' | 'touched'> {
+  name: Path<T>;
+};
+
+export interface ITextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+  label?: string;
+  error?: string;
+  hint?: string;
+  hideErrorMessage?: boolean;
+  touched?: boolean;
+  /** Grows with the content up to this many rows, then scrolls; no manual resize */
+  maxRows?: number;
+};
+
+export interface IFormTextareaProps<T extends FieldValues>
+  extends Omit<ITextareaProps, 'name' | 'error' | 'touched'> {
   name: Path<T>;
 };

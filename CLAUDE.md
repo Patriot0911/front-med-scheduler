@@ -35,7 +35,7 @@ src/
     (platform)/layout.tsx      # RequireAuth + BaseLayout (сайдбар) для всього дашборду
     (platform)/dashboard/      # /dashboard (Overview), /study, /teaching, /lessons (усі), /admin/lessons, /users, /dictionaries
   components/
-    ui/                        # дизайн-система: Button, Input, Form*, Select, MultiSelect, Modal, SideModal, Table, Tabs, Calendar, DatePicker, ...
+    ui/                        # дизайн-система: Button, Input, Textarea, Form*, Select, MultiSelect, Modal, SideModal, Table, Tabs, Calendar, DatePicker, TimePicker, DateTimeField, ...
     layout/                    # BaseLayout, Sidebar (+ components/), Header, Footer
     auth/                      # AuthModal, ProfileModal, LogOutModal, RequireAuth, RequirePermission
     welcome/                   # WelcomeHero
@@ -136,6 +136,15 @@ export default DepartmentsService;
 - `LessonsToolbar`: пошук (debounce → URL) і кнопка «Filters» з лічильником, що відкриває `LessonsFiltersModal` (`SideModal`, щоб календар не зсувався, а випадні списки не обрізались). Чернетка живе в `LessonsFiltersForm`, яка монтується лише при відкритій модалці, тож кожне відкриття починається із застосованих фільтрів; застосовує лише «Apply filters». Довідники вантажаться лише при відкритій модалці й лише для фільтрів погляду.
 - `/dictionaries/*`, з яких беруться опції, доступні будь-якому токену (зокрема `departments`), тож фільтри працюють і для студентів.
 
+### Створення занять
+
+- Погляди з `canCreate` у `LESSONS_VIEWS` (зараз `teaching`, `department`): кнопка «Add lesson» у тулбарі (`nextHourLessonDraft`) і клік / виділення слоту календаря (`slotToLessonDraft`: день у місячному виді → 9:00, одиночний клік → `DEFAULT_LESSON_DURATION`, протягнутий діапазон → його тривалість).
+- `LessonFormModal` — центрована `Modal size="lg"`; `LessonForm` монтується лише при відкритті, тож стартує з чернетки без `reset`-ефектів. Схема — фабрика `createLessonSchema({ teacherId, headsOwnDepartment })`, бо правило «кафедри — лише кафедри обраних викладачів» (так само перевіряє бекенд) залежить від довідника викладачів. Автор завжди серед викладачів: поле блокує його через `lockedValues` («(you)», зняти не можна).
+- Кафедри заняття — мультиселектор `departmentIds` (0..N): опції — кафедри обраних викладачів; у вкладці Department за замовчуванням вибрана своя. Модель заняття: `departmentIds` + `departments` (`{ id, name }[]`).
+- Група занять заняттю **не обов'язкова** (`lessonGroupId` / `lessonGroupName` можуть бути `null`); наявну групу в модалці не вибирають — нова група створюється лише разом із серією (нижче). Бекенд для цього вже має `GET /lessons-groups/usable` (групи, куди викладач може класти заняття).
+- `useCreateLessonMutation` інвалідовує всі `LessonsQueryKey` і адмінський список груп.
+- **Група занять і повтори** («Add to a lesson group» під нотаткою → `RecurrenceSection`, відділена лінією й заголовком). Група: **New group** (назва; іде в `POST /lessons-groups/with-lessons` разом із заняттями) або **Existing group** — одна з моїх груп (`GET /lessons-groups/my`, автор — я; заняття йдуть у `POST /lessons-groups/:id/lessons`; бекенд додатково перевіряє `canUseGroup`). Repeats: `none` (лише це заняття — група для занять, які додаватимуться пізніше), `daily` / `weekly` / `biweekly` по днях тижня до «Until», або `custom` (перше заняття + вибрані дні). Дати будує `buildSeriesDates` (`lib/lesson-recurrence.ts`): у локальному часі, час кожного заняття — з «Starts at», один на день, сортовані; ≤ `MAX_SERIES_LESSONS` (200). Ті самі дати йдуть у перегляд у `MultiMonthCalendar` (два місяці поруч; у `custom` дні вибираються кліком, перше заняття заблоковане, дні до нього недоступні), кнопку «Create N lessons» і запит, тож створюється рівно те, що видно.
+
 ### Календар / список (адмінка)
 
 - `/dashboard/admin/lessons`: `?mode=calendar|list` (`LessonsModeSwitch`, `useTabParam(MODES, 'mode')`). Пошук і фільтри в URL спільні для обох режимів.
@@ -167,9 +176,11 @@ export default DepartmentsService;
 ## Форми
 
 - `react-hook-form` + `zodResolver`; схема — `<name>.scheme.ts` поруч з модалкою, тип `T<Name>Form = z.infer<typeof schema>`; `mode: 'onTouched'`.
+- Кожне поле — базовий компонент (`Input`, `Textarea`, `Select`, …) + тонка `Form*`-обгортка через `useFormInputProps` / `useController`; пропси обох — в `interfaces/ui/*.d.ts`. `Textarea` має `maxRows` (росте з вмістом до N рядків). `MultiSelect` має `lockedValues` — завжди вибрані значення, які не можна зняти чи очистити. Дата / дата й час — `FormDateTimeField` (значення — `Date`; `withTime` додає колонку годин і хвилин біля календаря `DatePicker`). Панель `DateTimeField` рендериться порталом з `position: fixed` і відкривається вгору, коли внизу мало місця, тож модалки її не обрізають; Escape закриває панель, а не модалку. Нативні `type="date" / "time"` у нових формах не використовуй. Сітка днів місяця — `MonthGrid` (`lib/calendar-grid.ts`), спільна для `DatePicker` і `MultiMonthCalendar`. У `MultiMonthCalendar` вибрані дні підряд показуються діапазоном (`joinSelectedDays`; сусідами вважаються календарні дні, тож діапазон тягнеться через межу тижня й місяця: суцільні крайні дні, між ними нижча світла смуга; це лише вигляд — кожен день вибраний окремо; смуга й край — псевдоелементи `::before` / `::after`, бо фон самої кнопки лягав би під смугу), а сітка доповнюється днями сусідніх місяців на суцільному світлому фоні (`shadeOutsideDays`), крім тих місяців, що вже показані в іншій половині (`isOutsideDayHidden`): розворот A | B доповнюється A−1 зліва і B+1 справа.
 - Поля — лише `Form*`-обгортки з `components/ui` (`FormInput`, `FormSelect`, `FormMultiSelect`, `FormSwitch`, `FormCheckboxGroup`, `FormTextarea`, `FormPasswordInput`). Вони беруть контекст форми через `useFormInputProps` і показують помилки за спільними правилами. Generic поля: `<FormInput<TForm> name="..." />`.
 - `toFormValues(item)` мапить сутність у значення форми; при відкритті модалки викликається `methods.reset(toFormValues(item))` + `mutation.reset()`.
 - Порожній селект — `''`, у payload перетворюється на `null` / пропуск.
+- Щільні форми (форма заняття): `hideErrorMessage` на **всіх** полях, щоб вони однаково не займали місця під текст помилки; поле з помилкою лише червоніє, а `handleSubmit(onValid, onInvalid)` показує першу помилку toast-ом (див. `LessonForm`).
 
 ## Модалки
 
@@ -194,13 +205,15 @@ export default DepartmentsService;
 - Адаптивність mobile-first: `@use '<відносний шлях>/styles/abstracts/mixins' as *;` → `@include mq('md') { ... }`. Брейкпоінти: sm 576, md 768, lg 992, xl 1200 (у JS — `configs/breakpoints.config.ts`, `useMediaQuery`).
 - Імена класів — kebab-case, звертання `styles['nav-container']`.
 - Tailwind підключений, але використовується лише для дрібних утиліт (`flex-1`). Верстку пиши в SCSS.
+- Скролбар один на весь застосунок — `styles/base/_scrollbar.scss` (6px, прозора доріжка, сірий повзунок; `::-webkit-scrollbar` для Chromium / Safari, `scrollbar-width` / `-color` лише там, де webkit-варіанта немає). Локально `scrollbar-width` не задавай: у Chromium він вимикає глобальний вигляд. Виняток — `none`, щоб сховати скролбар (тоді ще `&::-webkit-scrollbar { display: none; }` для Safari, див. `Tabs`).
 - Глобальні стилі сторонніх бібліотек — `styles/vendors/` (наприклад, `_calendar.scss` для react-big-calendar), а не `:global` у модулях.
 
 ## Поточний стан і пастки
 
-- Створення й редагування занять ще не підключені: календар лише показує заняття і `LessonDetailsModal`. `ILesson.canEdit` уже приходить з API.
+- Редагування й видалення занять ще не підключені (`ILesson.canEdit` уже приходить з API).
 - Welcome і Overview (`/dashboard`) поки без контенту.
 - `RequireAuth` рендерить children завжди і лише накриває їх оверлеєм, тож сторінки дашборду монтуються і для гостя на мить до редіректу.
 - `Button` приймає проп `size`, але стилів розмірів для нього немає: проп нічого не змінює.
+- `Input` показує текст помилки під полем лише з `hideHintOnError` (умова `showError && !isHintHidden`); за замовчуванням видно тільки червону рамку й підпис. `Textarea` і `Select` текст помилки показують.
 - Docker-образ запускає `.next/standalone/server.js` (`output: 'standalone'` у `next.config.ts`). `NEXT_PUBLIC_API_URL` вшивається під час `next build`, тож його треба передавати на етапі збірки образу, а не запуску.
 - `queryClient`: глобальний `onError` нічого не показує (toast закоментовано). Помилки показують мутації самі.

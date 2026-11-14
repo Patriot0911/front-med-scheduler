@@ -76,7 +76,16 @@ const LessonsFiltersForm = ({ filterKeys, filters, onApply, onClose, }: ILessons
               value={draft.visibility}
               onChange={(visibility) => setDraft((prev) => ({ ...prev, visibility: visibility as LessonVisibility | '', }))}
               hideErrorMessage
-            />
+            >
+              <Select.Selected<ISelectOption>>
+                {(option) => option.label}
+              </Select.Selected>
+              <Select.Area>
+                <Select.Option<ISelectOption>>
+                  {(option) => option.label}
+                </Select.Option>
+              </Select.Area>
+            </Select>
           )}
         </div>
       </SideModal.Content>

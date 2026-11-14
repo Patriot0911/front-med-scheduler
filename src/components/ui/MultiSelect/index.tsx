@@ -1,6 +1,6 @@
 'use client';
 
-import { LuCheck } from 'react-icons/lu';
+import { LuCheck, LuLock } from 'react-icons/lu';
 import { cn } from '@/lib/cn';
 import { IMultiSelectProps, ISelectOption } from '@/interfaces/ui/selectors';
 import Select from '@/components/ui/Select';
@@ -16,15 +16,23 @@ const MultiSelect = <O extends ISelectOption<string, string>>({
   renderValue,
   searchable,
   searchPlaceholder,
+  lockedValues = [],
   ...props
 }: IMultiSelectProps<O>) => {
-  const selectedOptions = options.filter((option) => value.includes(option.value));
+  const isLocked = (optionValue: string) => lockedValues.includes(optionValue);
+  const selectedOptions = options
+    .filter((option) => value.includes(option.value))
+    .sort((a, b) => Number(isLocked(b.value)) - Number(isLocked(a.value)));
+  const clearableCount = value.filter((v) => !isLocked(v)).length;
 
-  const toggle = (optionValue: string) => onChange(
-    value.includes(optionValue)
-      ? value.filter((v) => v !== optionValue)
-      : [...value, optionValue]
-  );
+  const toggle = (optionValue: string) => {
+    if (isLocked(optionValue)) return;
+    onChange(
+      value.includes(optionValue)
+        ? value.filter((v) => v !== optionValue)
+        : [...value, optionValue]
+    );
+  };
 
   return (
     <Select<O>
@@ -52,9 +60,11 @@ const MultiSelect = <O extends ISelectOption<string, string>>({
         <Select.Search placeholder={searchPlaceholder} />
         <Select.Option<O>>
           {(option, isSelected) => (
-            <span className={styles.option}>
+            <span className={cn(styles.option, isLocked(option.value) && styles['option__locked'])}>
               <span className={cn(styles.checkbox, isSelected && styles['checkbox__checked'])}>
-                {isSelected && <LuCheck size={12} />}
+                {isLocked(option.value)
+                  ? <LuLock size={10} aria-label={'Always selected'} />
+                  : isSelected && <LuCheck size={12} />}
               </span>
               {renderOption(option, isSelected)}
             </span>
@@ -63,13 +73,15 @@ const MultiSelect = <O extends ISelectOption<string, string>>({
         {value.length > 0 && (
           <div className={styles.footer}>
             <span className={styles.counter}>{value.length} selected</span>
-            <button
-              type={'button'}
-              className={styles.clear}
-              onClick={() => onChange([])}
-            >
-              Clear
-            </button>
+            {clearableCount > 0 && (
+              <button
+                type={'button'}
+                className={styles.clear}
+                onClick={() => onChange(value.filter(isLocked))}
+              >
+                Clear
+              </button>
+            )}
           </div>
         )}
       </Select.Area>

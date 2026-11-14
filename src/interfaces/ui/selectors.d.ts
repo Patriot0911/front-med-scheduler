@@ -53,6 +53,8 @@ export interface IMultiSelectProps<O extends ISelectOption<string, string>>
   /** Content of the closed select; defaults to the first label and a "+N" counter */
   renderValue?: (selected: O[]) => ReactNode;
   searchPlaceholder?: string;
+  /** Always selected: they can't be unchecked or cleared, and come first in the closed select */
+  lockedValues?: string[];
 };
 
 export interface IFormSelectProps<T extends FieldValues, O extends ISelectOption<string, string>>

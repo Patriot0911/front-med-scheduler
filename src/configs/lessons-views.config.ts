@@ -1,5 +1,7 @@
 import type { ILessonsFilters, ILessonsListFilterConfig, ILessonsViewConfig, TLessonsListFilterKey, TLessonsView } from '@/interfaces/lessons/filters';
 
+export const DEFAULT_LESSON_DURATION = 90;
+
 export const EMPTY_LESSONS_FILTERS: ILessonsFilters = {
   lessonGroupIds: [],
   teacherIds: [],
@@ -28,11 +30,13 @@ export const LESSONS_VIEWS: Record<TLessonsView, ILessonsViewConfig> = {
   teaching: {
     source: 'my',
     scope: 'teaching',
+    canCreate: true,
     filters: ['lessonGroupIds', 'studentGroupIds', 'groupTagIds', 'semesterIds', 'visibility'],
   },
   department: {
     source: 'my',
     scope: 'department',
+    canCreate: true,
     filters: ['lessonGroupIds', 'teacherIds', 'studentGroupIds', 'groupTagIds', 'semesterIds', 'visibility'],
   },
   all: {

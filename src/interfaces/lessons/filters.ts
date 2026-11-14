@@ -23,6 +23,8 @@ export interface ILessonsViewConfig {
   source: TLessonsSource;
   scope?: TLessonScope;
   filters: readonly TLessonsFilterKey[];
+  /** The teacher can add lessons here: a button and a click on the calendar */
+  canCreate?: boolean;
 };
 
 export interface ILessonsListFilterConfig {
