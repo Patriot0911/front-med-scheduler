@@ -40,6 +40,8 @@ export interface ILessonsListParams {
   dateTo?: string;
   search?: string;
   lessonGroupIds?: string[];
+  /** Only lessons outside of any lesson group */
+  withoutLessonGroup?: boolean;
   teacherIds?: string[];
   studentGroupIds?: string[];
   groupTagIds?: string[];

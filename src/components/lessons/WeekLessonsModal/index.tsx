@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { SCREEN_TRANSITION, SCREEN_VARIANTS } from '@/lib/modal-screens';
 import { LuArrowLeft, LuPencil, LuPlus } from 'react-icons/lu';
 import dayjs from '@/lib/dayjs';
 import { getLessonStart } from '@/lib/lessons-calendar';
@@ -15,13 +16,6 @@ import styles from './styles.module.scss';
 
 const names = (items: { name: string }[]) => items.map(({ name, }) => name).join(', ');
 
-// list ↔ lesson: the next screen comes from the side it leads to (lesson: right, back: left)
-const SHIFT_PX = 32;
-const screenVariants: Variants = {
-  enter: (direction: number) => ({ x: direction * SHIFT_PX, opacity: 0, }),
-  center: { x: 0, opacity: 1, },
-  exit: (direction: number) => ({ x: -direction * SHIFT_PX, opacity: 0, }),
-};
 
 /** The lessons of one week by day; a lesson opens right here, with Back to the list */
 const WeekLessonsModal = ({ isOpen, onClose, weekStart, lessons, onEdit, onCreate, }: IWeekLessonsModalProps) => {
@@ -58,11 +52,11 @@ const WeekLessonsModal = ({ isOpen, onClose, weekStart, lessons, onEdit, onCreat
           key={selected?.id ?? 'week'}
           className={styles.screen}
           custom={isReducedMotion ? 0 : direction}
-          variants={screenVariants}
+          variants={SCREEN_VARIANTS}
           initial={'enter'}
           animate={'center'}
           exit={'exit'}
-          transition={{ duration: 0.18, ease: 'easeOut', }}
+          transition={SCREEN_TRANSITION}
         >
           {selected
             ? (

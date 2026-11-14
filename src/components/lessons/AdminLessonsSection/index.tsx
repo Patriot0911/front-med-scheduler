@@ -63,7 +63,7 @@ const AdminLessonsSection = () => {
             />
             {listTab === 'lessons'
               ? <LessonsBrowser view={'admin'} mode={'list'} canEdit={hasAny(MANAGE_PERMISSIONS)} />
-              : <AdminLessonGroupsList />}
+              : <AdminLessonGroupsList canManage={hasAny(MANAGE_PERMISSIONS)} />}
           </>
         )}
     </section>

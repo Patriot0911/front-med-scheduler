@@ -1,14 +1,15 @@
 'use client';
 
+import { LuEye, LuPencil, LuTrash2 } from 'react-icons/lu';
 import dayjs from '@/lib/dayjs';
 import Table from '@/components/ui/Table';
 import useAdminLessonGroupsQuery from '@/hooks/queries/lessons/useAdminLessonGroupsQuery';
 import type { ILessonGroup, ILessonGroupsTableProps } from '@/interfaces/lessons/lesson-group';
-import type { ITableColumn } from '@/interfaces/ui/table';
+import type { ITableAction, ITableColumn } from '@/interfaces/ui/table';
 
 import cells from '../cells/styles.module.scss';
 
-const PAGE_SIZE = 10;
+export const LESSON_GROUPS_PAGE_SIZE = 10;
 const DATE_FORMAT = 'DD.MM.YYYY';
 
 const emptyCell = <span className={cells.empty}>—</span>;
@@ -61,18 +62,26 @@ const COLUMNS: ITableColumn<ILessonGroup>[] = [
   },
 ];
 
-const LessonGroupsTable = ({ search, page, onPageChange, }: ILessonGroupsTableProps) => {
-  const { data, isLoading, isFetching, } = useAdminLessonGroupsQuery(page, PAGE_SIZE, search);
+const LessonGroupsTable = ({ search, page, onPageChange, onOpen, onDelete, }: ILessonGroupsTableProps) => {
+  const { data, isLoading, isFetching, } = useAdminLessonGroupsQuery(page, LESSON_GROUPS_PAGE_SIZE, search);
+  const actions: ITableAction<ILessonGroup>[] = [
+    { key: 'open', icon: onDelete ? <LuPencil /> : <LuEye />, label: onDelete ? 'Edit group' : 'View group', onClick: onOpen, },
+    ...(onDelete
+      ? [{ key: 'delete', icon: <LuTrash2 />, label: 'Delete group', variant: 'danger' as const, onClick: onDelete, }]
+      : []),
+  ];
 
   return (
     <Table<ILessonGroup>
       columns={COLUMNS}
+      actions={actions}
+      onRowClick={onOpen}
       rowKey={(group) => group.id}
       data={data?.items ?? []}
       skeletonRows={5}
       isLoading={isLoading}
       emptyText={search ? 'No lesson groups match the search' : 'No lesson groups yet'}
-      pageSize={PAGE_SIZE}
+      pageSize={LESSON_GROUPS_PAGE_SIZE}
       rowSize={'lg'}
       pagination={{
         page,

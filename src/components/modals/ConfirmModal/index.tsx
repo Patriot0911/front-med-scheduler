@@ -36,6 +36,7 @@ const ConfirmModal = (props: IConfirmModalProps) => {
         />
         <Modal.Content>
           {!!props.description && <p className={styles['description']}>{props.description}</p>}
+          {props.children}
           {!!props.confirmationWord && (
             <Input
               name={'confirmWord'}

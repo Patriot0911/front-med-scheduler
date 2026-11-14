@@ -155,6 +155,7 @@ export default DepartmentsService;
 
 - `/dashboard/admin/lessons`: `?mode=calendar|list` (`LessonsModeSwitch`, `useTabParam(MODES, 'mode')`). Пошук і фільтри в URL спільні для обох режимів.
 - Список має вкладки `?tab=lessons|lesson-groups`: `LessonsBrowser mode="list"` (тулбар + `LessonsTable` з пагінацією, за замовчуванням лише майбутні — `dateFrom` = сьогодні, перемикач «Include past lessons») і `AdminLessonGroupsList` (пошук + `LessonGroupsTable` з `/admin/lessons-groups`).
+- **Керування групою** (`AdminLessonGroupsList`): клік по рядку або іконка редагування (олівець, як в інших таблицях) відкриває `LessonGroupModal` — центровану `Modal lg` з двома екранами (перехід як у `WeekLessonsModal`, варіанти — `lib/modal-screens.ts`). **Огляд** — форма модалки: назва й нотатка, «Save changes» у футері (активна лише зі змінами, закриває модалку); форма живе в `LessonGroupModal`, тож правки переживають перехід на екран Lessons і назад. Там же лише статистика з рядка списку (кількість занять і період) і кнопка «Edit lessons»; заняття вантажаться лише на екрані Lessons; видалення групи — тиха кнопка «Delete group» з іконкою в хедері (`Modal.Header actions`). **Lessons**: таблиця занять із чекбоксами (клік по рядку теж вибирає / знімає вибір) (`createSelectColumn` з `components/ui/Table/selectColumn`) і масовими «Take out» / «Delete», дії рядка (редагувати через `LessonFormModal source="admin"`, вийняти, видалити) — усе з підтвердженням `ConfirmModal`; «Add existing lessons» → `AssignLessonsModal` (пошук, «Only lessons without a group» = `withoutLessonGroup`, вибір зберігається між сторінками). `DeleteLessonGroupModal` питає, чи видаляти й заняття (за замовчуванням ні); його перемонтовують новим `key` на кожне відкриття, щоб вибір і мутація починались наново. Без `manage_lessons` модалка групи лише для перегляду. Мутації інвалідовують `LESSON_GROUPS_INVALIDATE_KEYS` (усі списки занять, груп і довідник груп).
 - Сторінка списку скидається на першу при зміні запиту без ефекту: `{ key, page }` у стані, де `key` — серіалізовані параметри.
 - `useTabParam(keys, param = 'tab')` — для будь-якого параметра-перемикача в URL.
 
@@ -190,7 +191,7 @@ export default DepartmentsService;
 
 ## Модалки
 
-Окремий skill: [.claude/skills/frontend-modals/SKILL.md](.claude/skills/frontend-modals/SKILL.md). Коротко: лише базові `ui/Modal` (центрована, `size` sm / md / lg) або `ui/SideModal` (бічна панель справа на всю висоту, `size` sm / md / lg / xl — для фільтрів і форм із багатьма селектами) з композицією `FormBody → Header → Content → Footer`, пропси `extends IModalBaseProps`, відкритість контролює батько. Щоб під час анімації закриття модалка не втрачала вміст, `item` зберігай у стані і після закриття (`{ isOpen, item }` у `UsersSection`).
+Окремий skill: [.claude/skills/frontend-modals/SKILL.md](.claude/skills/frontend-modals/SKILL.md). Коротко: лише базові `ui/Modal` (центрована, `size` sm / md / lg) або `ui/SideModal` (бічна панель справа на всю висоту, `size` sm / md / lg / xl — для фільтрів і форм із багатьма селектами) з композицією `FormBody → Header → Content → Footer`, пропси `extends IModalBaseProps`, відкритість контролює батько. Модалки можна відкривати одна з одної (портал у `body`, нова — зверху): `useModalDismiss` веде стек, тож Escape закриває лише верхню, а прокрутка сторінки повертається, коли закрита остання. `ConfirmModal` рендерить `children` під описом (напр. перемикач). Окремий чекбокс — `ui/Checkbox` (з `indeterminate`). Щоб під час анімації закриття модалка не втрачала вміст, `item` зберігай у стані і після закриття (`{ isOpen, item }` у `UsersSection`).
 
 ## Компоненти та код-стиль
 
@@ -216,7 +217,7 @@ export default DepartmentsService;
 
 ## Поточний стан і пастки
 
-- Видалення занять ще не підключене.
+- Видалення занять підключене лише в адмінці, у модалці групи (`POST /admin/lessons/delete`); у доменах викладачів його немає.
 - Welcome і Overview (`/dashboard`) поки без контенту.
 - `RequireAuth` рендерить children завжди і лише накриває їх оверлеєм, тож сторінки дашборду монтуються і для гостя на мить до редіректу.
 - `Button` приймає проп `size`, але стилів розмірів для нього немає: проп нічого не змінює.

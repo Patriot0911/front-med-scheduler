@@ -20,8 +20,9 @@ const names = (items: { name: string }[]) => items.map(({ name, }) => name).join
 
 const emptyCell = <span className={cells.empty}>—</span>;
 
-const COLUMNS: ITableColumn<ILesson>[] = [
-  {
+/** Lesson columns by key, also for other lesson tables (e.g. a lesson group's lessons) */
+export const LESSON_COLUMNS = {
+  date: {
     key: 'date',
     title: 'Date',
     width: '10rem',
@@ -37,7 +38,7 @@ const COLUMNS: ITableColumn<ILesson>[] = [
       );
     },
   },
-  {
+  name: {
     key: 'name',
     title: 'Lesson',
     render: (lesson) => (
@@ -49,13 +50,13 @@ const COLUMNS: ITableColumn<ILesson>[] = [
       </div>
     ),
   },
-  {
+  teachers: {
     key: 'teachers',
     title: 'Teachers',
     width: '13rem',
     render: (lesson) => <span className={cells.secondary} title={names(lesson.teachers)}>{names(lesson.teachers)}</span>,
   },
-  {
+  groups: {
     key: 'groups',
     title: 'Groups',
     width: '11rem',
@@ -63,7 +64,7 @@ const COLUMNS: ITableColumn<ILesson>[] = [
       ? <span className={cells.secondary} title={names(lesson.studentGroups)}>{names(lesson.studentGroups)}</span>
       : emptyCell,
   },
-  {
+  departments: {
     key: 'departments',
     title: 'Departments',
     width: '11rem',
@@ -71,7 +72,7 @@ const COLUMNS: ITableColumn<ILesson>[] = [
       ? <span className={cells.secondary} title={names(lesson.departments)}>{names(lesson.departments)}</span>
       : emptyCell,
   },
-  {
+  status: {
     key: 'status',
     title: 'Status',
     width: '9rem',
@@ -83,7 +84,9 @@ const COLUMNS: ITableColumn<ILesson>[] = [
       </div>
     ),
   },
-];
+} satisfies Record<string, ITableColumn<ILesson>>;
+
+const COLUMNS: ITableColumn<ILesson>[] = Object.values(LESSON_COLUMNS);
 
 const LessonsTable = ({ view, params, page, onPageChange, onEdit, }: ILessonsTableProps) => {
   const { data, isLoading, isFetching, } = useLessonsQuery(view, { ...params, page, pageSize: LESSONS_PAGE_SIZE, });

@@ -31,6 +31,10 @@ class LessonsService {
     return apiClient.patch(`/admin/lessons/${lessonId}`, payload);
   }
 
+  static async deleteAdminLessons(lessonIds: string[]): Promise<number> {
+    return apiClient.post('/admin/lessons/delete', { lessonIds, });
+  }
+
   static async getAdminLessons(params: ILessonsListParams): Promise<ILessonsResponse> {
     return apiClient.get('/admin/lessons', { params, paramsSerializer: PARAMS_SERIALIZER, });
   }

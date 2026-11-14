@@ -1,5 +1,5 @@
 import { LoadingState } from '@/lib/loading-mappers';
-import { FormHTMLAttributes, HTMLAttributes, PropsWithChildren } from 'react';
+import { FormHTMLAttributes, HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
 export interface IModalBaseProps {
@@ -10,6 +10,8 @@ export interface IModalBaseProps {
 export interface IModalHeaderProps {
   title: string;
   description?: string;
+  /** Secondary actions at the top right, e.g. a quiet delete icon */
+  actions?: ReactNode;
 };
 
 export interface IModalFormBodyProps extends
