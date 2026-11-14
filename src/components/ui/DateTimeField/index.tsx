@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { LuCalendar, LuCalendarClock } from 'react-icons/lu';
 import dayjs from '@/lib/dayjs';
@@ -9,19 +9,15 @@ import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import DatePicker from '@/components/ui/DatePicker';
 import TimePicker from '@/components/ui/TimePicker';
+import useFloatingPanel from '@/hooks/shared/useFloatingPanel';
 
 import styles from './styles.module.scss';
 
 const DATE_FORMAT = 'ddd, DD MMM YYYY';
 const DATE_TIME_FORMAT = 'ddd, DD MMM YYYY · HH:mm';
 const DEFAULT_HOUR = 9;
-const GAP_PX = 6;
-const EDGE_PX = 8;
 
-/**
- * A field that opens a date (and, with `withTime`, time) panel. The panel is portaled and fixed-positioned,
- * so a scrolling modal can't clip it; it opens upwards when there is no room below.
- */
+/** A field that opens a date (and, with `withTime`, time) panel; the panel floats over the page (useFloatingPanel) */
 const DateTimeField = ({
   value,
   onChange,
@@ -39,7 +35,6 @@ const DateTimeField = ({
   hideErrorMessage,
 }: IDateTimeFieldProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState<CSSProperties>({ visibility: 'hidden', });
   const fieldRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -51,56 +46,13 @@ const DateTimeField = ({
     onBlur?.();
   }, [onBlur]);
 
-  const place = useCallback(() => {
-    const field = fieldRef.current?.getBoundingClientRect();
-    const panel = panelRef.current;
-    if (!field || !panel) return;
-    const { offsetWidth: width, offsetHeight: height, } = panel;
-    const fitsBelow = field.bottom + GAP_PX + height <= window.innerHeight - EDGE_PX;
-    const fitsAbove = field.top - GAP_PX - height >= EDGE_PX;
-    setPosition({
-      top: !fitsBelow && fitsAbove ? field.top - GAP_PX - height : field.bottom + GAP_PX,
-      left: Math.max(EDGE_PX, Math.min(field.left, window.innerWidth - width - EDGE_PX)),
-    });
-  }, []);
-
-  useLayoutEffect(() => {
-    if (isOpen) place();
-  }, [isOpen, place]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const onPointerDown = (event: MouseEvent | TouchEvent) => {
-      const target = event.target as Node;
-      if (!fieldRef.current?.contains(target) && !panelRef.current?.contains(target)) close();
-    };
-    const onKeyDown = (event: KeyboardEvent) => {
-      // the panel closes first, a surrounding modal stays open
-      if (event.key === 'Escape') {
-        event.stopPropagation();
-        close();
-      }
-    };
-    document.addEventListener('mousedown', onPointerDown);
-    document.addEventListener('touchstart', onPointerDown);
-    window.addEventListener('keydown', onKeyDown, true);
-    window.addEventListener('resize', place);
-    window.addEventListener('scroll', place, true);
-    return () => {
-      document.removeEventListener('mousedown', onPointerDown);
-      document.removeEventListener('touchstart', onPointerDown);
-      window.removeEventListener('keydown', onKeyDown, true);
-      window.removeEventListener('resize', place);
-      window.removeEventListener('scroll', place, true);
-    };
-  }, [isOpen, close, place]);
+  useFloatingPanel({ isOpen, anchorRef: fieldRef, panelRef, onClose: close, });
 
   const toggle = () => {
     if (disabled) return;
     if (isOpen) {
       close();
     } else {
-      setPosition({ visibility: 'hidden', });
       setIsOpen(true);
     }
   };
@@ -145,7 +97,6 @@ const DateTimeField = ({
           role={'dialog'}
           aria-label={label ?? placeholder}
           className={styles.panel}
-          style={position}
         >
           <div className={styles.pickers}>
             <DatePicker value={working} onChange={pickDate} embedded />

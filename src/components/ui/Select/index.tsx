@@ -1,9 +1,9 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { SelectContext } from './context';
-import useOnClickOutside from '@/hooks/shared/useOnClickOutside';
+import useFloatingPanel from '@/hooks/shared/useFloatingPanel';
 import { ISelectOption, ISelectProps } from '@/interfaces/ui/selectors';
 import SelectArea from './components/SelectArea';
 import SelectOption from './components/SelectOption';
@@ -39,20 +39,22 @@ const Select = <O extends ISelectOption<string, string>>({
 }: ISelectProps<O>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const ref = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   // an option may have an empty value (e.g. "Not assigned"), so look for the option, not a truthy value
   const isSelected = isValueSelected ?? ((optionValue: string) => optionValue === value);
   const selectedOption = options.find((o) => isSelected(o.value));
   const hasError = Boolean(error);
   const visibleOptions = searchable && search ? options.filter((o) => filterOption(o, search)) : options;
 
-  const close = () => {
+  const close = useCallback(() => {
     if (isOpen) onBlur?.();
     setIsOpen(false);
     setSearch('');
-  };
+  }, [isOpen, onBlur]);
 
-  useOnClickOutside(ref, close);
+  // the list is portaled: a scrolling modal neither clips it nor grows because of it
+  useFloatingPanel({ isOpen, anchorRef, panelRef, onClose: close, matchWidth: true, });
 
   return (
     <SelectContext.Provider
@@ -73,9 +75,10 @@ const Select = <O extends ISelectOption<string, string>>({
         searchable: Boolean(searchable),
         search,
         setSearch,
+        panelRef,
       }}
     >
-      <div className={cn(styles.controller, className)} ref={ref}>
+      <div className={cn(styles.controller, className)}>
         {(label || (!required && showOptionalFlag)) && (
           <div className={styles['label-wrapper']}>
             {label && (
@@ -88,6 +91,7 @@ const Select = <O extends ISelectOption<string, string>>({
         )}
 
         <div
+          ref={anchorRef}
           className={cn(
             styles['controller-select'],
             touched && !hasError && styles['controller-select__touched'],

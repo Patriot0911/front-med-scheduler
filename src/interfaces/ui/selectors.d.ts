@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode, RefObject } from 'react';
 import { FieldValues, Path } from 'react-hook-form';
 
 export interface ISelectOption<T = string, K = string> {
@@ -20,6 +20,8 @@ export interface ISelectContext<O extends ISelectOption<T, K>, T = string, K = s
   searchable: boolean;
   search: string;
   setSearch: (value: string) => void;
+  /** The portaled option list, placed by useFloatingPanel */
+  panelRef: RefObject<HTMLDivElement | null>;
 };
 
 export interface ISelectProps<O extends ISelectOption<string, string>> extends PropsWithChildren {

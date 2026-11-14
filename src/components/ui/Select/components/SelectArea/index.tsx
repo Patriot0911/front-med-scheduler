@@ -1,4 +1,5 @@
 import { PropsWithChildren } from 'react';
+import { createPortal } from 'react-dom';
 import { cn } from '@/lib/cn';
 import { useSelectContext } from '../../context';
 
@@ -8,15 +9,17 @@ interface ISelectAreaProps extends PropsWithChildren {
   className?: string;
 }
 
+/** The option list, portaled and placed by Select (useFloatingPanel) */
 const SelectArea = ({ children, className }: ISelectAreaProps) => {
-  const { isOpen } = useSelectContext();
+  const { isOpen, panelRef, } = useSelectContext();
 
   if (!isOpen) return null;
 
-  return (
-    <div className={cn(styles.area, className)} role="listbox">
+  return createPortal(
+    <div ref={panelRef} className={cn(styles.area, className)} role="listbox">
       {children}
-    </div>
+    </div>,
+    document.body,
   );
 };
 

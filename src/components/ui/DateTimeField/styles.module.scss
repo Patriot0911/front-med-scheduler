@@ -10,9 +10,10 @@
   }
 }
 
-// above modals (z-index 1000)
+// placed and shown by useFloatingPanel; above modals (z-index 1000)
 .panel {
   position: fixed;
+  visibility: hidden;
   z-index: 1100;
   display: flex;
   flex-direction: column;

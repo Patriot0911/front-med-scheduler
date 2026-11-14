@@ -1,9 +1,8 @@
+// useFloatingPanel places it (inline left / top or bottom / width / max-height) and shows it; above modals (z-index 1000)
 .area {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  z-index: 20;
+  position: fixed;
+  visibility: hidden;
+  z-index: 1100;
   padding: 6px;
   border-radius: 8px;
   background: var(--color-surface);
