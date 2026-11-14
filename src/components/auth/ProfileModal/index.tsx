@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useCallback, useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { LuLogOut } from 'react-icons/lu';
@@ -18,11 +19,7 @@ import AccountsTab from './AccountsTab';
 
 import styles from './styles.module.scss';
 
-const TABS: ITabItem<TProfileTab>[] = [
-  { key: 'profile', data: 'profile', label: 'Profile', },
-  { key: 'password', data: 'password', label: 'Password', },
-  { key: 'accounts', data: 'accounts', label: 'Accounts', },
-];
+const TABS: TProfileTab[] = ['profile', 'password', 'accounts'];
 
 // the panel leaves instantly and the next one slides in from its side (`custom`: -1 left, 1 right)
 const PANEL_VARIANTS: Variants = {
@@ -46,6 +43,7 @@ const PANEL_VARIANTS: Variants = {
  * Remount it per opening (key), so every opening starts clean.
  */
 const ProfileModal = ({ isOpen, onClose, }: IProfileModalProps) => {
+  const { t, } = useTranslation('auth');
   const [tab, setTab] = useState<TProfileTab>('profile');
   const [dirtyTabs, setDirtyTabs] = useState<Record<TProfileTab, boolean>>({ profile: false, password: false, accounts: false, });
   const [discardAction, setDiscardAction] = useState<(() => void) | null>(null);
@@ -67,35 +65,36 @@ const ProfileModal = ({ isOpen, onClose, }: IProfileModalProps) => {
     action();
   };
   const requestClose = () => confirmDiscard(onClose);
+  const tabs: ITabItem<TProfileTab>[] = TABS.map((key) => ({ key, data: key, label: t(`profile.tabs.${key}`), }));
 
   const logoutButton = (
     <Button
       variant={'ghost'}
       leftIcon={<LuLogOut />}
       className={styles.logout}
-      aria-label={'Log out'}
+      aria-label={t('profile.logOut')}
       disabled={logoutMutation.isPending}
       onClick={() => logoutMutation.mutate(undefined, { onSuccess: onClose, })}
     >
-      <span className={styles['logout-label']}>Log out</span>
+      <span className={styles['logout-label']}>{t('profile.logOut')}</span>
     </Button>
   );
 
   return (
     <>
       <Modal isOpen={isOpen} onClose={requestClose} size={'md'} isLoading={logoutMutation.isPending}>
-        <Modal.Header title={'Profile'} />
+        <Modal.Header title={t('profile.title')} />
         <ProfileSummary />
         <Tabs<TProfileTab>
           variant={'underline'}
           className={styles.tabs}
-          items={TABS}
+          items={tabs}
           value={tab}
           onChange={setTab}
           renderItem={(item) => (
             <>
               {item.label}
-              {dirtyTabs[item.data] && <span className={styles['dirty-dot']} aria-label={'Unsaved changes'} />}
+              {dirtyTabs[item.data] && <span className={styles['dirty-dot']} aria-label={t('profile.unsavedChanges')} />}
             </>
           )}
         />
@@ -141,7 +140,7 @@ const ProfileModal = ({ isOpen, onClose, }: IProfileModalProps) => {
           setDiscardAction(null);
         }}
         requestState={LoadingState.Ide}
-        description={'You have unsaved changes in your profile. Close it and discard them?'}
+        description={t('profile.confirmDiscard')}
       />
     </>
   );

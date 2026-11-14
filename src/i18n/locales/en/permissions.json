@@ -1,0 +1,15 @@
+{
+  "admin": "Administrator",
+  "readGroups": "View groups",
+  "manageGroups": "Manage groups",
+  "readRoles": "View roles",
+  "manageRoles": "Manage roles",
+  "readUsers": "View users",
+  "manageUsers": "Manage users",
+  "readLessons": "View lessons",
+  "manageLessons": "Manage all lessons",
+  "readComments": "View comments",
+  "manageComments": "Manage comments",
+  "readDepartments": "View departments",
+  "manageDepartments": "Manage departments"
+}

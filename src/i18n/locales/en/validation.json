@@ -1,0 +1,11 @@
+{
+  "required": "Required",
+  "invalidEmail": "Invalid email",
+  "minChars_one": "Min {{count}} char",
+  "minChars_other": "Min {{count}} chars",
+  "maxChars_one": "Max {{count}} char",
+  "maxChars_other": "Max {{count}} chars",
+  "passwordsMismatch": "Passwords do not match",
+  "passwordMustDiffer": "Must differ from the current password",
+  "passwordRequiredForEmail": "Required to change the email"
+}

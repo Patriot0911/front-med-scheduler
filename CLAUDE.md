@@ -9,7 +9,7 @@ API — сусідній репозиторій `../api-med-scheduler`. Доме
 
 ## Стек
 
-Next.js 16 (App Router) · React 19 · TypeScript (strict) · TanStack Query 5 · Redux Toolkit (лише стан автентифікації) · axios · react-hook-form + zod · SCSS-модулі + CSS-токени · Tailwind 4 (лише утиліти) · framer-motion · react-big-calendar · dayjs · react-hot-toast · react-icons.
+Next.js 16 (App Router) · React 19 · TypeScript (strict) · i18next + react-i18next · TanStack Query 5 · Redux Toolkit (лише стан автентифікації) · axios · react-hook-form + zod · SCSS-модулі + CSS-токени · Tailwind 4 (лише утиліти) · framer-motion · react-big-calendar · dayjs · react-hot-toast · react-icons.
 
 ## Команди
 
@@ -28,8 +28,8 @@ npm run lint        # eslint (next core-web-vitals + typescript)
 ```
 src/
   app/
-    layout.tsx                 # шрифти, Providers, Toaster, global.scss
-    providers.tsx              # StoreProvider → QueryClientProvider → AuthProvider
+    layout.tsx                 # мова запиту, шрифти, Providers, Toaster, global.scss
+    providers.tsx              # I18nProvider → StoreProvider → QueryClientProvider → AuthProvider
     (public)/page.tsx          # Welcome (/): відкрита всім, кнопка входу або «Open dashboard»
     (public)/schedule/         # публічний календар без сайдбару
     (platform)/layout.tsx      # RequireAuth + BaseLayout (сайдбар) для всього дашборду
@@ -58,6 +58,7 @@ src/
     auth-accounts.ts, jwt.ts   # збережені акаунти й токени; декодування JWT (лише підказки, без перевірки)
     services/<x>.service.ts    # один клас на ресурс API
     query-client.ts, cn.ts, dayjs.ts, errors.ts, loading-mappers.ts, password.ts
+  i18n/                        # config, create-i18n (спільні); server/ (server-only); client/ (client-only); locales/<uk|en>/<ns>.json
   store/                       # makeStore, storeRef (доступ до стору поза React), slices/authSlice
   styles/                      # abstracts (токени, міксини, брейкпоінти), base, vendors
   fonts/                       # next/font: geist, jost, oswald
@@ -175,6 +176,35 @@ export default DepartmentsService;
 
 Стан, яким можна поділитися чи який має пережити перезавантаження, живе в query-параметрах: `useCalendarSearchParams` (`?date=YYYY-MM-DD&view=day|week|month`), `useTabParam(availableKeys)` (`?tab=`, недоступне значення → перша вкладка). Оновлення — `router.replace(..., { scroll: false })`. Компоненти з `useSearchParams` сторінка обгортає в `<Suspense fallback={<Loading />}>`.
 
+## Мультимовність (i18n)
+
+Мови: `uk` (за замовчуванням) і `en` (мова ключів і fallback). Бібліотека — i18next + react-i18next, без префікса мови в URL.
+
+Модуль поділено за середовищем, межу стережуть `import 'server-only'` / `import 'client-only'` (порушення — помилка збірки, а не тихий баг):
+
+| Шар | Файли | Хто імпортує |
+|---|---|---|
+| спільний | `i18n/config.ts`, `i18n/create-i18n.ts` — чистий i18next, **без react-i18next** | будь-хто |
+| server | `i18n/server/index.ts` (`getRequestLocale`, `getServerTranslation`), `i18n/server/resources.ts` (JSON, `pickResources`) | лише серверні компоненти (`app/**/page.tsx`, `layout.tsx`, `generateMetadata`) |
+| client | `i18n/client/useLocale.ts`, `i18n/client/i18nRef.ts`, `i18n/client/validation.ts` | лише клієнтський код |
+
+- `react-i18next` (`useTranslation`, `I18nextProvider`) створює React-контекст, тож імпортується **лише** в модулях з `'use client'` (і в хуках, які викликають лише вони). У серверних компонентах тексти — тільки через `getServerTranslation`. Плагін `initReactI18next` не підключаємо: інстанс у дерево передає `I18nProvider`.
+- Типи (`TTranslationResources`) з `server/resources` беруться лише через `import type` — він стирається й межу не порушує.
+
+- **Мова запиту** — `getRequestLocale()` (`i18n/server`): cookie `NEXT_LOCALE` → `Accept-Language` → `uk`. Через `cookies()` усі маршрути динамічні.
+- `RootLayout` ставить `<html lang>` і передає в `Providers` ресурси лише активної мови й fallback (`pickResources`). `I18nProvider` один раз створює інстанс і виставляє локаль dayjs (`setDayjsLocale`), zod (`z.config(z.locales.uk())`) і `i18nRef`.
+- **Перемикання** — `useLocale().setLocale(locale)`: пише cookie і **перезавантажує** сторінку (так само як `AuthAccounts.switchTo`), тож dayjs, zod і тексти завжди однієї мови. UI: `SidebarLanguage` у сайдбарі, `LanguageSwitch` (`components/layout/LanguageSwitch`) на Welcome і `/schedule`.
+- **Переклади** — `src/i18n/locales/<uk|en>/<namespace>.json`; namespace на домен (`common`, `layout`, `auth`, `ui`, `public`, `validation`, `permissions`). Новий namespace: JSON в обох мовах + запис у `i18n/server/resources.ts`. Українські ресурси типізовані англійськими: брак ключа валить `tsc`. Ключі типобезпечні (`interfaces/i18n/i18next.d.ts`).
+- Множина — суфікси i18next: в `en` `_one` / `_other`, в `uk` `_one` / `_few` / `_many` / `_other`; виклик `t('key', { count, })`.
+- **Де брати `t`:**
+  - клієнтські компоненти й хуки — `useTranslation('<ns>')`; ключі з інших namespace — `useTranslation(['auth', 'common'])` + `t('common:actions.cancel')`;
+  - серверні сторінки й `generateMetadata` — `await getServerTranslation('<ns>')`;
+  - код поза React (фабрики колонок, `getErrorMessage`, axios, `getPermissionLabel`) — `getGlobalI18n()` з `i18n/client/i18nRef`.
+- **Конфіги** зберігають ключі, а не тексти: `label: 'nav.overview'` (`TNavLabelKey`), `PermissionLabels` → ключі `permissions`, `*.dictionary.ts` — `Record<LoadingState, ParseKeys<'<ns>'>>`, у компоненті `t(dict[state])`.
+- **Zod-схеми** лишаються модульними константами: повідомлення — `validationError('minChars', { count: 8, })` з `i18n/client/validation.ts` (zod викликає його при кожній перевірці, тож текст поточною мовою). Стандартні повідомлення zod без власного тексту — з `z.locales`.
+- **Дати**: локаль dayjs — `uk` / `en-gb` (`DAYJS_LOCALES`); календарю передається `culture`. Назви місяців і днів беріть з dayjs (`format('MMM')`, `getWeekdayLabels()`), а не хардкодом.
+- **Ще не перекладено** (наступні ітерації): `components/lessons`, `users`, `dictionaries`, їхні конфіги (`dictionaries.config.tsx`, `lessons-views.config.ts`), схеми й `successMessage` мутацій. Повідомлення помилок бекенду приходять англійською.
+
 ## Довідники — розширюються конфігом
 
 Сторінка `/dictionaries` повністю керується `configs/dictionaries.config.tsx` (`IDictionaryConfig<T>`): назва, іконка, дозволи на читання / керування, колонки, `fetchList`, `remove`, `FormModal`, `rowActions`, `relatedQueryKeys`. Порядок ключів об'єкта = порядок вкладок.
@@ -208,9 +238,9 @@ export default DepartmentsService;
 - Кома після останнього елемента навіть в однорядкових об'єктах: `{ page, pageSize, }`, `const { data, } = ...`.
 - Константи модуля — `UPPER_SNAKE_CASE` угорі файлу (`READ_PERMISSIONS`, `PAGE_SIZE`).
 - **Коментарі — лише ситуативно.** Елементарний код (прості компоненти, пропси, обробники, стилі, конфіги, очевидні умови) не коментуємо взагалі, навіть JSDoc. Коментар доречний тільки як опис справді складного компонента чи логіки, яку без нього не зрозуміти. Не коментуй те, що видно з назв. Наявні в коді рясні коментарі — не зразок для нового коду.
-- Тексти UI — англійською. Тексти кнопок, що залежать від стану мутації, — у `configs/<domain>.dictionary.ts` як `Record<LoadingState, string>`. Назви `LoadingState.Ide` / `Pendding` — історичні опечатки, не перейменовуй точково.
+- Тексти UI — лише через i18n (див. «Мультимовність»), без хардкоду в JSX. Тексти кнопок, що залежать від стану мутації, — у `configs/<domain>.dictionary.ts` як `Record<LoadingState, ParseKeys<'<ns>'>>`. Назви `LoadingState.Ide` / `Pendding` — історичні опечатки, не перейменовуй точково.
 - Класи: `cn(...)` (clsx + tailwind-merge).
-- Дати — `dayjs` з `@/lib/dayjs` (локаль `en-gb`, тиждень з понеділка). Частина файлів імпортує `'dayjs'` напряму — у новому коді бери `@/lib/dayjs`.
+- Дати — `dayjs` з `@/lib/dayjs` (локаль за мовою: `uk` / `en-gb`, тиждень з понеділка). Частина файлів імпортує `'dayjs'` напряму — у новому коді бери `@/lib/dayjs`.
 
 ## Стилі
 
@@ -229,4 +259,5 @@ export default DepartmentsService;
 - `Button` приймає проп `size`, але стилів розмірів для нього немає: проп нічого не змінює.
 - `Input` показує текст помилки під полем лише з `hideHintOnError` (умова `showError && !isHintHidden`); за замовчуванням видно тільки червону рамку й підпис. `Textarea` і `Select` текст помилки показують.
 - Docker-образ запускає `.next/standalone/server.js` (`output: 'standalone'` у `next.config.ts`). `NEXT_PUBLIC_API_URL` вшивається під час `next build`, тож його треба передавати на етапі збірки образу, а не запуску.
+- Локаль dayjs глобальна: на сервері її виставляє `I18nProvider` на кожен рендер, тож паралельні SSR-запити різними мовами теоретично можуть перехопити одне одного. Календар від цього захищений (`culture`); у новому коді, що форматує дати під час SSR, за потреби передавайте локаль явно (`dayjs(x).locale(...)`).
 - `queryClient`: глобальний `onError` нічого не показує (toast закоментовано). Помилки показують мутації самі.

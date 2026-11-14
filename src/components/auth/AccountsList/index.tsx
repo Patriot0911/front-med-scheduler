@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useState } from 'react';
 import { LuLogOut, LuX } from 'react-icons/lu';
 import type { IAccountsListProps, IStoredAccount } from '@/interfaces/auth/accounts';
@@ -14,18 +16,19 @@ import ConfirmModal from '@/components/modals/ConfirmModal';
 
 import styles from './styles.module.scss';
 
-const getName = (account: IStoredAccount) => account.fullName || account.email || 'Unknown account';
+const getName = (account: IStoredAccount, t: TFunction<'auth'>) => account.fullName || account.email || t('accounts.unknown');
 
-const getLogoutDescription = (account: IStoredAccount, isActive: boolean) => {
-  const name = getName(account);
-  if (!AuthAccounts.isUsable(account)) return `Remove ${name} from the accounts saved on this device?`;
-  if (!isActive) return `Log out of ${name}? The account will be removed from this device.`;
+const getLogoutDescription = (account: IStoredAccount, isActive: boolean, t: TFunction<'auth'>) => {
+  const name = getName(account, t);
+  if (!AuthAccounts.isUsable(account)) return t('accounts.confirmRemove', { name, });
+  if (!isActive) return t('accounts.confirmLogOutInactive', { name, });
   return AuthAccounts.getNextUsable(account.id)
-    ? `Log out of ${name}? You will be switched to another signed-in account.`
-    : `Log out of ${name}?`;
+    ? t('accounts.confirmLogOutSwitch', { name, })
+    : t('accounts.confirmLogOut', { name, });
 };
 
 const AccountsList = ({ onSelect, disabled, }: IAccountsListProps) => {
+  const { t, } = useTranslation('auth');
   const { accounts, activeId, } = useAuthAccounts();
   const [logoutTarget, setLogoutTarget] = useState<{ isOpen: boolean, account: IStoredAccount | null }>({
     isOpen: false,
@@ -46,7 +49,7 @@ const AccountsList = ({ onSelect, disabled, }: IAccountsListProps) => {
         {accounts.map((account) => {
           const isActive = account.id === activeId;
           const isSignedIn = AuthAccounts.isUsable(account);
-          const name = getName(account);
+          const name = getName(account, t);
 
           return (
             <li key={account.id} className={cn(styles.account, isActive && styles['account--active'])}>
@@ -55,20 +58,20 @@ const AccountsList = ({ onSelect, disabled, }: IAccountsListProps) => {
                 <span className={styles.name}>{name}</span>
                 <span className={styles.email}>{account.email}</span>
               </div>
-              {isActive && <span className={styles.badge}>Current</span>}
-              {!isSignedIn && <span className={cn(styles.badge, styles['badge--muted'])}>Signed out</span>}
+              {isActive && <span className={styles.badge}>{t('accounts.current')}</span>}
+              {!isSignedIn && <span className={cn(styles.badge, styles['badge--muted'])}>{t('accounts.signedOut')}</span>}
               <div className={styles.actions}>
                 {!isActive && (
                   <Button variant={'secondary'} disabled={isDisabled} onClick={() => onSelect(account)}>
-                    {isSignedIn ? 'Switch' : 'Sign in'}
+                    {isSignedIn ? t('accounts.switch') : t('accounts.signIn')}
                   </Button>
                 )}
                 <Button
                   variant={'ghost'}
                   className={styles.remove}
                   leftIcon={isSignedIn ? <LuLogOut /> : <LuX />}
-                  aria-label={isSignedIn ? `Log out of ${name}` : `Remove ${name}`}
-                  title={isSignedIn ? 'Log out' : 'Remove'}
+                  aria-label={isSignedIn ? t('accounts.logOutOf', { name, }) : t('accounts.removeName', { name, })}
+                  title={isSignedIn ? t('accounts.logOut') : t('accounts.remove')}
                   disabled={isDisabled}
                   onClick={() => askLogout(account)}
                 />
@@ -86,7 +89,7 @@ const AccountsList = ({ onSelect, disabled, }: IAccountsListProps) => {
         }}
         requestState={mutationToLoadingState(logoutMutation)}
         description={logoutTarget.account
-          ? getLogoutDescription(logoutTarget.account, logoutTarget.account.id === activeId)
+          ? getLogoutDescription(logoutTarget.account, logoutTarget.account.id === activeId, t)
           : undefined}
       />
     </>

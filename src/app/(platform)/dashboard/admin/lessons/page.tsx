@@ -1,12 +1,15 @@
 import { Suspense } from 'react';
 import AdminLessonsSection from '@/components/lessons/AdminLessonsSection';
+import { getServerTranslation } from '@/i18n/server';
 import Heading from '@/components/ui/headings/Heading';
 import Loading from '@/components/ui/Loading';
 
-const AdminLessonsPage = () => {
+const AdminLessonsPage = async () => {
+  const t = await getServerTranslation('layout');
+
   return (
     <>
-      <Heading level={1}>Lessons management</Heading>
+      <Heading level={1}>{t('pages.adminLessons')}</Heading>
       <Suspense fallback={<Loading />}>
         <AdminLessonsSection />
       </Suspense>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Permission } from '@/interfaces/auth/permission';
 import useMeQuery from '@/hooks/queries/auth/useMeQuery';
 import usePermissions from '@/hooks/queries/auth/usePermissions';
@@ -20,6 +21,7 @@ const DEPARTMENTS_PERMISSIONS = [
 
 /** Who the user is in the system: roles and teacher / student profiles. Read only. */
 const ProfileSummary = () => {
+  const { t, } = useTranslation('auth');
   const { data: me, } = useMeQuery();
   const { hasAny, } = usePermissions();
   const departmentId = me?.teacher?.departmentId;
@@ -50,16 +52,16 @@ const ProfileSummary = () => {
         <dl className={styles.profiles}>
           {me.teacher && (
             <div className={styles.profile}>
-              <dt>Teacher</dt>
-              <dd>{department ?? (departmentId ? 'Department assigned' : 'No department')}</dd>
+              <dt>{t('profile.summary.teacher')}</dt>
+              <dd>{department ?? (departmentId ? t('profile.summary.departmentAssigned') : t('profile.summary.noDepartment'))}</dd>
             </div>
           )}
           {me.student && (
             <div className={styles.profile}>
-              <dt>Student</dt>
+              <dt>{t('profile.summary.student')}</dt>
               <dd>
-                {group ?? (groupId ? '…' : 'No group')}
-                {me.student.isGroupMonitor && <span className={styles.badge}>Monitor</span>}
+                {group ?? (groupId ? '…' : t('profile.summary.noGroup'))}
+                {me.student.isGroupMonitor && <span className={styles.badge}>{t('profile.summary.monitor')}</span>}
               </dd>
             </div>
           )}

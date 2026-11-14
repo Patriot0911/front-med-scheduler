@@ -5,6 +5,7 @@ import SidebarUserProfile from '../SidebarUserProfile';
 import { useAppSelector } from '@/hooks/redux';
 import { authStatusSelector } from '@/hooks/redux/auth';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import AuthModal from '@/components/auth/AuthModal';
 import Button from '@/components/ui/Button';
 import { FaUserGraduate } from 'react-icons/fa';
@@ -13,6 +14,7 @@ import { ISidebarSectionProps } from '@/interfaces/layout/sidebar';
 import styles from './styles.module.scss';
 
 const UserSection = ({ isOpen }: ISidebarSectionProps) => {
+  const { t, } = useTranslation('layout');
   const [isShownAuthModal, setIsShownAuthModal] = useState(false);
   const status = useAppSelector(authStatusSelector);
   const { isLoading, isEnabled, } = useMeQuery();
@@ -33,7 +35,7 @@ const UserSection = ({ isOpen }: ISidebarSectionProps) => {
             onClick={() => setIsShownAuthModal(true)}
             leftIcon={FaUserGraduate({})}
           >
-            {isOpen ? 'Sign In' : ''}
+            {isOpen ? t('sidebar.signIn') : ''}
           </Button>
         ) : <SidebarUserProfile isOpen={isOpen} />
       }

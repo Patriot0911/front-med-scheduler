@@ -25,7 +25,7 @@ export const SIDEBAR_GROUPS: INavbarGroup[] = [
     items: [
       {
         href: '/dashboard',
-        label: 'Overview',
+        label: 'nav.overview',
         exactPath: true,
         icon: GoHomeFill({}),
       },
@@ -33,22 +33,22 @@ export const SIDEBAR_GROUPS: INavbarGroup[] = [
   },
   {
     key: 'schedule',
-    label: 'Schedule',
+    label: 'nav.groups.schedule',
     items: [
       {
         href: '/dashboard/lessons',
-        label: 'All lessons',
+        label: 'nav.allLessons',
         icon: IoCalendarSharp({}),
       },
       {
         href: '/dashboard/study',
-        label: 'Studying',
+        label: 'nav.studying',
         icon: IoSchoolSharp({}),
         isVisible: isStudent,
       },
       {
         href: '/dashboard/teaching',
-        label: 'Teaching',
+        label: 'nav.teaching',
         icon: FaChalkboardUser({}),
         isVisible: isTeacher,
       },
@@ -56,23 +56,23 @@ export const SIDEBAR_GROUPS: INavbarGroup[] = [
   },
   {
     key: 'administration',
-    label: 'Administration',
+    label: 'nav.groups.administration',
     items: [
       {
         href: '/dashboard/admin/lessons',
-        label: 'Lessons',
+        label: 'nav.lessons',
         icon: MdEditCalendar({}),
         isVisible: ({ hasAny, }) => hasAny(LESSONS_ADMIN_READ_PERMISSIONS),
       },
       {
         href: '/dashboard/users',
-        label: 'Users',
+        label: 'nav.users',
         icon: FaUsers({}),
         isVisible: ({ hasAny, }) => hasAny(USERS_READ_PERMISSIONS),
       },
       {
         href: '/dashboard/dictionaries',
-        label: 'Dictionaries',
+        label: 'nav.dictionaries',
         icon: IoLibrary({}),
         isVisible: ({ hasAny, }) => hasAny(DICTIONARIES_READ_PERMISSIONS),
       },

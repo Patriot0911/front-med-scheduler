@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,6 +20,7 @@ const DEFAULT_VALUES: TChangePasswordForm = {
 };
 
 const PasswordTab = ({ onDirtyChange, onCancel, footerStart, }: IProfileTabProps) => {
+  const { t, } = useTranslation(['auth', 'common']);
   const methods = useForm<TChangePasswordForm>({
     resolver: zodResolver(changePasswordSchema),
     mode: 'onTouched',
@@ -41,26 +43,26 @@ const PasswordTab = ({ onDirtyChange, onCancel, footerStart, }: IProfileTabProps
       <Modal.Content>
         <FormPasswordInput<TChangePasswordForm>
           name={'currentPassword'}
-          label={'Current password'}
+          label={t('profile.password.current')}
           autoComplete={'current-password'}
           disabled={mutation.isPending}
           required
         />
         <div className={styles.divider}>
-          <span>Set a new password</span>
+          <span>{t('profile.password.setNew')}</span>
         </div>
         <div className={styles.fields}>
           <FormPasswordInput<TChangePasswordForm>
             name={'newPassword'}
-            label={'New password'}
+            label={t('profile.password.new')}
             autoComplete={'new-password'}
-            hint={'Min 8 chars'}
+            hint={t('profile.password.newHint')}
             disabled={mutation.isPending}
             required
           />
           <FormPasswordInput<TChangePasswordForm>
             name={'confirmPassword'}
-            label={'Repeat new password'}
+            label={t('profile.password.repeat')}
             autoComplete={'new-password'}
             disabled={mutation.isPending}
             required
@@ -70,10 +72,10 @@ const PasswordTab = ({ onDirtyChange, onCancel, footerStart, }: IProfileTabProps
       <Modal.Footer>
         {footerStart}
         <Button variant={'secondary'} disabled={mutation.isPending} onClick={onCancel}>
-          Cancel
+          {t('common:actions.cancel')}
         </Button>
         <Button type={'submit'} disabled={mutation.isPending || !isDirty} isLoading={mutation.isPending}>
-          Change password
+          {t('profile.password.submit')}
         </Button>
       </Modal.Footer>
     </Modal.FormBody>

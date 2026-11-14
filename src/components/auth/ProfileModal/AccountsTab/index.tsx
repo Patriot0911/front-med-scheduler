@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { LuLogOut, LuUserPlus } from 'react-icons/lu';
 import type { IAccountsTabProps } from '@/interfaces/auth/profile';
@@ -17,6 +18,7 @@ import AccountsList from '@/components/auth/AccountsList';
 import styles from '../styles.module.scss';
 
 const AccountsTab = ({ onCancel, confirmLeave, }: IAccountsTabProps) => {
+  const { t, } = useTranslation(['auth', 'common']);
   const { accounts, } = useAuthAccounts();
   const [signIn, setSignIn] = useState<{ isOpen: boolean, email?: string }>({ isOpen: false, });
   const [isLogoutAllOpen, setIsLogoutAllOpen] = useState(false);
@@ -31,7 +33,7 @@ const AccountsTab = ({ onCancel, confirmLeave, }: IAccountsTabProps) => {
     <div className={styles.panel}>
       <Modal.Content>
         <p className={styles.description}>
-          Accounts signed in on this device. An account left unused for a week is signed out and asks for its password again.
+          {t('accounts.description')}
         </p>
         <AccountsList onSelect={selectAccount} />
       </Modal.Content>
@@ -40,24 +42,24 @@ const AccountsTab = ({ onCancel, confirmLeave, }: IAccountsTabProps) => {
           variant={'ghost'}
           leftIcon={<LuLogOut />}
           className={styles.logout}
-          aria-label={'Log out of all accounts'}
+          aria-label={t('accounts.logOutAllLabel')}
           onClick={() => {
             logoutAllMutation.reset();
             setIsLogoutAllOpen(true);
           }}
         >
-          <span className={styles['logout-label']}>Log out of all</span>
+          <span className={styles['logout-label']}>{t('accounts.logOutAll')}</span>
         </Button>
         <Button variant={'secondary'} onClick={onCancel}>
-          Close
+          {t('common:actions.close')}
         </Button>
         <Button
           leftIcon={<LuUserPlus />}
           disabled={isFull}
-          title={isFull ? `Up to ${MAX_ACCOUNTS} accounts; remove one to add another` : undefined}
+          title={isFull ? t('accounts.limit', { count: MAX_ACCOUNTS, }) : undefined}
           onClick={() => confirmLeave(() => setSignIn({ isOpen: true, }))}
         >
-          Add account
+          {t('accounts.add')}
         </Button>
       </Modal.Footer>
 
@@ -73,7 +75,7 @@ const AccountsTab = ({ onCancel, confirmLeave, }: IAccountsTabProps) => {
         onClose={() => setIsLogoutAllOpen(false)}
         onConfirm={() => logoutAllMutation.mutate()}
         requestState={mutationToLoadingState(logoutAllMutation)}
-        description={'Log out of every account and remove them all from this device?'}
+        description={t('accounts.confirmLogOutAll')}
       />
     </div>
   );

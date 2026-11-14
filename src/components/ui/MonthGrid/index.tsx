@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import type { Dayjs } from 'dayjs';
 import dayjs from '@/lib/dayjs';
-import { getMonthWeeks, WEEKDAY_LABELS } from '@/lib/calendar-grid';
+import { getMonthWeeks, getWeekdayLabels } from '@/lib/calendar-grid';
 import type { IMonthGridProps } from '@/interfaces/ui/date-picker';
 import { cn } from '@/lib/cn';
 
@@ -37,7 +37,7 @@ const MonthGrid = ({
       )}
     >
       <div className={styles.weekdays}>
-        {WEEKDAY_LABELS.map((day) => (
+        {getWeekdayLabels().map((day) => (
           <span key={day} className={styles.weekday}>{day}</span>
         ))}
       </div>

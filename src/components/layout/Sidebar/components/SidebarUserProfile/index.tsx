@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import useMeQuery from '@/hooks/queries/auth/useMeQuery';
 import { ISidebarSectionProps } from '@/interfaces/layout/sidebar';
 import ProfileModal from '@/components/auth/ProfileModal';
@@ -10,6 +11,7 @@ import styles from './styles.module.scss';
 
 /** Signed-in user card; opens the profile modal to edit personal data and password. */
 const SidebarUserProfile = ({ isOpen }: ISidebarSectionProps) => {
+  const { t, } = useTranslation('layout');
   const { data, } = useMeQuery();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   // a new key per opening remounts the modal, so it starts with fresh forms
@@ -28,7 +30,7 @@ const SidebarUserProfile = ({ isOpen }: ISidebarSectionProps) => {
         type={'button'}
         className={styles['user-profile-wrapper']}
         onClick={openProfile}
-        aria-label={`Profile of ${data.fullName}`}
+        aria-label={t('sidebar.profileOf', { name: data.fullName, })}
         // the collapsed sidebar shows only the avatar
         title={isOpen ? undefined : data.fullName}
       >

@@ -1,6 +1,7 @@
 'use client';
 
 import { useId } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 import { INavGroupProps } from '@/interfaces/layout/sidebar';
 import NavLink from '../NavLink';
@@ -8,6 +9,7 @@ import NavLink from '../NavLink';
 import styles from './styles.module.scss';
 
 const NavGroup = ({ label, items, isOpen, }: INavGroupProps) => {
+  const { t, } = useTranslation('layout');
   const labelId = useId();
 
   return (
@@ -20,7 +22,7 @@ const NavGroup = ({ label, items, isOpen, }: INavGroupProps) => {
           id={labelId}
           className={cn(styles['group-label'], !isOpen && styles['collapsed'])}
         >
-          <span>{label}</span>
+          <span>{t(label)}</span>
         </p>
       )}
       <ul className={styles['nav-list']}>

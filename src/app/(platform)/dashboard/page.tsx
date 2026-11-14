@@ -1,8 +1,11 @@
+import { getServerTranslation } from '@/i18n/server';
 import Heading from '@/components/ui/headings/Heading';
 
-const OverviewPage = () => {
+const OverviewPage = async () => {
+  const t = await getServerTranslation('layout');
+
   return (
-    <Heading level={1}>Overview</Heading>
+    <Heading level={1}>{t('pages.overview')}</Heading>
   );
 }
 

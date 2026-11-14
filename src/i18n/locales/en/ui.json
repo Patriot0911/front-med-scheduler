@@ -1,0 +1,55 @@
+{
+  "loading": "Loading",
+  "previous": "Previous",
+  "next": "Next",
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Previous page",
+    "next": "Next page"
+  },
+  "calendar": {
+    "today": "Today",
+    "chooseDate": "Choose date",
+    "allDay": "All day",
+    "showMore": "+{{count}} more",
+    "views": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    }
+  },
+  "multiMonth": {
+    "previous": "Previous month",
+    "next": "Next month"
+  },
+  "timePicker": {
+    "time": "Time",
+    "hours": "Hours",
+    "minutes": "Minutes"
+  },
+  "dateTime": {
+    "pickDate": "Pick a date",
+    "pickDateTime": "Pick date and time"
+  },
+  "password": {
+    "show": "Show password",
+    "hide": "Hide password"
+  },
+  "select": {
+    "placeholder": "Select an option",
+    "optional": "Optional",
+    "search": "Search...",
+    "nothingFound": "Nothing found",
+    "noOptions": "No options",
+    "clearSearch": "Clear search",
+    "alwaysSelected": "Always selected"
+  },
+  "checkboxGroup": {
+    "empty": "No options available"
+  },
+  "table": {
+    "noData": "No data found",
+    "selectAll": "Select all rows",
+    "selectRow": "Select row"
+  }
+}

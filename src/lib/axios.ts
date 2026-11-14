@@ -1,3 +1,4 @@
+import { getGlobalI18n } from '@/i18n/client/i18nRef';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import AuthService from './services/auth.service';
 import AuthAccounts from './auth-accounts';
@@ -109,13 +110,13 @@ apiClient.interceptors.response.use(
     if (error.request) {
       return Promise.reject({
         status: false,
-        message: 'No response from server. Check your connection.',
+        message: getGlobalI18n().t('errors.noResponse'),
       });
     }
 
     return Promise.reject({
       status: false,
-      message: error.message ?? 'Unexpected error occurred.',
+      message: error.message ?? getGlobalI18n().t('errors.unexpected'),
     });
   },
 );

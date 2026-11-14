@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import type { Dayjs } from 'dayjs';
 import dayjs from '@/lib/dayjs';
@@ -9,7 +12,7 @@ import MonthGrid from '@/components/ui/MonthGrid';
 
 import styles from './styles.module.scss';
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTHS = Array.from({ length: 12, }, (_, index) => index);
 const YEARS_PER_PAGE = 12;
 
 const LEVEL_STEP: Record<TDatePickerLevel, { amount: number; unit: 'month' | 'year' }> = {
@@ -26,6 +29,7 @@ const UPPER_LEVEL: Partial<Record<TDatePickerLevel, TDatePickerLevel>> = {
 const getYearsPageStart = (year: number) => Math.floor(year / YEARS_PER_PAGE) * YEARS_PER_PAGE;
 
 const DatePicker = ({ value, mode = 'day', onChange, embedded, className }: IDatePickerProps) => {
+  const { t, } = useTranslation('ui');
   const selected = dayjs(value);
   const today = dayjs();
   const baseLevel: TDatePickerLevel = mode === 'month' ? 'months' : 'days';
@@ -69,7 +73,7 @@ const DatePicker = ({ value, mode = 'day', onChange, embedded, className }: IDat
       <div className={styles.header}>
         <button
           type="button"
-          aria-label="Previous"
+          aria-label={t('previous')}
           className={styles['nav-btn']}
           onClick={() => shiftView(-1)}
         >
@@ -85,7 +89,7 @@ const DatePicker = ({ value, mode = 'day', onChange, embedded, className }: IDat
         </button>
         <button
           type="button"
-          aria-label="Next"
+          aria-label={t('next')}
           className={styles['nav-btn']}
           onClick={() => shiftView(1)}
         >
@@ -114,11 +118,11 @@ const DatePicker = ({ value, mode = 'day', onChange, embedded, className }: IDat
 
       {level === 'months' && (
         <div className={styles.cells}>
-          {MONTHS.map((label, index) => {
+          {MONTHS.map((index) => {
             const month = viewDate.month(index);
             return (
               <button
-                key={label}
+                key={index}
                 type="button"
                 className={cn(
                   styles.cell,
@@ -127,7 +131,7 @@ const DatePicker = ({ value, mode = 'day', onChange, embedded, className }: IDat
                 )}
                 onClick={() => selectMonth(month)}
               >
-                {label}
+                {month.format('MMM')}
               </button>
             );
           })}

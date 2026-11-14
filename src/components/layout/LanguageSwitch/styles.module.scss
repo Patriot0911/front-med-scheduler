@@ -1,0 +1,44 @@
+@use '../../../styles/abstracts/mixins' as *;
+
+.button {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-family: var(--font-jost);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    color: var(--color-primary);
+    border-color: rgba(var(--color-primary-rgb), 0.4);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(var(--color-primary-rgb), 0.5);
+    outline-offset: 3px;
+  }
+
+  @include mq('md') {
+    top: 24px;
+    right: 24px;
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}

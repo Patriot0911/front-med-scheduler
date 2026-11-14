@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
 import { LuCalendarDays, LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import Button from '@/components/ui/Button';
@@ -9,12 +12,6 @@ import { cn } from '@/lib/cn';
 
 import styles from './styles.module.scss';
 
-const VIEW_LABELS: Record<TCalendarView, string> = {
-  day: 'Day',
-  week: 'Week',
-  month: 'Month',
-};
-
 const CalendarToolbar = ({
   label,
   date,
@@ -24,13 +21,14 @@ const CalendarToolbar = ({
   onDateSelect,
   onViewChange,
 }: ICalendarToolbarProps) => {
+  const { t, } = useTranslation('ui');
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
 
   const tabsItems: ITabItem<TCalendarView>[] = views.map((v) => ({
     key: v,
     data: v,
-    label: VIEW_LABELS[v],
+    label: t(`calendar.views.${v}`),
   }));
 
   useEffect(() => {
@@ -60,11 +58,11 @@ const CalendarToolbar = ({
           className={styles['today-btn']}
           onClick={() => onNavigate('TODAY')}
         >
-          Today
+          {t('calendar.today')}
         </Button>
         <button
           type="button"
-          aria-label="Previous"
+          aria-label={t('previous')}
           className={cn(styles['arrow-btn'], styles.prev)}
           onClick={() => onNavigate('PREV')}
         >
@@ -72,7 +70,7 @@ const CalendarToolbar = ({
         </button>
         <button
           type="button"
-          aria-label="Next"
+          aria-label={t('next')}
           className={cn(styles['arrow-btn'], styles.next)}
           onClick={() => onNavigate('NEXT')}
         >
@@ -83,7 +81,7 @@ const CalendarToolbar = ({
         <div ref={pickerRef} className={styles.picker}>
           <button
             type="button"
-            aria-label="Choose date"
+            aria-label={t('calendar.chooseDate')}
             aria-haspopup="dialog"
             aria-expanded={isPickerOpen}
             className={cn(styles['arrow-btn'], isPickerOpen && styles['arrow-btn__active'])}
@@ -92,7 +90,7 @@ const CalendarToolbar = ({
             <LuCalendarDays />
           </button>
           {isPickerOpen && (
-            <div role="dialog" aria-label="Choose date" className={styles['picker-popover']}>
+            <div role="dialog" aria-label={t('calendar.chooseDate')} className={styles['picker-popover']}>
               <DatePicker
                 value={date}
                 mode={view}

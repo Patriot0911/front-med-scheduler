@@ -1,0 +1,26 @@
+{
+  "actions": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "create": "Create",
+    "saveChanges": "Save changes"
+  },
+  "confirm": {
+    "title": "Confirmation",
+    "word": "Confirmation word",
+    "button": {
+      "ide": "Confirm",
+      "pendding": "Processing...",
+      "loading": "Loading...",
+      "success": "Confirmed successfully!"
+    }
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "noResponse": "No response from server. Check your connection.",
+    "unexpected": "Unexpected error occurred."
+  },
+  "language": {
+    "switchTo": "Switch language to {{language}}"
+  }
+}

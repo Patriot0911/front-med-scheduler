@@ -1,0 +1,55 @@
+{
+  "loading": "Завантаження",
+  "previous": "Назад",
+  "next": "Далі",
+  "pagination": {
+    "label": "Пагінація",
+    "previous": "Попередня сторінка",
+    "next": "Наступна сторінка"
+  },
+  "calendar": {
+    "today": "Сьогодні",
+    "chooseDate": "Вибрати дату",
+    "allDay": "Увесь день",
+    "showMore": "Ще {{count}}",
+    "views": {
+      "day": "День",
+      "week": "Тиждень",
+      "month": "Місяць"
+    }
+  },
+  "multiMonth": {
+    "previous": "Попередній місяць",
+    "next": "Наступний місяць"
+  },
+  "timePicker": {
+    "time": "Час",
+    "hours": "Години",
+    "minutes": "Хвилини"
+  },
+  "dateTime": {
+    "pickDate": "Виберіть дату",
+    "pickDateTime": "Виберіть дату й час"
+  },
+  "password": {
+    "show": "Показати пароль",
+    "hide": "Сховати пароль"
+  },
+  "select": {
+    "placeholder": "Виберіть варіант",
+    "optional": "Необов'язково",
+    "search": "Пошук...",
+    "nothingFound": "Нічого не знайдено",
+    "noOptions": "Немає варіантів",
+    "clearSearch": "Очистити пошук",
+    "alwaysSelected": "Вибрано завжди"
+  },
+  "checkboxGroup": {
+    "empty": "Немає доступних варіантів"
+  },
+  "table": {
+    "noData": "Нічого не знайдено",
+    "selectAll": "Вибрати всі рядки",
+    "selectRow": "Вибрати рядок"
+  }
+}

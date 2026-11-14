@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import type { Dayjs } from 'dayjs';
@@ -22,6 +23,7 @@ const MultiMonthCalendar = ({
   months = 2,
   className,
 }: IMultiMonthCalendarProps) => {
+  const { t, } = useTranslation('ui');
   const [firstMonth, setFirstMonth] = useState(
     () => dayjs(initialMonth ?? selected[0] ?? new Date()).startOf('month'),
   );
@@ -39,7 +41,7 @@ const MultiMonthCalendar = ({
                 ? (
                   <button
                     type={'button'}
-                    aria-label={'Previous month'}
+                    aria-label={t('multiMonth.previous')}
                     className={styles['nav-btn']}
                     onClick={() => setFirstMonth((current) => current.subtract(1, 'month'))}
                   >
@@ -52,7 +54,7 @@ const MultiMonthCalendar = ({
                 ? (
                   <button
                     type={'button'}
-                    aria-label={'Next month'}
+                    aria-label={t('multiMonth.next')}
                     className={styles['nav-btn']}
                     onClick={() => setFirstMonth((current) => current.add(1, 'month'))}
                   >

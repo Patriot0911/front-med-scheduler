@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useLayoutEffect, useRef } from 'react';
 import dayjs from '@/lib/dayjs';
 import type { ITimePickerProps } from '@/interfaces/ui/date-picker';
@@ -12,6 +13,7 @@ const pad = (value: number) => String(value).padStart(2, '0');
 
 /** Hours and minutes as two scrollable columns; changes only the time of the given date */
 const TimePicker = ({ value, onChange, minuteStep = 5, }: ITimePickerProps) => {
+  const { t, } = useTranslation('ui');
   const current = dayjs(value);
   const hour = current.hour();
   const minute = current.minute();
@@ -29,11 +31,11 @@ const TimePicker = ({ value, onChange, minuteStep = 5, }: ITimePickerProps) => {
   return (
     <div className={styles['time-picker']} ref={ref}>
       <div className={styles.header}>
-        <span className={styles.label}>Time</span>
+        <span className={styles.label}>{t('timePicker.time')}</span>
         <span className={styles.value}>{pad(hour)}:{pad(minute)}</span>
       </div>
       <div className={styles.columns}>
-        <div className={styles.column} role={'listbox'} aria-label={'Hours'}>
+        <div className={styles.column} role={'listbox'} aria-label={t('timePicker.hours')}>
           {HOURS.map((option) => (
             <button
               key={option}
@@ -47,7 +49,7 @@ const TimePicker = ({ value, onChange, minuteStep = 5, }: ITimePickerProps) => {
             </button>
           ))}
         </div>
-        <div className={styles.column} role={'listbox'} aria-label={'Minutes'}>
+        <div className={styles.column} role={'listbox'} aria-label={t('timePicker.minutes')}>
           {minutes.map((option) => (
             <button
               key={option}

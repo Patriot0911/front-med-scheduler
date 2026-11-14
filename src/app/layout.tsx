@@ -6,16 +6,21 @@ import { Providers } from './providers';
 import { jost } from '@/fonts/jost';
 import { Toaster } from 'react-hot-toast';
 import { cn } from '@/lib/cn';
+import { getRequestLocale, getServerTranslation } from '@/i18n/server';
+import { pickResources } from '@/i18n/server/resources';
 
 import '@/styles/global.scss';
 
-export const metadata: Metadata = {
-  title: "Med Scheduler",
+export const generateMetadata = async (): Promise<Metadata> => {
+  const t = await getServerTranslation('public');
+  return { title: t('title'), };
 };
 
-const RootLayout = ({ children, }: Readonly<PropsWithChildren>) => {
+const RootLayout = async ({ children, }: Readonly<PropsWithChildren>) => {
+  const locale = await getRequestLocale();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={cn(
           geistSans.variable,
@@ -26,7 +31,7 @@ const RootLayout = ({ children, }: Readonly<PropsWithChildren>) => {
           'antialiased'
         )}
       >
-        <Providers>
+        <Providers locale={locale} resources={pickResources(locale)}>
           {children}
           <Toaster
             toastOptions={{

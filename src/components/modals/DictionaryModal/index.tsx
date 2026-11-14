@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import type { FieldValues } from 'react-hook-form';
 import type { IDictionaryModalProps } from '@/interfaces/dictionaries/tables';
 import Modal from '@/components/ui/Modal';
@@ -17,6 +18,8 @@ const DictionaryModal = <T extends FieldValues>({
   isEdit,
   children,
 }: IDictionaryModalProps<T>) => {
+  const { t, } = useTranslation();
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isLoading={isPending} size={'md'}>
       <Modal.FormBody methods={methods} onSubmit={methods.handleSubmit(onSubmit)}>
@@ -31,7 +34,7 @@ const DictionaryModal = <T extends FieldValues>({
             disabled={isPending}
             onClick={onClose}
           >
-            Cancel
+            {t('actions.cancel')}
           </Button>
           <Button
             type='submit'
@@ -39,7 +42,7 @@ const DictionaryModal = <T extends FieldValues>({
             disabled={isPending || (isEdit && !methods.formState.isDirty)}
             isLoading={isPending}
           >
-            {isEdit ? 'Save changes' : 'Create'}
+            {isEdit ? t('actions.saveChanges') : t('actions.create')}
           </Button>
         </Modal.Footer>
       </Modal.FormBody>

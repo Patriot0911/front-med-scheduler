@@ -1,17 +1,20 @@
 'use client';
 
 import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ISidebarHeaderProps } from '@/interfaces/layout/sidebar';
 
 import styles from './styles.module.scss';
 
 const SidebarHeader = ({ isOpen }: ISidebarHeaderProps) => {
+  const { t, } = useTranslation('layout');
+
   return (
     <div className={styles['top-wrapper']}>
       <div className={styles['logo-wrapper']}>
         <Image
-          alt='Scheduler logo'
+          alt={t('sidebar.logoAlt')}
           src={'/med-logo.png'}
           width={40}
           height={40}
@@ -28,7 +31,7 @@ const SidebarHeader = ({ isOpen }: ISidebarHeaderProps) => {
                 exit={{ opacity: 0, y: 14 }}
                 transition={{ duration: 0.2, ease: 'easeInOut' }}
               >
-                Scheduler
+                {t('sidebar.brand')}
               </motion.span>
             )
           }

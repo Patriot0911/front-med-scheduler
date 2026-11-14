@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { FieldValues, useController, useFormContext } from 'react-hook-form';
 import { LuCheck } from 'react-icons/lu';
 import { IFormCheckboxGroupProps } from '@/interfaces/ui/checkbox-group';
@@ -15,8 +16,9 @@ const FormCheckboxGroup = <T extends FieldValues>({
   required,
   disabled,
   hint,
-  emptyText = 'No options available',
+  emptyText,
 }: IFormCheckboxGroupProps<T>) => {
+  const { t, } = useTranslation('ui');
   const { control, formState: { isSubmitted } } = useFormContext<T>();
   const {
     field,
@@ -46,7 +48,7 @@ const FormCheckboxGroup = <T extends FieldValues>({
         aria-label={label}
         className={cn(styles.options, showError && styles['options__error'])}
       >
-        {options.length === 0 && <span className={styles.empty}>{emptyText}</span>}
+        {options.length === 0 && <span className={styles.empty}>{emptyText ?? t('checkboxGroup.empty')}</span>}
         {options.map((option) => {
           const isChecked = selected.includes(option.value);
           return (

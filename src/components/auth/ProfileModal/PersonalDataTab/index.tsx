@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,6 +24,7 @@ const toFormValues = (me?: IAuthMeResponse): TProfileDataForm => ({
 });
 
 const PersonalDataTab = ({ onDirtyChange, onCancel, footerStart, }: IProfileTabProps) => {
+  const { t, } = useTranslation(['auth', 'common', 'validation']);
   const { data: me, } = useMeQuery();
   const methods = useForm<TProfileDataForm>({
     resolver: zodResolver(profileDataSchema),
@@ -41,7 +43,7 @@ const PersonalDataTab = ({ onDirtyChange, onCancel, footerStart, }: IProfileTabP
   const submit = methods.handleSubmit(({ fullName, email, currentPassword, }) => {
     // the email is the login, so the API asks to confirm its change with the password
     if (isEmailChanged && !currentPassword) {
-      methods.setError('currentPassword', { message: 'Required to change the email', });
+      methods.setError('currentPassword', { message: t('validation:passwordRequiredForEmail'), });
       return;
     }
     mutation.mutate({
@@ -57,16 +59,16 @@ const PersonalDataTab = ({ onDirtyChange, onCancel, footerStart, }: IProfileTabP
         <div className={styles.fields}>
           <FormInput<TProfileDataForm>
             name={'fullName'}
-            label={'Full name'}
-            hint={'Shown in schedules and lists'}
+            label={t('profile.personal.fullName')}
+            hint={t('profile.personal.fullNameHint')}
             autoComplete={'name'}
             disabled={mutation.isPending}
             required
           />
           <FormInput<TProfileDataForm>
             name={'email'}
-            label={'Email'}
-            hint={'Used to sign in'}
+            label={t('fields.email')}
+            hint={t('profile.personal.emailHint')}
             type={'email'}
             autoComplete={'email'}
             disabled={mutation.isPending}
@@ -76,8 +78,8 @@ const PersonalDataTab = ({ onDirtyChange, onCancel, footerStart, }: IProfileTabP
         <Collapse isOpen={isEmailChanged}>
           <FormPasswordInput<TProfileDataForm>
             name={'currentPassword'}
-            label={'Current password'}
-            hint={'Confirms the new email'}
+            label={t('profile.personal.currentPassword')}
+            hint={t('profile.personal.currentPasswordHint')}
             autoComplete={'current-password'}
             disabled={mutation.isPending}
             required
@@ -87,10 +89,10 @@ const PersonalDataTab = ({ onDirtyChange, onCancel, footerStart, }: IProfileTabP
       <Modal.Footer>
         {footerStart}
         <Button variant={'secondary'} disabled={mutation.isPending} onClick={onCancel}>
-          Cancel
+          {t('common:actions.cancel')}
         </Button>
         <Button type={'submit'} disabled={mutation.isPending || !isDirty} isLoading={mutation.isPending}>
-          Save changes
+          {t('common:actions.saveChanges')}
         </Button>
       </Modal.Footer>
     </Modal.FormBody>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/cn';
 import { usePathname } from 'next/navigation';
 import { INavLinkProps } from '@/interfaces/layout/sidebar';
@@ -8,6 +9,7 @@ import { INavLinkProps } from '@/interfaces/layout/sidebar';
 import styles from './styles.module.scss';
 
 const NavLink = ({ href, label, icon, exactPath, isOpen, }: INavLinkProps) => {
+  const { t, } = useTranslation('layout');
   const pathname = usePathname();
 
   const isActive = exactPath
@@ -27,11 +29,11 @@ const NavLink = ({ href, label, icon, exactPath, isOpen, }: INavLinkProps) => {
     >
       <Link
         aria-current={isActive ? 'page' : undefined}
-        title={label}
+        title={t(label)}
         href={href}
       >
         {icon}
-        <span>{label}</span>
+        <span>{t(label)}</span>
       </Link>
     </li>
   );

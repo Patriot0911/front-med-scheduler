@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import { LuChevronLeft, LuChevronRight } from 'react-icons/lu';
 import { IPaginationProps } from '@/interfaces/ui/pagination';
 import { cn } from '@/lib/cn';
@@ -41,6 +44,7 @@ const Pagination = ({
   disabled = false,
   className,
 }: IPaginationProps) => {
+  const { t, } = useTranslation('ui');
   const totalPages = Math.max(Math.ceil(total / pageSize), 1);
   const from = total > 0 ? (page - 1) * pageSize + 1 : 0;
   const to = Math.min(page * pageSize, total);
@@ -53,7 +57,7 @@ const Pagination = ({
 
   return (
     <nav
-      aria-label="Pagination"
+      aria-label={t('pagination.label')}
       className={cn(styles.pagination, className)}
     >
       {showInfo && (
@@ -66,7 +70,7 @@ const Pagination = ({
       <div className={styles.controls}>
         <button
           type="button"
-          aria-label="Previous page"
+          aria-label={t('pagination.previous')}
           className={cn(styles.item, styles.arrow)}
           disabled={disabled || page <= 1}
           onClick={() => goTo(page - 1)}
@@ -93,7 +97,7 @@ const Pagination = ({
 
         <button
           type="button"
-          aria-label="Next page"
+          aria-label={t('pagination.next')}
           className={cn(styles.item, styles.arrow)}
           disabled={disabled || page >= totalPages}
           onClick={() => goTo(page + 1)}

@@ -1,7 +1,9 @@
 'use client';
 
 import { CSSProperties, useCallback, useMemo, useState } from 'react';
-import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
+import dayjs, { DAYJS_LOCALES } from '@/lib/dayjs';
 import {
   Calendar as BigCalendar,
   Components,
@@ -14,7 +16,8 @@ import {
 } from 'react-big-calendar';
 import CalendarToolbar from './CalendarToolbar';
 import CalendarEvent from './CalendarEvent';
-import { CALENDAR_CULTURE, calendarFormats, calendarLocalizer } from './localizer';
+import { calendarFormats, calendarLocalizer } from './localizer';
+import useLocale from '@/i18n/client/useLocale';
 import {
   ICalendarEvent,
   ICalendarProps,
@@ -44,18 +47,14 @@ const getEventDensity = (event: ICalendarEvent<unknown>, slotHeight: number): TC
   return 'compact';
 };
 
-const getEventTooltip = (event: ICalendarEvent<unknown>) => [
+const getEventTooltip = (t: TFunction<'ui'>) => (event: ICalendarEvent<unknown>) => [
   event.title,
   event.allDay
-    ? 'All day'
+    ? t('calendar.allDay')
     : `${dayjs(event.start).format('HH:mm')} – ${dayjs(event.end).format('HH:mm')}`,
   event.location,
   event.host,
 ].filter(Boolean).join('\n');
-
-const CALENDAR_MESSAGES: Messages = {
-  showMore: (count) => `+${count} more`,
-};
 
 const Calendar = <R,>({
   events,
@@ -75,6 +74,8 @@ const Calendar = <R,>({
   renderEvent,
   className,
 }: ICalendarProps<R>) => {
+  const { t, } = useTranslation('ui');
+  const { locale, } = useLocale();
   const [innerView, setInnerView] = useState<TCalendarView>(defaultView);
   const [innerDate, setInnerDate] = useState<Date>(() => defaultDate ?? new Date());
 
@@ -136,6 +137,12 @@ const Calendar = <R,>({
     };
   }, [views, renderEvent, slotHeight]);
 
+  const messages = useMemo<Messages>(() => ({
+    showMore: (count) => t('calendar.showMore', { count, }),
+  }), [t]);
+
+  const tooltipAccessor = useMemo(() => getEventTooltip(t), [t]);
+
   const eventPropGetter = useCallback<EventPropGetter<ICalendarEvent<R>>>((event) => ({
     className: `event-${event.type}`,
   }), []);
@@ -148,7 +155,7 @@ const Calendar = <R,>({
     >
       <BigCalendar<ICalendarEvent<R>>
         localizer={calendarLocalizer}
-        culture={CALENDAR_CULTURE}
+        culture={DAYJS_LOCALES[locale]}
         formats={calendarFormats}
         events={events}
         view={view}
@@ -165,10 +172,10 @@ const Calendar = <R,>({
         step={STEP_MINUTES}
         timeslots={2}
         popup
-        messages={CALENDAR_MESSAGES}
+        messages={messages}
         components={components}
         eventPropGetter={eventPropGetter}
-        tooltipAccessor={getEventTooltip}
+        tooltipAccessor={tooltipAccessor}
       />
     </div>
   );

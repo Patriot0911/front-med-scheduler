@@ -1,4 +1,5 @@
 import type { ITableColumn } from '@/interfaces/ui/table';
+import { getGlobalI18n } from '@/i18n/client/i18nRef';
 import Checkbox from '../Checkbox';
 
 interface ISelectColumnOptions<T> {
@@ -19,6 +20,7 @@ export const createSelectColumn = <T,>({
 }: ISelectColumnOptions<T>): ITableColumn<T> => {
   const selectableIds = rows.filter(isSelectable).map(getId);
   const pickedCount = selectableIds.filter((id) => selected.has(id)).length;
+  const t = getGlobalI18n().getFixedT(null, 'ui');
   const toggle = (ids: string[], isOn: boolean) => {
     const next = new Set(selected);
     ids.forEach((id) => (isOn ? next.add(id) : next.delete(id)));
@@ -30,7 +32,7 @@ export const createSelectColumn = <T,>({
     width: '2.75rem',
     title: (
       <Checkbox
-        aria-label={'Select all rows'}
+        aria-label={t('table.selectAll')}
         checked={selectableIds.length > 0 && pickedCount === selectableIds.length}
         indeterminate={pickedCount > 0}
         disabled={selectableIds.length === 0}
@@ -39,7 +41,7 @@ export const createSelectColumn = <T,>({
     ),
     render: (row) => (
       <Checkbox
-        aria-label={getLabel?.(row) ?? 'Select row'}
+        aria-label={getLabel?.(row) ?? t('table.selectRow')}
         checked={selected.has(getId(row))}
         disabled={!isSelectable(row)}
         onChange={(isOn) => toggle([getId(row)], isOn)}

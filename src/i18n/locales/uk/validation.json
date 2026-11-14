@@ -1,0 +1,15 @@
+{
+  "required": "Обов'язкове поле",
+  "invalidEmail": "Некоректний email",
+  "minChars_one": "Мінімум {{count}} символ",
+  "minChars_few": "Мінімум {{count}} символи",
+  "minChars_many": "Мінімум {{count}} символів",
+  "minChars_other": "Мінімум {{count}} символу",
+  "maxChars_one": "Максимум {{count}} символ",
+  "maxChars_few": "Максимум {{count}} символи",
+  "maxChars_many": "Максимум {{count}} символів",
+  "maxChars_other": "Максимум {{count}} символу",
+  "passwordsMismatch": "Паролі не збігаються",
+  "passwordMustDiffer": "Має відрізнятися від поточного пароля",
+  "passwordRequiredForEmail": "Потрібен, щоб змінити email"
+}

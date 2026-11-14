@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { FaUserGraduate } from 'react-icons/fa';
@@ -15,6 +16,7 @@ import styles from './styles.module.scss';
 const DASHBOARD_PATH = '/dashboard';
 
 const WelcomeHero = () => {
+  const { t, } = useTranslation('public');
   const router = useRouter();
   const status = useAppSelector(authStatusSelector);
   const [isShownAuthModal, setIsShownAuthModal] = useState(false);
@@ -22,22 +24,22 @@ const WelcomeHero = () => {
   return (
     <section className={styles.hero}>
       <span className={styles.logo}>
-        <Image alt="Scheduler logo" src="/med-logo.png" width={112} height={112} priority />
+        <Image alt={t('logoAlt')} src="/med-logo.png" width={112} height={112} priority />
       </span>
-      <h1 className={styles.title}>Med Scheduler</h1>
+      <h1 className={styles.title}>{t('title')}</h1>
       <p className={styles.subtitle}>
-        Schedule of lessons, lectures, exams and events
+        {t('subtitle')}
       </p>
 
       <div className={styles.actions}>
         {status === 'authenticated' && (
           <Button leftIcon={<LuLayoutDashboard />} onClick={() => router.push(DASHBOARD_PATH)}>
-            Open dashboard
+            {t('openDashboard')}
           </Button>
         )}
         {status === 'guest' && (
           <Button leftIcon={<FaUserGraduate />} onClick={() => setIsShownAuthModal(true)}>
-            Sign In
+            {t('signIn')}
           </Button>
         )}
       </div>

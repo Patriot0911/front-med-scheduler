@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { LoadingState, LoadingStateVariantsMap } from '@/lib/loading-mappers';
 import { ConfirmModalButtonDictionary } from '@/configs/modal.dictionary';
@@ -11,6 +12,7 @@ import Input from '@/components/ui/Input';
 import styles from './styles.module.scss';
 
 const ConfirmModal = (props: IConfirmModalProps) => {
+  const { t, } = useTranslation();
   const [confirmWord, setConfirmWord] = useState<string>('')
 
   useEffect(() => {
@@ -34,7 +36,7 @@ const ConfirmModal = (props: IConfirmModalProps) => {
         }}
       >
         <Modal.Header
-          title={'Confirmation'}
+          title={t('confirm.title')}
         />
         <Modal.Content>
           {!!props.description && <p className={styles['description']}>{props.description}</p>}
@@ -42,7 +44,7 @@ const ConfirmModal = (props: IConfirmModalProps) => {
           {!!props.confirmationWord && (
             <Input
               name={'confirmWord'}
-              label='Confirmation word'
+              label={t('confirm.word')}
               placeholder={props.confirmationWord}
               onChange={(e) => setConfirmWord(e.target.value)}
               disabled={!!props.requestState && props.requestState !== LoadingState.Ide}
@@ -56,7 +58,7 @@ const ConfirmModal = (props: IConfirmModalProps) => {
             variant={'secondary'}
             onClick={props.onClose}
           >
-            Cancel
+            {t('actions.cancel')}
           </Button>
           <Button
             type='submit'
@@ -68,7 +70,7 @@ const ConfirmModal = (props: IConfirmModalProps) => {
             }
             variant={LoadingStateVariantsMap[props.requestState ?? LoadingState.Ide]}
           >
-            {ConfirmModalButtonDictionary[props.requestState ?? LoadingState.Ide]}
+            {t(ConfirmModalButtonDictionary[props.requestState ?? LoadingState.Ide])}
           </Button>
         </Modal.Footer>
       </Modal.FormBody>

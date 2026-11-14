@@ -1,3 +1,4 @@
+import type { ParseKeys } from 'i18next';
 import type { Permission } from '../auth/permission';
 import type { IAuthUser } from '../auth/user';
 
@@ -6,8 +7,10 @@ export interface INavAccess {
   hasAny: (permissions: Permission[]) => boolean;
 };
 
+export type TNavLabelKey = ParseKeys<'layout'>;
+
 export interface INavbarItem {
-  label: string;
+  label: TNavLabelKey;
   href: string;
   exactPath?: boolean;
   icon?: React.ReactNode;
@@ -16,7 +19,7 @@ export interface INavbarItem {
 
 export interface INavbarGroup {
   key: string;
-  label?: string;
+  label?: TNavLabelKey;
   items: INavbarItem[];
 };
 
@@ -38,7 +41,7 @@ export interface INavLinkProps extends Omit<INavbarItem, 'isVisible'> {
 };
 
 export interface INavGroupProps {
-  label?: string;
+  label?: TNavLabelKey;
   items: INavbarItem[];
   isOpen: boolean;
 };

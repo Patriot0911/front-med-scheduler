@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useCallback, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { LuCalendar, LuCalendarClock } from 'react-icons/lu';
@@ -27,13 +28,16 @@ const DateTimeField = ({
   name,
   label,
   hint,
-  placeholder = withTime ? 'Pick date and time' : 'Pick a date',
+  placeholder: placeholderProp,
   error,
   touched,
   required,
   disabled,
   hideErrorMessage,
 }: IDateTimeFieldProps) => {
+  const { t, } = useTranslation('ui');
+  const pickLabel = withTime ? t('dateTime.pickDateTime') : t('dateTime.pickDate');
+  const placeholder = placeholderProp ?? pickLabel;
   const [isOpen, setIsOpen] = useState(false);
   const fieldRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -88,7 +92,7 @@ const DateTimeField = ({
           }
         }}
         icon={withTime ? <LuCalendarClock /> : <LuCalendar />}
-        iconLabel={withTime ? 'Pick date and time' : 'Pick a date'}
+        iconLabel={pickLabel}
         onIconClick={toggle}
       />
       {isOpen && createPortal(

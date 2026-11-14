@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
 import { IPasswordInputProps } from '@/interfaces/ui/inputs';
@@ -12,6 +13,7 @@ const PasswordInput = ({
   onRevealChange,
   ...props
 }: IPasswordInputProps) => {
+  const { t, } = useTranslation('ui');
   const [uncontrolledIsRevealed, setUncontrolledIsRevealed] = useState(false);
   const isRevealed = canReveal && (controlledIsRevealed ?? uncontrolledIsRevealed);
 
@@ -27,7 +29,7 @@ const PasswordInput = ({
       type={isRevealed ? 'text' : 'password'}
       icon={canReveal ? (isRevealed ? <LuEyeOff /> : <LuEye />) : undefined}
       onIconClick={canReveal ? toggle : undefined}
-      iconLabel={isRevealed ? 'Hide password' : 'Show password'}
+      iconLabel={isRevealed ? t('password.hide') : t('password.show')}
     />
   );
 };

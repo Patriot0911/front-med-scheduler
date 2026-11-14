@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import { useEffect, useRef } from 'react';
 import type { ILogInModalProps } from '@/interfaces/auth/modal';
 import { useForm } from 'react-hook-form';
@@ -18,6 +21,7 @@ import Button from '@/components/ui/Button';
 import styles from './styles.module.scss'
 
 const AuthModal = ({ onAuthenticated, mode = 'sign-in', defaultEmail, ...props }: ILogInModalProps) => {
+  const { t, } = useTranslation('auth');
   const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isAddingAccount = mode === 'add-account';
   const loginMutation = useLoginMutation(isAddingAccount);
@@ -73,35 +77,35 @@ const AuthModal = ({ onAuthenticated, mode = 'sign-in', defaultEmail, ...props }
     <Modal {...props} isLoading={loginMutation.isPending}>
       <Modal.FormBody methods={methods} onSubmit={methods.handleSubmit(loginHandler)}>
         <Modal.Header
-          title={isAddingAccount ? 'Add account' : 'Sign In'}
+          title={isAddingAccount ? t('addAccount.title') : t('signIn.title')}
         />
         <Modal.Content>
           {!isAddingAccount && accounts.length > 0 && (
             <div className={styles['saved-accounts']}>
-              <span className={styles['saved-accounts-title']}>Saved accounts</span>
+              <span className={styles['saved-accounts-title']}>{t('signIn.savedAccounts')}</span>
               <AccountsList onSelect={selectSavedAccount} disabled={loginMutation.isPending || loginMutation.isSuccess} />
             </div>
           )}
           <FormInput<TLoginForm>
             name={'email'}
-            label='Email'
-            placeholder={'Enter your corporate email'}
+            label={t('fields.email')}
+            placeholder={t('signIn.emailPlaceholder')}
             required
             autoComplete='email'
             disabled={loginMutation.isPending || loginMutation.isSuccess}
           />
           <FormPasswordInput<TLoginForm>
             name={'password'}
-            label='Password'
-            placeholder={'Enter password provided by manager'}
+            label={t('fields.password')}
+            placeholder={t('signIn.passwordPlaceholder')}
             required
             autoComplete='current-password'
             disabled={loginMutation.isPending || loginMutation.isSuccess}
           />
           <p className={styles['auth-description']}>
             {isAddingAccount
-              ? 'Sign in to another account. It is saved on this device next to the current one, and you switch to it right away.'
-              : 'Log in to your account using the credentials provided to you by the manager.'}
+              ? t('addAccount.description')
+              : t('signIn.description')}
           </p>
         </Modal.Content>
         <Modal.Footer>
@@ -111,7 +115,7 @@ const AuthModal = ({ onAuthenticated, mode = 'sign-in', defaultEmail, ...props }
             disabled={!methods.formState.isValid || loginMutation.isPending || loginMutation.isSuccess}
             variant={LoadingStateVariantsMap[mutationToLoadingState(loginMutation)]}
           >
-            {buttonDictionary[mutationToLoadingState(loginMutation)]}
+            {t(buttonDictionary[mutationToLoadingState(loginMutation)])}
           </Button>
         </Modal.Footer>
       </Modal.FormBody>

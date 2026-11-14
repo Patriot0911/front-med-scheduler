@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useCallback, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { SelectContext } from './context';
@@ -25,7 +26,7 @@ const Select = <O extends ISelectOption<string, string>>({
   hint,
   error,
   hideErrorMessage,
-  placeholder = 'Select an option',
+  placeholder,
   className,
   required,
   touched,
@@ -37,6 +38,7 @@ const Select = <O extends ISelectOption<string, string>>({
   isValueSelected,
   closeOnSelect = true,
 }: ISelectProps<O>) => {
+  const { t, } = useTranslation('ui');
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const anchorRef = useRef<HTMLDivElement>(null);
@@ -86,7 +88,7 @@ const Select = <O extends ISelectOption<string, string>>({
                 {label} {required && ' *'}
               </label>
             )}
-            {!required && showOptionalFlag && <span className={styles['flag-optional']}>Optional</span>}
+            {!required && showOptionalFlag && <span className={styles['flag-optional']}>{t('select.optional')}</span>}
           </div>
         )}
 
@@ -100,7 +102,7 @@ const Select = <O extends ISelectOption<string, string>>({
           )}
         >
           {children}
-          {!selectedOption && <span className={styles.placeholder}>{placeholder}</span>}
+          {!selectedOption && <span className={styles.placeholder}>{placeholder ?? t('select.placeholder')}</span>}
           <Select.Trigger
             disabled={disabled}
           />

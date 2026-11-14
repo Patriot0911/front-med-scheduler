@@ -1,0 +1,15 @@
+{
+  "admin": "Адміністратор",
+  "readGroups": "Перегляд груп",
+  "manageGroups": "Керування групами",
+  "readRoles": "Перегляд ролей",
+  "manageRoles": "Керування ролями",
+  "readUsers": "Перегляд користувачів",
+  "manageUsers": "Керування користувачами",
+  "readLessons": "Перегляд занять",
+  "manageLessons": "Керування всіма заняттями",
+  "readComments": "Перегляд коментарів",
+  "manageComments": "Керування коментарями",
+  "readDepartments": "Перегляд кафедр",
+  "manageDepartments": "Керування кафедрами"
+}

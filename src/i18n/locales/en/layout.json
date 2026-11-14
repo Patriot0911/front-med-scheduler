@@ -1,0 +1,33 @@
+{
+  "sidebar": {
+    "logoAlt": "Scheduler logo",
+    "brand": "Scheduler",
+    "collapse": "Collapse",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
+    "signIn": "Sign in",
+    "profileOf": "Profile of {{name}}"
+  },
+  "nav": {
+    "groups": {
+      "schedule": "Schedule",
+      "administration": "Administration"
+    },
+    "overview": "Overview",
+    "allLessons": "All lessons",
+    "studying": "Studying",
+    "teaching": "Teaching",
+    "lessons": "Lessons",
+    "users": "Users",
+    "dictionaries": "Dictionaries"
+  },
+  "pages": {
+    "overview": "Overview",
+    "studying": "Studying lessons",
+    "teaching": "Teaching lessons",
+    "allLessons": "All lessons",
+    "adminLessons": "Lessons management",
+    "users": "Users",
+    "dictionaries": "Dictionaries"
+  }
+}

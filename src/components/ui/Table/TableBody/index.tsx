@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import TableActionCell from '../TableActionCell';
 import { useTableContext } from '../context';
 import { ITableBodyProps } from '@/interfaces/ui/table';
@@ -7,6 +10,7 @@ import { cn } from '@/lib/cn';
 import styles from './styles.module.scss';
 
 export const TableBody = <T,>({ className }: ITableBodyProps) => {
+  const { t, } = useTranslation('ui');
   const {
     columns,
     actions,
@@ -94,7 +98,7 @@ export const TableBody = <T,>({ className }: ITableBodyProps) => {
       <tbody className={className}>
         <tr>
           <td colSpan={colSpan} className={styles.state} style={stateCellStyle}>
-            {emptyComponent ?? emptyText ?? 'No data found'}
+            {emptyComponent ?? emptyText ?? t('table.noData')}
           </td>
         </tr>
       </tbody>

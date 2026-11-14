@@ -1,0 +1,33 @@
+{
+  "sidebar": {
+    "logoAlt": "Логотип Scheduler",
+    "brand": "Scheduler",
+    "collapse": "Згорнути",
+    "collapseSidebar": "Згорнути бічну панель",
+    "expandSidebar": "Розгорнути бічну панель",
+    "signIn": "Увійти",
+    "profileOf": "Профіль: {{name}}"
+  },
+  "nav": {
+    "groups": {
+      "schedule": "Розклад",
+      "administration": "Адміністрування"
+    },
+    "overview": "Огляд",
+    "allLessons": "Усі заняття",
+    "studying": "Навчання",
+    "teaching": "Викладання",
+    "lessons": "Заняття",
+    "users": "Користувачі",
+    "dictionaries": "Довідники"
+  },
+  "pages": {
+    "overview": "Огляд",
+    "studying": "Мої заняття",
+    "teaching": "Заняття, які я веду",
+    "allLessons": "Усі заняття",
+    "adminLessons": "Керування заняттями",
+    "users": "Користувачі",
+    "dictionaries": "Довідники"
+  }
+}

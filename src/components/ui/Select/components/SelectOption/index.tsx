@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 import { useSelectContext } from '../../context';
@@ -16,12 +19,13 @@ const SelectOption = <O extends ISelectOption<string, string>>({
   className,
   disabled,
 }: ISelectOptionProps<O>) => {
+  const { t, } = useTranslation('ui');
   const { options, isSelected: isValueSelected, onChange, isOpen, search } = useSelectContext<O>();
 
   if (!isOpen) return null;
 
   if (!options.length) {
-    return <span className={styles.empty}>{search ? 'Nothing found' : 'No options'}</span>;
+    return <span className={styles.empty}>{search ? t('select.nothingFound') : t('select.noOptions')}</span>;
   }
 
   return (

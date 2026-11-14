@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { LuCheck, LuLock } from 'react-icons/lu';
 import { cn } from '@/lib/cn';
 import { IMultiSelectProps, ISelectOption } from '@/interfaces/ui/selectors';
@@ -19,6 +20,7 @@ const MultiSelect = <O extends ISelectOption<string, string>>({
   lockedValues = [],
   ...props
 }: IMultiSelectProps<O>) => {
+  const { t, } = useTranslation('ui');
   const isLocked = (optionValue: string) => lockedValues.includes(optionValue);
   const selectedOptions = options
     .filter((option) => value.includes(option.value))
@@ -63,7 +65,7 @@ const MultiSelect = <O extends ISelectOption<string, string>>({
             <span className={cn(styles.option, isLocked(option.value) && styles['option__locked'])}>
               <span className={cn(styles.checkbox, isSelected && styles['checkbox__checked'])}>
                 {isLocked(option.value)
-                  ? <LuLock size={10} aria-label={'Always selected'} />
+                  ? <LuLock size={10} aria-label={t('select.alwaysSelected')} />
                   : isSelected && <LuCheck size={12} />}
               </span>
               {renderOption(option, isSelected)}

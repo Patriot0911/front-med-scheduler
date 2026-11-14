@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import AuthService, { AuthQueryKey } from '@/lib/services/auth.service';
@@ -8,6 +9,7 @@ import { IAuthMeResponse } from '@/interfaces/auth/me';
 import { IEditMePayload } from '@/interfaces/auth/profile';
 
 const useEditMeMutation = (onSuccess?: (data: IAuthMeResponse) => void) => {
+  const { t, } = useTranslation('auth');
   const queryClient = useQueryClient();
 
   return useMutation<IAuthMeResponse, Error, IEditMePayload>({
@@ -19,7 +21,7 @@ const useEditMeMutation = (onSuccess?: (data: IAuthMeResponse) => void) => {
         queryClient.invalidateQueries({ queryKey: [UsersQueryKey.UsersList], }),
         queryClient.invalidateQueries({ queryKey: [DictionaryQueryKey.Teachers], }),
       ]);
-      toast.success('Profile updated');
+      toast.success(t('profile.personal.updated'));
       onSuccess?.(data);
     },
     onError: (error) => {
