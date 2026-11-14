@@ -11,7 +11,10 @@ const LessonDetailsModal = ({ lesson, onEdit, ...props }: ILessonDetailsModalPro
     <Modal {...props} size={'md'}>
       {lesson && (
         <>
-          <Modal.Header title={lesson.name} description={lesson.lessonGroupName ?? undefined} />
+          <Modal.Header
+            title={lesson.name}
+            description={lesson.lessonGroupName ?? undefined}
+          />
           <Modal.Content>
             <LessonDetails lesson={lesson} />
           </Modal.Content>

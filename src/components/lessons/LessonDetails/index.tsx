@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { LuBuilding2, LuCalendar, LuClock, LuHourglass, LuUser, LuUsers } from 'react-icons/lu';
 import { cn } from '@/lib/cn';
 import { getLessonStart } from '@/lib/lessons-calendar';
-import { LessonVisibility } from '@/interfaces/lessons/lesson';
 import type { ILessonDetailsProps } from '@/interfaces/lessons/modal';
 
 import styles from './styles.module.scss';
@@ -24,11 +23,11 @@ const formatDuration = (minutes: number) => {
 
 const joinNames = (items: { name: string }[]) => items.map(({ name, }) => name).join(', ');
 
-/** Everything about a lesson: badges, date and people, note; used by the details and week modals */
+/** Date, people and note of a lesson; used by the details and week modals */
 const LessonDetails = ({ lesson, }: ILessonDetailsProps) => {
   const start = getLessonStart(lesson);
   const rows: IDetailRow[] = [
-    { key: 'date', icon: <LuCalendar />, label: 'Date', value: start.format('dddd, DD MMMM YYYY'), },
+    { key: 'date', icon: <LuCalendar />, label: 'Date', value: start.format('ddd, DD MMM YYYY'), },
     {
       key: 'time',
       icon: <LuClock />,
@@ -43,12 +42,6 @@ const LessonDetails = ({ lesson, }: ILessonDetailsProps) => {
 
   return (
     <div className={styles.content}>
-      <div className={styles.badges}>
-        <span className={cn(styles.badge, lesson.visibility === LessonVisibility.Involved && styles['badge__involved'])}>
-          {lesson.visibility === LessonVisibility.Involved ? 'Participants only' : 'Public'}
-        </span>
-      </div>
-
       <dl className={styles.details}>
         {rows.map((row) => (
           <div key={row.key} className={styles.row}>

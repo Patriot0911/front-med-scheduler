@@ -61,7 +61,10 @@ const WeekLessonsModal = ({ isOpen, onClose, weekStart, lessons, onEdit, onCreat
           {selected
             ? (
               <>
-                <Modal.Header title={selected.name} description={selected.lessonGroupName ?? undefined} />
+                <Modal.Header
+                  title={selected.name}
+                  description={selected.lessonGroupName ?? undefined}
+                />
                 <Modal.Content>
                   <LessonDetails lesson={selected} />
                 </Modal.Content>
