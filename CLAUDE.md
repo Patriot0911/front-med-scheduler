@@ -149,7 +149,7 @@ export default DepartmentsService;
 
 - `LessonDetails` — спільний вміст деталей заняття (`LessonDetailsModal`, модалка тижня, таблиця). Кнопка **Edit** — коли `lesson.canEdit` (викладач заняття або завідувач його кафедри) і погляд дозволяє редагувати (`LessonsBrowser canEdit`; в адмінці — лише з `manage_lessons`).
 - **Місячний вид:** клік по дню відкриває `WeekLessonsModal` — заняття тижня за днями з уже завантажених даних місяця; заняття відкривається в тій самій модалці («Back»), там же «Add lesson» на цей день (якщо погляд `canCreate`). Створення кліком по слоту лишилось у тижневому й денному видах.
-- **Редагування** — та сама `LessonFormModal` з `lesson` (без секції груп): `PATCH /lessons/:id`, в адмінці (`source: 'admin'`) — `PATCH /admin/lessons/:id`. Надсилаються всі поля; старт перенесеного заняття йде в `delayedDate`. Поле **Lesson group** (замість секції груп): «No group» (`lessonGroupId: null`) або одна з моїх груп (`/lessons-groups/my`; в адмінці — усі з довідника), поточна група заняття є в списку завжди; бекенд перевіряє `canUseGroup` при зміні. Себе як викладача заняття форма блокує; кафедри, що вже є в занятті, лишаються допустимими (як на бекенді); в адмінці правила кафедр немає.
+- **Редагування** — та сама `LessonFormModal` з `lesson` (без секції груп): `PATCH /lessons/:id`, в адмінці (`source: 'admin'`) — `PATCH /admin/lessons/:id`. Надсилаються всі поля, зокрема `date`. Поле **Lesson group** (замість секції груп): «No group» (`lessonGroupId: null`) або одна з моїх груп (`/lessons-groups/my`; в адмінці — усі з довідника), поточна група заняття є в списку завжди; бекенд перевіряє `canUseGroup` при зміні. Себе як викладача заняття форма блокує; кафедри, що вже є в занятті, лишаються допустимими (як на бекенді); в адмінці правила кафедр немає.
 
 ### Календар / список (адмінка)
 
@@ -162,7 +162,7 @@ export default DepartmentsService;
 
 - `QuerySyncedCalendar view={...} filters search` — контейнер даних: дата й вид з URL (`useCalendarSearchParams`) → `getCalendarRange` (видимі дні; у місяці — разом із крайніми тижнями сусідніх місяців) → `useLessonsQuery(view, params)` → `lessonToCalendarEvent`. Без `page` API віддає весь діапазон.
 - Джерело — `source` / `scope` погляду в `LESSONS_VIEWS`: `list` → `/lessons/list` (працює й без токена, ним користується `/schedule`), `my` → `/lessons/my?scope=`, `admin` → `/admin/lessons`. Ключі запитів — `LessonsQueryKey.List | My | Admin`; мутації занять мають інвалідовувати всі три.
-- Заняття стоїть у календарі на **фактичній** даті `delayedDate ?? date` (`getLessonStart`); бекенд фільтрує й сортує за нею ж. Назви викладачів, груп, курсу й кафедри приходять у самому занятті (`teachers`, `studentGroups`, `lessonGroupName`, `departmentName`), довідники для показу не потрібні.
+- Заняття має одну дату `date` (`getLessonStart`); окремого «перенесення» немає — заняття переносять, редагуючи дату. Бекенд фільтрує й сортує за нею ж. Назви викладачів, груп, курсу й кафедри приходять у самому занятті (`teachers`, `studentGroups`, `lessonGroupName`, `departmentName`), довідники для показу не потрібні.
 
 ### Стан у URL
 

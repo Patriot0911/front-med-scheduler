@@ -1,8 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { LuBuilding2, LuCalendar, LuClock, LuHistory, LuHourglass, LuUser, LuUsers } from 'react-icons/lu';
-import dayjs from '@/lib/dayjs';
+import { LuBuilding2, LuCalendar, LuClock, LuHourglass, LuUser, LuUsers } from 'react-icons/lu';
 import { cn } from '@/lib/cn';
 import { getLessonStart } from '@/lib/lessons-calendar';
 import { LessonVisibility } from '@/interfaces/lessons/lesson';
@@ -37,9 +36,6 @@ const LessonDetails = ({ lesson, }: ILessonDetailsProps) => {
       value: `${start.format('HH:mm')} – ${start.add(lesson.duration, 'minute').format('HH:mm')}`,
     },
     { key: 'duration', icon: <LuHourglass />, label: 'Duration', value: formatDuration(lesson.duration), },
-    ...(lesson.delayedDate
-      ? [{ key: 'original', icon: <LuHistory />, label: 'Moved from', value: dayjs(lesson.date).format('DD MMMM YYYY, HH:mm'), }]
-      : []),
     { key: 'teachers', icon: <LuUser />, label: 'Teachers', value: joinNames(lesson.teachers), },
     { key: 'groups', icon: <LuUsers />, label: 'Groups', value: joinNames(lesson.studentGroups), },
     { key: 'departments', icon: <LuBuilding2 />, label: 'Departments', value: joinNames(lesson.departments), },
@@ -51,9 +47,6 @@ const LessonDetails = ({ lesson, }: ILessonDetailsProps) => {
         <span className={cn(styles.badge, lesson.visibility === LessonVisibility.Involved && styles['badge__involved'])}>
           {lesson.visibility === LessonVisibility.Involved ? 'Participants only' : 'Public'}
         </span>
-        {lesson.delayedDate && (
-          <span className={cn(styles.badge, styles['badge__moved'])}>Moved</span>
-        )}
       </div>
 
       <dl className={styles.details}>

@@ -16,8 +16,6 @@ export interface ILesson {
   id: string;
   name: string;
   date: string;
-  /** The lesson was moved to this date; the calendar shows it there */
-  delayedDate: string | null;
   duration: number;
   note: string | null;
   semesterId: string | null;
@@ -82,8 +80,8 @@ export interface ICreateLessonSeriesPayload {
   dates: string[];
 };
 
-/** PATCH: the fields to change; `delayedDate` is the start of a moved lesson */
-export type IEditLessonPayload = Partial<ICreateLessonPayload> & { delayedDate?: string | null };
+/** PATCH: the fields to change */
+export type IEditLessonPayload = Partial<ICreateLessonPayload>;
 
 export type IAddLessonsToGroupPayload = Omit<ICreateLessonSeriesPayload, 'lessonGroup'>;
 

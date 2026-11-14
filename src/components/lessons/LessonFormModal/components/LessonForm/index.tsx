@@ -94,12 +94,12 @@ const showFirstError = (errors: FieldErrors<TLessonForm>) => {
   if (field) toast.error(String(errors[field]?.message));
 };
 
-/** Every field of the lesson; the start goes to `delayedDate` for a moved lesson, the note may be cleared */
-const toEditPayload = (form: TLessonForm, lesson: ILesson): IEditLessonPayload => ({
+/** Every field of the lesson; the note may be cleared */
+const toEditPayload = (form: TLessonForm): IEditLessonPayload => ({
   ...toLessonTemplate(form),
   note: form.note.trim(),
   lessonGroupId: form.lessonGroupId || null,
-  [lesson.delayedDate ? 'delayedDate' : 'date']: form.start.toISOString(),
+  date: form.start.toISOString(),
 });
 
 const toFormLesson = (lesson: ILesson) => ({
@@ -232,7 +232,7 @@ const LessonForm = ({ draft, lesson, isDepartmentLesson = false, source = 'my', 
   // without a group: one lesson; a new group comes with its lessons; an existing one gets the lessons
   const submit = (form: TLessonForm) => {
     if (lesson) {
-      editMutation.mutate({ lessonId: lesson.id, payload: toEditPayload(form, lesson), });
+      editMutation.mutate({ lessonId: lesson.id, payload: toEditPayload(form), });
     } else if (!form.isRecurring) {
       mutation.mutate(toPayload(form));
     } else if (form.groupMode === 'new') {

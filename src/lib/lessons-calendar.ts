@@ -12,7 +12,7 @@ export const getCalendarRange = (date: Date, view: TCalendarView) => {
   return { dateFrom: from.toISOString(), dateTo: to.toISOString(), };
 };
 
-export const getLessonStart = (lesson: ILesson) => dayjs(lesson.delayedDate ?? lesson.date);
+export const getLessonStart = (lesson: ILesson) => dayjs(lesson.date);
 
 export const lessonToCalendarEvent = (lesson: ILesson): ICalendarEvent<ILesson> => {
   const start = getLessonStart(lesson);

@@ -80,7 +80,6 @@ const COLUMNS: ITableColumn<ILesson>[] = [
         <span className={cn(cells.badge, lesson.visibility === LessonVisibility.Involved && cells['badge--involved'])}>
           {lesson.visibility === LessonVisibility.Involved ? 'Participants' : 'Public'}
         </span>
-        {lesson.delayedDate && <span className={cn(cells.badge, cells['badge--moved'])}>Moved</span>}
       </div>
     ),
   },
