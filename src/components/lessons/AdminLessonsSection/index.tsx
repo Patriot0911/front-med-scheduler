@@ -52,7 +52,7 @@ const AdminLessonsSection = () => {
         <LessonsModeSwitch value={mode} onChange={setMode} />
       </div>
       {mode === 'calendar'
-        ? <LessonsBrowser view={'admin'} />
+        ? <LessonsBrowser view={'admin'} canEdit={hasAny(MANAGE_PERMISSIONS)} />
         : (
           <>
             <Tabs
@@ -62,7 +62,7 @@ const AdminLessonsSection = () => {
               variant={'underline'}
             />
             {listTab === 'lessons'
-              ? <LessonsBrowser view={'admin'} mode={'list'} />
+              ? <LessonsBrowser view={'admin'} mode={'list'} canEdit={hasAny(MANAGE_PERMISSIONS)} />
               : <AdminLessonGroupsList />}
           </>
         )}

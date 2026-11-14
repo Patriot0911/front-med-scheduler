@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { ILessonsListParams, LessonVisibility, TLessonScope } from './lesson';
+import type { ILesson, ILessonsListParams, LessonVisibility, TLessonScope } from './lesson';
 
 export interface ILessonsFilters {
   lessonGroupIds: string[];
@@ -38,6 +38,8 @@ export type TLessonsMode = 'calendar' | 'list';
 export interface ILessonsBrowserProps {
   view: TLessonsView;
   mode?: TLessonsMode;
+  /** Lessons can be edited here at all (each one still by its canEdit); false e.g. for a read-only admin */
+  canEdit?: boolean;
 };
 
 export interface ILessonsModeSwitchProps {
@@ -51,6 +53,7 @@ export interface ILessonsTableProps {
   params: ILessonsListParams;
   page: number;
   onPageChange: (page: number) => void;
+  onEdit?: (lesson: ILesson) => void;
 };
 
 export interface ILessonsToolbarProps {

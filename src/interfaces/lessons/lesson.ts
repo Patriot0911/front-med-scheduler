@@ -82,6 +82,9 @@ export interface ICreateLessonSeriesPayload {
   dates: string[];
 };
 
+/** PATCH: the fields to change; `delayedDate` is the start of a moved lesson */
+export type IEditLessonPayload = Partial<ICreateLessonPayload> & { delayedDate?: string | null };
+
 export type IAddLessonsToGroupPayload = Omit<ICreateLessonSeriesPayload, 'lessonGroup'>;
 
 /** Where a new lesson starts: a clicked / selected calendar slot or now */

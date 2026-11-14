@@ -6,13 +6,19 @@ import { LessonVisibility } from '@/interfaces/lessons/lesson';
 interface ILessonSchemaContext {
   /** teacher id → their department, from the teachers dictionary */
   teacherDepartments: Map<string, string | null>;
+  /** Departments a lesson being edited already has: they stay allowed, as on the API */
+  keptDepartmentIds?: string[];
+  /** The teacher domain allows only departments of the lesson teachers; the admin panel any */
+  restrictDepartments?: boolean;
 };
 
 const RECURRENCE_PATTERNS = ['none', 'daily', 'weekly', 'biweekly', 'custom'] as const;
 const GROUP_MODES = ['new', 'existing'] as const;
 
 // the author is always among the teachers: the field locks them in
-export const createLessonSchema = ({ teacherDepartments, }: ILessonSchemaContext) => z.object({
+export const createLessonSchema = ({
+  teacherDepartments, keptDepartmentIds = [], restrictDepartments = true,
+}: ILessonSchemaContext) => z.object({
   name: z.string().trim().min(1, 'Required'),
   start: z.date({ error: 'Required', }),
   duration: z.string()
@@ -31,6 +37,8 @@ export const createLessonSchema = ({ teacherDepartments, }: ILessonSchemaContext
   groupMode: z.enum(GROUP_MODES),
   groupName: z.string(),
   existingGroupId: z.string(),
+  // editing: the lesson's group, '' for none
+  lessonGroupId: z.string(),
   recurrencePattern: z.enum(RECURRENCE_PATTERNS),
   recurrenceUntil: z.date().nullable(),
   // '0' = Monday … '6' = Sunday
@@ -38,8 +46,8 @@ export const createLessonSchema = ({ teacherDepartments, }: ILessonSchemaContext
   recurrenceDates: z.array(z.date()),
 }).superRefine((form, ctx) => {
   // the API accepts only departments of the lesson teachers
-  const allowed = new Set(form.teacherIds.map((id) => teacherDepartments.get(id)));
-  if (form.departmentIds.some((id) => !allowed.has(id))) {
+  const allowed = new Set([...form.teacherIds.map((id) => teacherDepartments.get(id)), ...keptDepartmentIds]);
+  if (restrictDepartments && form.departmentIds.some((id) => !allowed.has(id))) {
     ctx.addIssue({ code: 'custom', path: ['departmentIds'], message: 'Only departments of the selected teachers', });
   }
 

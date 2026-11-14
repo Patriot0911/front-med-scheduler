@@ -8,10 +8,13 @@ export interface ILessonsCalendarProps extends Pick<
 > {
   events: ICalendarEvent<ILesson>[];
   isFetching?: boolean;
+  /** Edit from the lesson details, for lessons whose canEdit allows it */
+  onEdit?: (lesson: ILesson) => void;
 };
 
 export interface IQuerySyncedCalendarProps extends Pick<ICalendarProps, 'height' | 'onSlotSelect'> {
   view: TLessonsView;
   filters?: ILessonsFilters;
   search?: string;
+  onEdit?: (lesson: ILesson) => void;
 };

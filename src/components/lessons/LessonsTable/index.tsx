@@ -86,7 +86,7 @@ const COLUMNS: ITableColumn<ILesson>[] = [
   },
 ];
 
-const LessonsTable = ({ view, params, page, onPageChange, }: ILessonsTableProps) => {
+const LessonsTable = ({ view, params, page, onPageChange, onEdit, }: ILessonsTableProps) => {
   const { data, isLoading, isFetching, } = useLessonsQuery(view, { ...params, page, pageSize: LESSONS_PAGE_SIZE, });
   // the lesson is kept after closing so the modal keeps its content during the exit animation
   const [details, setDetails] = useState<TDetailsState>({ isOpen: false, lesson: null, });
@@ -117,6 +117,10 @@ const LessonsTable = ({ view, params, page, onPageChange, }: ILessonsTableProps)
         isOpen={details.isOpen}
         lesson={details.lesson}
         onClose={() => setDetails((prev) => ({ ...prev, isOpen: false, }))}
+        onEdit={onEdit && ((lesson) => {
+          setDetails((prev) => ({ ...prev, isOpen: false, }));
+          onEdit(lesson);
+        })}
       />
     </>
   );

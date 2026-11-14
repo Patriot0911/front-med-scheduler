@@ -145,6 +145,12 @@ export default DepartmentsService;
 - `useCreateLessonMutation` інвалідовує всі `LessonsQueryKey` і адмінський список груп.
 - **Група занять і повтори** («Add to a lesson group» під нотаткою → `RecurrenceSection`, відділена лінією й заголовком). Група: **New group** (назва; іде в `POST /lessons-groups/with-lessons` разом із заняттями) або **Existing group** — одна з моїх груп (`GET /lessons-groups/my`, автор — я; заняття йдуть у `POST /lessons-groups/:id/lessons`; бекенд додатково перевіряє `canUseGroup`). Repeats: `none` (лише це заняття — група для занять, які додаватимуться пізніше), `daily` / `weekly` / `biweekly` по днях тижня до «Until», або `custom` (перше заняття + вибрані дні). Дати будує `buildSeriesDates` (`lib/lesson-recurrence.ts`): у локальному часі, час кожного заняття — з «Starts at», один на день, сортовані; ≤ `MAX_SERIES_LESSONS` (200). Ті самі дати йдуть у перегляд у `MultiMonthCalendar` (два місяці поруч; у `custom` дні вибираються кліком, перше заняття заблоковане, дні до нього недоступні), кнопку «Create N lessons» і запит, тож створюється рівно те, що видно.
 
+### Перегляд і редагування занять
+
+- `LessonDetails` — спільний вміст деталей заняття (`LessonDetailsModal`, модалка тижня, таблиця). Кнопка **Edit** — коли `lesson.canEdit` (викладач заняття або завідувач його кафедри) і погляд дозволяє редагувати (`LessonsBrowser canEdit`; в адмінці — лише з `manage_lessons`).
+- **Місячний вид:** клік по дню відкриває `WeekLessonsModal` — заняття тижня за днями з уже завантажених даних місяця; заняття відкривається в тій самій модалці («Back»), там же «Add lesson» на цей день (якщо погляд `canCreate`). Створення кліком по слоту лишилось у тижневому й денному видах.
+- **Редагування** — та сама `LessonFormModal` з `lesson` (без секції груп): `PATCH /lessons/:id`, в адмінці (`source: 'admin'`) — `PATCH /admin/lessons/:id`. Надсилаються всі поля; старт перенесеного заняття йде в `delayedDate`. Поле **Lesson group** (замість секції груп): «No group» (`lessonGroupId: null`) або одна з моїх груп (`/lessons-groups/my`; в адмінці — усі з довідника), поточна група заняття є в списку завжди; бекенд перевіряє `canUseGroup` при зміні. Себе як викладача заняття форма блокує; кафедри, що вже є в занятті, лишаються допустимими (як на бекенді); в адмінці правила кафедр немає.
+
 ### Календар / список (адмінка)
 
 - `/dashboard/admin/lessons`: `?mode=calendar|list` (`LessonsModeSwitch`, `useTabParam(MODES, 'mode')`). Пошук і фільтри в URL спільні для обох режимів.
@@ -210,7 +216,7 @@ export default DepartmentsService;
 
 ## Поточний стан і пастки
 
-- Редагування й видалення занять ще не підключені (`ILesson.canEdit` уже приходить з API).
+- Видалення занять ще не підключене.
 - Welcome і Overview (`/dashboard`) поки без контенту.
 - `RequireAuth` рендерить children завжди і лише накриває їх оверлеєм, тож сторінки дашборду монтуються і для гостя на мить до редіректу.
 - `Button` приймає проп `size`, але стилів розмірів для нього немає: проп нічого не змінює.

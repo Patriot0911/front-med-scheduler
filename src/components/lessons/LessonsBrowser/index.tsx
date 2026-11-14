@@ -6,7 +6,7 @@ import { LESSONS_VIEWS } from '@/configs/lessons-views.config';
 import useLessonsFiltersParams from '@/hooks/lessons/useLessonsFiltersParams';
 import { toLessonsParams } from '@/lib/lessons-filters';
 import { nextHourLessonDraft, slotToLessonDraft } from '@/lib/lessons-calendar';
-import type { ILessonDraft } from '@/interfaces/lessons/lesson';
+import type { ILesson, ILessonDraft } from '@/interfaces/lessons/lesson';
 import type { ILessonsBrowserProps } from '@/interfaces/lessons/filters';
 import { LuPlus } from 'react-icons/lu';
 import Button from '@/components/ui/Button';
@@ -18,13 +18,14 @@ import QuerySyncedCalendar from '../QuerySyncedCalendar';
 
 import styles from './styles.module.scss';
 
-type TFormState = { isOpen: boolean; draft: ILessonDraft | null };
+type TFormState = { isOpen: boolean; draft: ILessonDraft | null; lesson: ILesson | null };
 
-const LessonsBrowser = ({ view, mode = 'calendar', }: ILessonsBrowserProps) => {
-  const { filters: filterKeys, canCreate, } = LESSONS_VIEWS[view];
-  // the draft is kept after closing so the modal keeps its content during the exit animation
-  const [form, setForm] = useState<TFormState>({ isOpen: false, draft: null, });
-  const openForm = (draft: ILessonDraft) => setForm({ isOpen: true, draft, });
+const LessonsBrowser = ({ view, mode = 'calendar', canEdit = true, }: ILessonsBrowserProps) => {
+  const { filters: filterKeys, canCreate, source, } = LESSONS_VIEWS[view];
+  // the draft / lesson is kept after closing so the modal keeps its content during the exit animation
+  const [form, setForm] = useState<TFormState>({ isOpen: false, draft: null, lesson: null, });
+  const openForm = (draft: ILessonDraft) => setForm({ isOpen: true, draft, lesson: null, });
+  const openEdit = canEdit ? (lesson: ILesson) => setForm({ isOpen: true, draft: null, lesson, }) : undefined;
   const { filters, search, setFilters, setSearch, } = useLessonsFiltersParams(filterKeys);
   const [includePast, setIncludePast] = useState(false);
 
@@ -71,6 +72,7 @@ const LessonsBrowser = ({ view, mode = 'calendar', }: ILessonsBrowserProps) => {
             filters={filters}
             search={search}
             onSlotSelect={canCreate ? (slot) => openForm(slotToLessonDraft(slot)) : undefined}
+            onEdit={openEdit}
           />
         )
         : (
@@ -79,16 +81,17 @@ const LessonsBrowser = ({ view, mode = 'calendar', }: ILessonsBrowserProps) => {
             params={listParams}
             page={page}
             onPageChange={(next) => setPageState({ key: paramsKey, page: next, })}
+            onEdit={openEdit}
           />
         )}
-      {canCreate && (
-        <LessonFormModal
-          isOpen={form.isOpen}
-          draft={form.draft}
-          isDepartmentLesson={view === 'department'}
-          onClose={() => setForm((prev) => ({ ...prev, isOpen: false, }))}
-        />
-      )}
+      <LessonFormModal
+        isOpen={form.isOpen}
+        draft={form.draft}
+        lesson={form.lesson}
+        source={source}
+        isDepartmentLesson={view === 'department'}
+        onClose={() => setForm((prev) => ({ ...prev, isOpen: false, }))}
+      />
     </div>
   );
 }
