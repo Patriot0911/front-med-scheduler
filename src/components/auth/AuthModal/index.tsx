@@ -3,7 +3,11 @@ import type { ILogInModalProps } from '@/interfaces/auth/modal';
 import { useForm } from 'react-hook-form';
 import { LoadingStateVariantsMap, mutationToLoadingState } from '@/lib/loading-mappers';
 import useLoginMutation from '@/hooks/mutations/auth/useLoginMutation';
-import { AuthLoginButtonDictionary } from '@/configs/auth.dictionary';
+import { AuthAddAccountButtonDictionary, AuthLoginButtonDictionary } from '@/configs/auth.dictionary';
+import type { IStoredAccount } from '@/interfaces/auth/accounts';
+import AuthAccounts from '@/lib/auth-accounts';
+import useAuthAccounts from '@/hooks/auth/useAuthAccounts';
+import AccountsList from '@/components/auth/AccountsList';
 import Modal from '@/components/ui/Modal';
 import FormInput from '@/components/ui/FormInput';
 import FormPasswordInput from '@/components/ui/FormPasswordInput';
@@ -13,9 +17,12 @@ import Button from '@/components/ui/Button';
 
 import styles from './styles.module.scss'
 
-const AuthModal = ({ onAuthenticated, ...props }: ILogInModalProps) => {
+const AuthModal = ({ onAuthenticated, mode = 'sign-in', defaultEmail, ...props }: ILogInModalProps) => {
   const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const loginMutation = useLoginMutation();
+  const isAddingAccount = mode === 'add-account';
+  const loginMutation = useLoginMutation(isAddingAccount);
+  const { accounts, } = useAuthAccounts();
+  const buttonDictionary = isAddingAccount ? AuthAddAccountButtonDictionary : AuthLoginButtonDictionary;
   const methods = useForm<TLoginForm>({
     resolver: zodResolver(loginSchema),
     mode: 'onTouched',
@@ -29,10 +36,19 @@ const AuthModal = ({ onAuthenticated, ...props }: ILogInModalProps) => {
     });
   };
 
+  // a saved account of a guest: a live one is switched to, a signed-out one prefills the form
+  const selectSavedAccount = (account: IStoredAccount) => {
+    if (AuthAccounts.switchTo(account.id)) return;
+    methods.setValue('email', account.email, { shouldValidate: true, });
+    methods.setFocus('password');
+  };
+
   useEffect(() => {
     if (!props.isOpen) {
       loginMutation.reset();
       methods.reset();
+    } else if (defaultEmail) {
+      methods.reset({ email: defaultEmail, password: '', });
     }
   }, [props.isOpen]);
 
@@ -42,7 +58,7 @@ const AuthModal = ({ onAuthenticated, ...props }: ILogInModalProps) => {
 
     fadeTimer.current = setTimeout(() => {
       props.onClose();
-      onAuthenticated?.();
+      if (loginMutation.data) onAuthenticated?.(loginMutation.data.user);
     }, 1500);
 
     return () => {
@@ -57,9 +73,15 @@ const AuthModal = ({ onAuthenticated, ...props }: ILogInModalProps) => {
     <Modal {...props} isLoading={loginMutation.isPending}>
       <Modal.FormBody methods={methods} onSubmit={methods.handleSubmit(loginHandler)}>
         <Modal.Header
-          title={'Sign In'}
+          title={isAddingAccount ? 'Add account' : 'Sign In'}
         />
         <Modal.Content>
+          {!isAddingAccount && accounts.length > 0 && (
+            <div className={styles['saved-accounts']}>
+              <span className={styles['saved-accounts-title']}>Saved accounts</span>
+              <AccountsList onSelect={selectSavedAccount} disabled={loginMutation.isPending || loginMutation.isSuccess} />
+            </div>
+          )}
           <FormInput<TLoginForm>
             name={'email'}
             label='Email'
@@ -77,7 +99,9 @@ const AuthModal = ({ onAuthenticated, ...props }: ILogInModalProps) => {
             disabled={loginMutation.isPending || loginMutation.isSuccess}
           />
           <p className={styles['auth-description']}>
-            Log in to your account using the credentials provided to you by the manager.
+            {isAddingAccount
+              ? 'Sign in to another account. It is saved on this device next to the current one, and you switch to it right away.'
+              : 'Log in to your account using the credentials provided to you by the manager.'}
           </p>
         </Modal.Content>
         <Modal.Footer>
@@ -87,7 +111,7 @@ const AuthModal = ({ onAuthenticated, ...props }: ILogInModalProps) => {
             disabled={!methods.formState.isValid || loginMutation.isPending || loginMutation.isSuccess}
             variant={LoadingStateVariantsMap[mutationToLoadingState(loginMutation)]}
           >
-            {AuthLoginButtonDictionary[mutationToLoadingState(loginMutation)]}
+            {buttonDictionary[mutationToLoadingState(loginMutation)]}
           </Button>
         </Modal.Footer>
       </Modal.FormBody>

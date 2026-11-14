@@ -1,0 +1,83 @@
+@use '../../../styles/abstracts/mixins' as *;
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  min-width: 0;
+}
+
+.account--active {
+  border-color: var(--color-primary-200);
+  background-color: var(--color-primary-50);
+}
+
+.info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name,
+.email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.email {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.badge {
+  display: none;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-primary-200);
+  background: var(--color-primary-100);
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  line-height: 1.1rem;
+  white-space: nowrap;
+
+  @include mq('sm') {
+    display: inline;
+  }
+}
+
+.badge--muted {
+  border-color: var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.remove {
+  color: var(--color-error-500);
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-error-50);
+  }
+}

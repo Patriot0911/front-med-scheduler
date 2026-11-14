@@ -11,6 +11,12 @@
   background-color: var(--color-warning);
 }
 
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
 .fields {
   display: flex;
   flex-direction: column;

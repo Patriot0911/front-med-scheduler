@@ -37,7 +37,7 @@ src/
   components/
     ui/                        # дизайн-система: Button, Input, Textarea, Form*, Select, MultiSelect, Modal, SideModal, Table, Tabs, Calendar, DatePicker, TimePicker, DateTimeField, ...
     layout/                    # BaseLayout, Sidebar (+ components/), Header, Footer
-    auth/                      # AuthModal, ProfileModal, LogOutModal, RequireAuth, RequirePermission
+    auth/                      # AuthModal, ProfileModal (+ AccountsTab), AccountsList, LogOutModal, RequireAuth, RequirePermission
     welcome/                   # WelcomeHero
     dictionaries/              # DictionarySection, таблиця, тулбар, cells/, forms/<X>FormModal
     users/                     # UsersSection, UsersTable, UsersToolbar, cells/, forms/UserFormModal
@@ -55,6 +55,7 @@ src/
   configs/                     # декларативні конфіги: dictionaries.config.tsx, sidebar, permissions, *.dictionary.ts (тексти кнопок)
   lib/
     axios.ts                   # apiClient з інтерцепторами
+    auth-accounts.ts, jwt.ts   # збережені акаунти й токени; декодування JWT (лише підказки, без перевірки)
     services/<x>.service.ts    # один клас на ресурс API
     query-client.ts, cn.ts, dayjs.ts, errors.ts, loading-mappers.ts, password.ts
   store/                       # makeStore, storeRef (доступ до стору поза React), slices/authSlice
@@ -67,11 +68,16 @@ src/
 ### HTTP і автентифікація
 
 - `apiClient` (`lib/axios.ts`):
-  - додає `Authorization: Bearer <access>` з пам'яті (`AuthService.getToken()`);
-  - на 401 один раз робить refresh (паралельні запити чекають у черзі), а при невдачі диспатчить `logout()`;
+  - додає `Authorization: Bearer <access>` активного акаунта (`AuthAccounts.getAccessToken()`, з пам'яті);
+  - на 401 один раз робить refresh (паралельні запити чекають на той самий проміс; вкладки одного акаунта — під `navigator.locks`, і вкладка, що чекала, бере вже ротовані іншою токени). Сесію завершує лише відхилений токен (401 / 403): акаунт позначається `signed_out`, `logout()` + `queryClient.clear()`. Мережеві помилки й 5xx сесію не чіпають;
   - **розгортає обгортку API**: сервіси одразу повертають `data` з `{ status, data }`, тож `apiClient.get<...>()` віддає payload, а не `AxiosResponse`;
   - помилки reject-ить як `{ status: false, message }`, де `message` — рядок або масив. Текст для користувача отримуй лише через `getErrorMessage(error)` з `lib/errors.ts`.
-- Токени: access — у статичному полі `AuthService` + `localStorage.access_token`, refresh — у `localStorage.refresh_token`.
+- **Кілька акаунтів** (`lib/auth-accounts.ts`, `AuthAccounts`): `localStorage.auth_accounts` — до `MAX_ACCOUNTS` (5) записів `{ id, email, fullName, status, accessToken, refreshToken, lastUsedAt }`, `auth_active_account` — лише id активного, спільного для всіх вкладок. Список парситься в пам'ять один раз (і знову на `storage` чи перед refresh), активний — посилання в ньому. Компоненти читають через `useAuthAccounts()` (`useSyncExternalStore`).
+  - Акаунт, не використаний тиждень (протермінований refresh, `exp` з JWT), при старті стає `signed_out`: токени стираються, запис лишається з позначкою «Signed out» і просить пароль знову. Так само після відхиленого refresh.
+  - Перемикання — `AuthAccounts.switchTo(id)`: робить акаунт активним і **перезавантажує** на `/dashboard` (скидає кеш, запити в польоті, сторінку, недоступну новому акаунту). Інші вкладки на зміну активного id перезавантажуються самі (`AuthProvider`).
+  - `useLogoutMutation(accountId?)` — `POST /auth/logout` з refresh-токеном цього акаунта (тож працює й для неактивних), видаляє запис; вихід з активного перемикає на останній живий акаунт або в гостя. `useLogoutAllMutation` — усі одразу.
+  - UI: вкладка **Accounts** у `ProfileModal` (`AccountsList` + «Add account» / «Log out of all», дії — з `ConfirmModal`); «Add account» — `AuthModal mode="add-account"` (зберігає акаунт без активації, перемикання — в `onAuthenticated`). Гостьова `AuthModal` показує збережені акаунти: живий — перемкнутись, `signed_out` — підставити email.
+  - Старі ключі `access_token` / `refresh_token` переносяться в список при першому запуску; профіль запису оновлюється з `useMeQuery`.
 - Redux зберігає лише `auth.status`: `'init' | 'guest' | 'authenticated'`. `AuthProvider` на старті викликає `initAuth()`. Дані користувача **не** в Redux, а в query `[AuthQueryKey.Me]` (`useMeQuery`). Логін кладе `user` прямо в кеш через `setQueryData`.
 - Не додавай нових slice-ів для серверних даних — це завжди TanStack Query.
 
@@ -112,7 +118,7 @@ export default DepartmentsService;
 - Секції самі показують заглушку «You don't have access…», якщо `!hasAny(READ_PERMISSIONS)` (див. `UsersSection`, `DictionarySection`).
 - `RequireAuth` стоїть один раз у `(platform)/layout.tsx` і закриває весь `/dashboard/*`: гостя перекидає на `/` (Welcome). У сторінках дашборду його не повторюй. Welcome і `/schedule` guard-ом не закриті. `RequirePermission` перевіряє через `every` (AND), на відміну від `hasAny`.
 - Нова сторінка дашборду: `app/(platform)/dashboard/<name>/page.tsx` + пункт у потрібній групі `SIDEBAR_GROUPS` (`configs/sidebar.config.ts`) з `href: '/dashboard/<name>'`.
-- Після успішного входу `AuthModal` викликає `onAuthenticated` (коли спливає таймер 1500ms). Welcome передає туди перехід на `/dashboard`.
+- Після успішного входу `AuthModal` викликає `onAuthenticated(user)` (коли спливає таймер 1500ms). Welcome передає туди перехід на `/dashboard`.
 
 ### Сайдбар і розділи занять
 

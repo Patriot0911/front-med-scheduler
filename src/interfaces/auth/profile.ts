@@ -15,10 +15,16 @@ export interface IChangePasswordPayload {
 
 export type IProfileModalProps = IModalBaseProps;
 
-export type TProfileTab = 'profile' | 'password';
+export type TProfileTab = 'profile' | 'password' | 'accounts';
 
 export interface IProfileTabProps {
   onDirtyChange: (isDirty: boolean) => void;
   onCancel: () => void;
   footerStart?: ReactNode;
+};
+
+export interface IAccountsTabProps {
+  onCancel: () => void;
+  /** Runs an action that reloads the page, after asking to discard unsaved input of the other tabs */
+  confirmLeave: (action: () => void) => void;
 };

@@ -28,6 +28,8 @@ const ConfirmModal = (props: IConfirmModalProps) => {
       <Modal.FormBody
         onSubmit={(e) => {
           e.preventDefault();
+          // a portal still bubbles through the React tree: keep the submit away from a form it was opened from
+          e.stopPropagation();
           props.onConfirm();
         }}
       >

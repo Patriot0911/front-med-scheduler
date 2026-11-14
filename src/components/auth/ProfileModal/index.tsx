@@ -14,12 +14,14 @@ import ConfirmModal from '@/components/modals/ConfirmModal';
 import ProfileSummary from './ProfileSummary';
 import PersonalDataTab from './PersonalDataTab';
 import PasswordTab from './PasswordTab';
+import AccountsTab from './AccountsTab';
 
 import styles from './styles.module.scss';
 
 const TABS: ITabItem<TProfileTab>[] = [
   { key: 'profile', data: 'profile', label: 'Profile', },
   { key: 'password', data: 'password', label: 'Password', },
+  { key: 'accounts', data: 'accounts', label: 'Accounts', },
 ];
 
 // the panel leaves instantly and the next one slides in from its side (`custom`: -1 left, 1 right)
@@ -39,14 +41,14 @@ const PANEL_VARIANTS: Variants = {
 };
 
 /**
- * Both tabs stay mounted (inactive one is hidden), so switching tabs keeps unsaved input;
+ * All tabs stay mounted (inactive ones are hidden), so switching tabs keeps unsaved input;
  * closing with unsaved input in any tab asks to discard it.
  * Remount it per opening (key), so every opening starts clean.
  */
 const ProfileModal = ({ isOpen, onClose, }: IProfileModalProps) => {
   const [tab, setTab] = useState<TProfileTab>('profile');
-  const [dirtyTabs, setDirtyTabs] = useState<Record<TProfileTab, boolean>>({ profile: false, password: false, });
-  const [isDiscardConfirmOpen, setIsDiscardConfirmOpen] = useState(false);
+  const [dirtyTabs, setDirtyTabs] = useState<Record<TProfileTab, boolean>>({ profile: false, password: false, accounts: false, });
+  const [discardAction, setDiscardAction] = useState<(() => void) | null>(null);
   const logoutMutation = useLogoutMutation();
   const hasUnsavedChanges = dirtyTabs.profile || dirtyTabs.password;
 
@@ -57,13 +59,14 @@ const ProfileModal = ({ isOpen, onClose, }: IProfileModalProps) => {
     setDirtyTabs((prev) => ({ ...prev, password: isDirty, }))
   ), []);
 
-  const requestClose = () => {
+  const confirmDiscard = (action: () => void) => {
     if (hasUnsavedChanges) {
-      setIsDiscardConfirmOpen(true);
+      setDiscardAction(() => action);
       return;
     }
-    onClose();
+    action();
   };
+  const requestClose = () => confirmDiscard(onClose);
 
   const logoutButton = (
     <Button
@@ -120,14 +123,22 @@ const ProfileModal = ({ isOpen, onClose, }: IProfileModalProps) => {
             footerStart={logoutButton}
           />
         </motion.div>
+        <motion.div
+          custom={1}
+          variants={PANEL_VARIANTS}
+          initial={false}
+          animate={tab === 'accounts' ? 'shown' : 'hidden'}
+        >
+          <AccountsTab onCancel={requestClose} confirmLeave={confirmDiscard} />
+        </motion.div>
       </Modal>
 
       <ConfirmModal
-        isOpen={isDiscardConfirmOpen}
-        onClose={() => setIsDiscardConfirmOpen(false)}
+        isOpen={!!discardAction}
+        onClose={() => setDiscardAction(null)}
         onConfirm={() => {
-          setIsDiscardConfirmOpen(false);
-          onClose();
+          discardAction?.();
+          setDiscardAction(null);
         }}
         requestState={LoadingState.Ide}
         description={'You have unsaved changes in your profile. Close it and discard them?'}
