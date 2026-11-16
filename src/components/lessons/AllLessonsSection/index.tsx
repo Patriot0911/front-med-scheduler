@@ -1,14 +1,17 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import LessonsBrowser from '../LessonsBrowser';
 
 import styles from './styles.module.scss';
 
 const AllLessonsSection = () => {
+  const { t, } = useTranslation('lessons');
+
   return (
     <section className={styles.section}>
       <p className={styles.description}>
-        Every lesson available to you: public ones and the ones you take part in.
+        {t('sections.all.description')}
       </p>
       <LessonsBrowser view={'all'} />
     </section>

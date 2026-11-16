@@ -29,7 +29,8 @@
   },
   "dateTime": {
     "pickDate": "Pick a date",
-    "pickDateTime": "Pick date and time"
+    "pickDateTime": "Pick date and time",
+    "done": "Done"
   },
   "password": {
     "show": "Show password",
@@ -42,7 +43,9 @@
     "nothingFound": "Nothing found",
     "noOptions": "No options",
     "clearSearch": "Clear search",
-    "alwaysSelected": "Always selected"
+    "alwaysSelected": "Always selected",
+    "clear": "Clear",
+    "selected": "{{count}} selected"
   },
   "checkboxGroup": {
     "empty": "No options available"

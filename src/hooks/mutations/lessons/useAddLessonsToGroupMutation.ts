@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import useDictionaryMutation from '@/hooks/mutations/dictionaries/useDictionaryMutation';
 import { LessonsQueryKey } from '@/lib/services/lessons.service';
 import LessonGroupsService, { LessonGroupsQueryKey } from '@/lib/services/lesson-groups.service';
@@ -11,10 +12,11 @@ const INVALIDATE_KEYS = [
 ];
 
 const useAddLessonsToGroupMutation = (onSuccess?: () => void) => {
+  const { t, } = useTranslation('lessons');
   return useDictionaryMutation<{ lessonGroupId: string; payload: IAddLessonsToGroupPayload }>({
     mutationFn: ({ lessonGroupId, payload, }) => LessonGroupsService.addLessonsToGroup(lessonGroupId, payload),
     invalidateKeys: INVALIDATE_KEYS,
-    successMessage: 'Lessons added to the group',
+    successMessage: t('form.addedToGroup'),
     onSuccess,
   });
 }

@@ -29,7 +29,8 @@
   },
   "dateTime": {
     "pickDate": "Виберіть дату",
-    "pickDateTime": "Виберіть дату й час"
+    "pickDateTime": "Виберіть дату й час",
+    "done": "Готово"
   },
   "password": {
     "show": "Показати пароль",
@@ -42,7 +43,9 @@
     "nothingFound": "Нічого не знайдено",
     "noOptions": "Немає варіантів",
     "clearSearch": "Очистити пошук",
-    "alwaysSelected": "Вибрано завжди"
+    "alwaysSelected": "Вибрано завжди",
+    "clear": "Очистити",
+    "selected": "Вибрано: {{count}}"
   },
   "checkboxGroup": {
     "empty": "Немає доступних варіантів"

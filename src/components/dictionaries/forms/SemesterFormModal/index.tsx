@@ -1,10 +1,11 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { semesterSchema, TSemesterForm } from './semester.scheme';
-import dayjs from 'dayjs';
+import dayjs from '@/lib/dayjs';
 import type { ISemester } from '@/interfaces/dictionaries/semesters';
 import type { IDictionaryFormModalProps } from '@/interfaces/dictionaries/tables';
 import SemestersService, { SemestersQueryKey } from '@/lib/services/semesters.service';
@@ -21,6 +22,7 @@ const toFormValues = (semester: ISemester | null): TSemesterForm => ({
 });
 
 const SemesterFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<ISemester>) => {
+  const { t, } = useTranslation('dictionaries');
   const methods = useForm<TSemesterForm>({
     resolver: zodResolver(semesterSchema),
     mode: 'onTouched',
@@ -32,7 +34,7 @@ const SemesterFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<
       ? SemestersService.editSemester(item.id, data)
       : SemestersService.createSemester(data),
     invalidateKeys: [SemestersQueryKey.SemestersList],
-    successMessage: item ? 'Semester updated' : 'Semester created',
+    successMessage: item ? t('semesters.updated') : t('semesters.created'),
     onSuccess: onClose,
   });
 
@@ -47,7 +49,8 @@ const SemesterFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<
     <DictionaryModal
       isOpen={isOpen}
       onClose={onClose}
-      title={item ? 'Edit semester' : 'New semester'}
+      title={item ? t('semesters.form.editTitle') : t('semesters.form.createTitle')}
+      description={item ? t('semesters.form.editDescription') : t('semesters.form.createDescription')}
       methods={methods}
       onSubmit={(data: TSemesterForm) => mutation.mutate(data)}
       isPending={mutation.isPending}
@@ -55,19 +58,19 @@ const SemesterFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<
     >
       <FormInput<TSemesterForm>
         name={'name'}
-        label={'Name'}
-        placeholder={'e.g. Перший навчальний семестр 2025-2026'}
+        label={t('fields.name')}
+        placeholder={t('semesters.form.namePlaceholder')}
         required
       />
       <FormInput<TSemesterForm>
         name={'dateFrom'}
-        label={'Starts on'}
+        label={t('semesters.form.dateFrom')}
         type={'date'}
         required
       />
       <FormInput<TSemesterForm>
         name={'dateTo'}
-        label={'Ends on'}
+        label={t('semesters.form.dateTo')}
         type={'date'}
         required
       />

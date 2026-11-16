@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useCallback, useEffect, useState } from 'react';
 import { LuFilter, LuSearch, LuX } from 'react-icons/lu';
 import { cn } from '@/lib/cn';
@@ -20,6 +21,7 @@ const LessonsToolbar = ({
   onFiltersApply,
   children,
 }: ILessonsToolbarProps) => {
+  const { t, } = useTranslation('lessons');
   const [searchInput, setSearchInput] = useState(search);
   const debouncedSearch = useDebouncedValue(searchInput.trim());
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
@@ -39,8 +41,8 @@ const LessonsToolbar = ({
           <Input
             name={'lessons-search'}
             value={searchInput}
-            placeholder={'Search lessons, courses, teachers, groups…'}
-            aria-label={'Search lessons'}
+            placeholder={t('toolbar.searchPlaceholder')}
+            aria-label={t('toolbar.searchLabel')}
             onChange={(e) => setSearchInput(e.target.value)}
             icon={searchInput ? <LuX /> : <LuSearch />}
             onIconClick={() => setSearchInput('')}
@@ -54,7 +56,7 @@ const LessonsToolbar = ({
           onClick={() => setIsFiltersOpen(true)}
           className={styles['filters-button']}
         >
-          Filters
+          {t('toolbar.filters')}
           {activeCount > 0 && <span className={styles.count}>{activeCount}</span>}
         </Button>
         {children}

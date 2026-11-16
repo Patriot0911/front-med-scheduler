@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo } from 'react';
 import { LuLayers } from 'react-icons/lu';
 import dayjs from '@/lib/dayjs';
@@ -34,13 +35,6 @@ import RecurrenceSection from '../RecurrenceSection';
 import { createLessonSchema, toSeriesRule, type TLessonForm } from './lesson.scheme';
 
 import styles from './styles.module.scss';
-
-const VISIBILITY_OPTIONS: ISelectOption[] = [
-  { value: LessonVisibility.All, label: 'Public: anyone can see it', },
-  { value: LessonVisibility.Involved, label: 'Participants only', },
-];
-const NO_SEMESTER_OPTION: ISelectOption = { value: '', label: 'No semester', };
-const NO_GROUP_OPTION: ISelectOption = { value: '', label: 'No group', };
 
 const toOptions = (items: IDictionaryItem[] | undefined): ISelectOption[] =>
   (items ?? []).map(({ id, name, }) => ({ value: id, label: name, }));
@@ -117,6 +111,11 @@ const toFormLesson = (lesson: ILesson) => ({
 
 // mounted only while the modal is open, so every opening starts from the draft or the lesson
 const LessonForm = ({ draft, lesson, isDepartmentLesson = false, source = 'my', onClose, }: ILessonFormProps) => {
+  const { t, } = useTranslation(['lessons', 'common']);
+  const visibilityOptions: ISelectOption[] = [
+    { value: LessonVisibility.All, label: t('visibility.publicOption'), },
+    { value: LessonVisibility.Involved, label: t('visibility.participantsOption'), },
+  ];
   const { data: me, } = useMeQuery();
   const teacherId = me?.teacher?.id ?? '';
   const departmentId = me?.teacher?.departmentId ?? null;
@@ -137,8 +136,8 @@ const LessonForm = ({ draft, lesson, isDepartmentLesson = false, source = 'my', 
     const current = lesson?.lessonGroupId && lesson.lessonGroupName && !groups.some(({ id, }) => id === lesson.lessonGroupId)
       ? [{ id: lesson.lessonGroupId, name: lesson.lessonGroupName, }]
       : [];
-    return [NO_GROUP_OPTION, ...toOptions([...current, ...groups])];
-  }, [isAdmin, allGroups, myGroups, lesson]);
+    return [{ value: '', label: t('form.noLessonGroup'), }, ...toOptions([...current, ...groups])];
+  }, [isAdmin, allGroups, myGroups, lesson, t]);
 
   const teacherDepartments = useMemo(
     () => new Map((teachers ?? []).map((teacher) => [teacher.id, teacher.departmentId])),
@@ -149,8 +148,8 @@ const LessonForm = ({ draft, lesson, isDepartmentLesson = false, source = 'my', 
     [teacherDepartments, lesson, isAdmin],
   );
   const teacherOptions = useMemo(
-    () => (teachers ?? []).map(({ id, name, }) => ({ value: id, label: id === teacherId ? `${name} (you)` : name, })),
-    [teachers, teacherId],
+    () => (teachers ?? []).map(({ id, name, }) => ({ value: id, label: id === teacherId ? t('form.you', { name, }) : name, })),
+    [teachers, teacherId, t],
   );
   const methods = useForm<TLessonForm>({
     resolver: zodResolver(schema),
@@ -251,44 +250,46 @@ const LessonForm = ({ draft, lesson, isDepartmentLesson = false, source = 'my', 
       onSubmit={methods.handleSubmit(submit, showFirstError)}
     >
       <Modal.Header
-        title={isEdit ? 'Edit lesson' : 'New lesson'}
-        description={isEdit
-          ? lesson.lessonGroupName ?? 'Changes apply to this lesson only.'
-          : 'You can edit it later, as can the other teachers of the lesson.'}
+        title={isEdit ? t('form.editTitle') : t('form.createTitle')}
+        description={!isEdit
+          ? t('form.createDescription')
+          : lesson.lessonGroupName
+            ? t('form.editDescriptionInGroup', { group: lesson.lessonGroupName, })
+            : t('form.editDescription')}
       />
       <Modal.Content>
         <fieldset className={styles.fields} disabled={isLocked}>
           <FormInput<TLessonForm>
             name={'name'}
             hideErrorMessage
-            label={'Name'}
-            placeholder={'e.g. Anatomy: upper limb'}
+            label={t('form.name')}
+            placeholder={t('form.namePlaceholder')}
             required
           />
 
           <div className={styles.row}>
-            <FormDateTimeField<TLessonForm> name={'start'} label={'Starts at'} withTime required hideErrorMessage />
-            <FormInput<TLessonForm> name={'duration'} label={'Minutes'} type={'number'} min={5} step={5} required hideErrorMessage />
+            <FormDateTimeField<TLessonForm> name={'start'} label={t('form.start')} withTime required hideErrorMessage />
+            <FormInput<TLessonForm> name={'duration'} label={t('form.duration')} type={'number'} min={5} step={5} required hideErrorMessage />
           </div>
 
           <div className={styles.row}>
             <FormMultiSelect<TLessonForm, ISelectOption>
               name={'teacherIds'}
               hideErrorMessage
-              label={'Teachers'}
+              label={t('form.teachers')}
               options={teacherOptions}
               lockedValues={lockedTeacherIds}
-              placeholder={'Select teachers'}
-              searchPlaceholder={'Search teacher…'}
+              placeholder={t('form.teachersPlaceholder')}
+              searchPlaceholder={t('form.searchTeacher')}
               searchable
             />
             <FormMultiSelect<TLessonForm, ISelectOption>
               name={'studentGroupIds'}
               hideErrorMessage
-              label={'Student groups'}
+              label={t('form.studentGroups')}
               options={toOptions(studentGroups)}
-              placeholder={'No groups'}
-              searchPlaceholder={'Search group…'}
+              placeholder={t('form.noGroups')}
+              searchPlaceholder={t('form.searchGroup')}
               searchable
             />
           </div>
@@ -297,17 +298,17 @@ const LessonForm = ({ draft, lesson, isDepartmentLesson = false, source = 'my', 
             <FormSelect<TLessonForm, ISelectOption>
               name={'semesterId'}
               hideErrorMessage
-              label={'Semester'}
-              options={[NO_SEMESTER_OPTION, ...toOptions(semesters)]}
-              placeholder={'No semester'}
+              label={t('form.semester')}
+              options={[{ value: '', label: t('form.noSemester'), }, ...toOptions(semesters)]}
+              placeholder={t('form.noSemester')}
             >
               <SelectParts />
             </FormSelect>
             <FormSelect<TLessonForm, ISelectOption>
               name={'visibility'}
               hideErrorMessage
-              label={'Visibility'}
-              options={VISIBILITY_OPTIONS}
+              label={t('form.visibility')}
+              options={visibilityOptions}
             >
               <SelectParts />
             </FormSelect>
@@ -316,19 +317,19 @@ const LessonForm = ({ draft, lesson, isDepartmentLesson = false, source = 'my', 
           <FormMultiSelect<TLessonForm, ISelectOption>
             name={'departmentIds'}
             hideErrorMessage
-            label={'Departments'}
+            label={t('form.departments')}
             options={departmentOptions}
-            placeholder={departmentOptions.length ? 'No departments' : 'Teachers have no departments'}
-            searchPlaceholder={'Search department…'}
-            hint={'Departments of the selected teachers; their heads can edit the lesson'}
+            placeholder={departmentOptions.length ? t('form.noDepartments') : t('form.teachersNoDepartments')}
+            searchPlaceholder={t('form.searchDepartment')}
+            hint={t('form.departmentsHint')}
             searchable
           />
 
           <FormTextarea<TLessonForm>
             name={'note'}
             hideErrorMessage
-            label={'Note'}
-            placeholder={'What to bring, where to meet…'}
+            label={t('form.note')}
+            placeholder={t('form.notePlaceholder')}
             rows={3}
             maxRows={8}
           />
@@ -337,13 +338,13 @@ const LessonForm = ({ draft, lesson, isDepartmentLesson = false, source = 'my', 
             <FormSelect<TLessonForm, ISelectOption>
               name={'lessonGroupId'}
               hideErrorMessage
-              label={'Lesson group'}
+              label={t('form.lessonGroup')}
               options={groupOptions}
-              placeholder={'No group'}
-              hint={isAdmin ? undefined : 'Your groups; «No group» takes the lesson out of its group'}
+              placeholder={t('form.noLessonGroup')}
+              hint={isAdmin ? undefined : t('form.lessonGroupHint')}
               searchable
             >
-              <SelectParts searchPlaceholder={'Search group…'} />
+              <SelectParts searchPlaceholder={t('form.searchGroup')} />
             </FormSelect>
           )}
 
@@ -351,17 +352,19 @@ const LessonForm = ({ draft, lesson, isDepartmentLesson = false, source = 'my', 
             ? <RecurrenceSection dates={seriesDates} onRemove={stopSeries} />
             : (
               <Button variant={'secondary'} leftIcon={<LuLayers />} onClick={startSeries} className={styles['series-button']}>
-                Add to a lesson group
+                {t('form.addToGroup')}
               </Button>
             ))}
         </fieldset>
       </Modal.Content>
       <Modal.Footer>
         <Button className={'flex-1'} variant={'secondary'} onClick={onClose} disabled={isPending}>
-          Cancel
+          {t('common:actions.cancel')}
         </Button>
         <Button type={'submit'} className={'flex-1'} variant={'primary'} isLoading={isPending} disabled={isLocked}>
-          {isEdit ? 'Save changes' : isRecurring && seriesDates.length > 1 ? `Create ${seriesDates.length} lessons` : 'Create lesson'}
+          {isEdit
+            ? t('common:actions.saveChanges')
+            : isRecurring && seriesDates.length > 1 ? t('form.createLessons', { count: seriesDates.length, }) : t('form.createLesson')}
         </Button>
       </Modal.Footer>
     </Modal.FormBody>

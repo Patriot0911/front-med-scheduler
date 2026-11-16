@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,6 +21,7 @@ const toFormValues = (group: IStudentGroup | null): TStudentGroupForm => ({
 });
 
 const StudentGroupFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<IStudentGroup>) => {
+  const { t, } = useTranslation('dictionaries');
   const { data: tags, } = useGroupTagsDictionaryQuery(isOpen);
   const methods = useForm<TStudentGroupForm>({
     resolver: zodResolver(studentGroupSchema),
@@ -32,7 +34,7 @@ const StudentGroupFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalPr
       ? StudentGroupsService.editStudentGroup(item.id, data)
       : StudentGroupsService.createStudentGroup(data),
     invalidateKeys: [StudentGroupsQueryKey.StudentGroupsList],
-    successMessage: item ? 'Group updated' : 'Group created',
+    successMessage: item ? t('studentGroups.updated') : t('studentGroups.created'),
     onSuccess: onClose,
   });
 
@@ -47,7 +49,8 @@ const StudentGroupFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalPr
     <DictionaryModal
       isOpen={isOpen}
       onClose={onClose}
-      title={item ? 'Edit student group' : 'New student group'}
+      title={item ? t('studentGroups.form.editTitle') : t('studentGroups.form.createTitle')}
+      description={item ? t('studentGroups.form.editDescription') : t('studentGroups.form.createDescription')}
       methods={methods}
       onSubmit={(data: TStudentGroupForm) => mutation.mutate(data)}
       isPending={mutation.isPending}
@@ -55,21 +58,21 @@ const StudentGroupFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalPr
     >
       <FormInput<TStudentGroupForm>
         name={'name'}
-        label={'Name'}
-        placeholder={'e.g. IXXX-123'}
+        label={t('fields.name')}
+        placeholder={t('studentGroups.form.namePlaceholder')}
         required
       />
       <FormInput<TStudentGroupForm>
         name={'studyYear'}
-        label={'Study year'}
-        placeholder={'e.g. 1 курс, Магістратура'}
+        label={t('studentGroups.form.studyYear')}
+        placeholder={t('studentGroups.form.studyYearPlaceholder')}
         required
       />
       <FormCheckboxGroup<TStudentGroupForm>
         name={'tagIds'}
-        label={'Tags'}
+        label={t('studentGroups.form.tags')}
         options={(tags ?? []).map((tag) => ({ value: tag.id, label: tag.name, }))}
-        emptyText={'No tags yet — create them in the "Group tags" tab'}
+        emptyText={t('studentGroups.form.noTags')}
       />
     </DictionaryModal>
   );

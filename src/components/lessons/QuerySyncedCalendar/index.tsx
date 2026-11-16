@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { EMPTY_LESSONS_FILTERS } from '@/configs/lessons-views.config';
 import useCalendarSearchParams from '@/hooks/calendar/useCalendarSearchParams';
@@ -21,6 +22,7 @@ const QuerySyncedCalendar = ({
   onSlotSelect,
   onEdit,
 }: IQuerySyncedCalendarProps) => {
+  const { t, } = useTranslation('lessons');
   const { date, view, setDate, setView, } = useCalendarSearchParams();
 
   const params = useMemo(
@@ -34,7 +36,7 @@ const QuerySyncedCalendar = ({
     <div className={styles.wrapper}>
       {error && (
         <p className={styles.error} role={'alert'}>
-          Couldn&apos;t load lessons: {getErrorMessage(error)}
+          {t('loadError', { error: getErrorMessage(error), })}
         </p>
       )}
       <LessonsSection

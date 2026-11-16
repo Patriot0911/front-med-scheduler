@@ -1,5 +1,6 @@
+import type { ParseKeys } from 'i18next';
 import type { dictionariesConfig } from '@/configs/dictionaries.config';
-import type { ITableColumn, ITableRowLock } from '../ui/table';
+import type { ITableColumn } from '../ui/table';
 import type { IGenericListResponse } from '../shared/generic-response';
 import type { IFilterParams } from '../shared/services';
 import type { Permission } from '../auth/permission';
@@ -7,6 +8,17 @@ import type { ComponentType, PropsWithChildren, ReactNode } from 'react';
 import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
 export type TDictionaryKey = keyof typeof dictionariesConfig;
+
+export type TDictionaryTextKey = ParseKeys<'dictionaries'>;
+
+export interface IDictionaryColumn<T> extends Omit<ITableColumn<T>, 'title'> {
+  title: TDictionaryTextKey;
+};
+
+export interface IDictionaryRowLock<T> {
+  isLocked: (row: T) => boolean;
+  reason: TDictionaryTextKey;
+};
 
 export interface IDictionaryRow {
   id: string;
@@ -28,7 +40,7 @@ export interface IDictionaryTableProps {
 export interface IDictionaryRowAction<T extends IDictionaryRow> {
   key: string;
   icon: ReactNode;
-  label: string;
+  label: TDictionaryTextKey;
   Modal: ComponentType<IDictionaryFormModalProps<T>>;
 };
 
@@ -53,13 +65,9 @@ export interface IDictionaryModalProps<T extends FieldValues> extends PropsWithC
 /**
  * One dictionary tab. The table is backed by the module's own CRUD endpoints
  * (e.g. /roles, /semesters), not by the lightweight /dictionaries/* lists.
+ * Texts live in the `dictionaries` namespace under the tab key (`<key>.title`, `.add`, `.confirmDelete`, …).
  */
 export interface IDictionaryConfig<T extends IDictionaryRow> {
-  /** Tab label */
-  title: string;
-  /** Singular noun used in buttons and confirmations, e.g. "role" */
-  itemName: string;
-  description: string;
   icon: ReactNode;
   queryKey: string;
   pageSize: number;
@@ -67,16 +75,15 @@ export interface IDictionaryConfig<T extends IDictionaryRow> {
   readPermissions: Permission[];
   /** ...and any of these to create / edit / delete */
   managePermissions: Permission[];
-  columns: ITableColumn<T>[];
+  columns: IDictionaryColumn<T>[];
   fetchList: (params: IFilterParams) => Promise<IGenericListResponse<T>>;
   remove: (id: string) => Promise<unknown>;
   /** Extra query keys to refresh after changes (e.g. the matching /dictionaries/* list) */
   relatedQueryKeys?: string[];
   getItemLabel: (item: T) => string;
-  deleteWarning?: string;
   FormModal: ComponentType<IDictionaryFormModalProps<T>>;
   /** Shown between Edit and Delete for users who can manage the dictionary */
   rowActions?: IDictionaryRowAction<T>[];
   /** Rows the user may not change even with the manage permissions */
-  rowLock?: ITableRowLock<T>;
+  rowLock?: IDictionaryRowLock<T>;
 };

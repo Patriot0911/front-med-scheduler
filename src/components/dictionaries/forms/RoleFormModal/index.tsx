@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,6 +22,7 @@ const toFormValues = (role: IRole | null): TRoleForm => ({
 });
 
 const RoleFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<IRole>) => {
+  const { t, } = useTranslation('dictionaries');
   const { data: permissions, } = usePermissionsDictionaryQuery(isOpen);
   const methods = useForm<TRoleForm>({
     resolver: zodResolver(roleSchema),
@@ -34,7 +36,7 @@ const RoleFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<IRol
       return item ? RolesService.editRole(item.id, payload) : RolesService.createRole(payload);
     },
     invalidateKeys: [RolesQueryKey.RolesList],
-    successMessage: item ? 'Role updated' : 'Role created',
+    successMessage: item ? t('roles.updated') : t('roles.created'),
     onSuccess: onClose,
   });
 
@@ -49,8 +51,8 @@ const RoleFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<IRol
     <DictionaryModal
       isOpen={isOpen}
       onClose={onClose}
-      title={item ? 'Edit role' : 'New role'}
-      description={'Roles bundle permissions. A user can only grant permissions within their own role priority.'}
+      title={item ? t('roles.form.editTitle') : t('roles.form.createTitle')}
+      description={item ? t('roles.form.editDescription') : t('roles.form.createDescription')}
       methods={methods}
       onSubmit={(data: TRoleForm) => mutation.mutate(data)}
       isPending={mutation.isPending}
@@ -58,27 +60,27 @@ const RoleFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<IRol
     >
       <FormInput<TRoleForm>
         name={'name'}
-        label={'Name'}
-        placeholder={'e.g. Teacher'}
+        label={t('fields.name')}
+        placeholder={t('roles.form.namePlaceholder')}
         required
       />
       <FormInput<TRoleForm>
         name={'rolePriority'}
-        label={'Priority'}
+        label={t('roles.form.priority')}
         type={'number'}
         min={0}
         max={256}
-        hint={'0 – 256'}
+        hint={t('roles.form.priorityHint')}
         required
       />
       <FormCheckboxGroup<TRoleForm>
         name={'permissions'}
-        label={'Permissions'}
+        label={t('roles.form.permissions')}
         options={(permissions ?? []).map((permission) => ({
           value: permission,
           label: getPermissionLabel(permission),
         }))}
-        emptyText={'Loading permissions…'}
+        emptyText={t('roles.form.loadingPermissions')}
       />
     </DictionaryModal>
   );

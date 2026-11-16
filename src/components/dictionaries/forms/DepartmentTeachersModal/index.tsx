@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { LuCrown, LuPlus, LuSearch, LuX } from 'react-icons/lu';
 import type { IDepartment } from '@/interfaces/dictionaries/departments';
@@ -21,6 +22,7 @@ const isSameSet = (a: string[], b: string[]) => a.length === b.length && a.every
 
 /** Composition of a department: search through all teachers and add / remove them. */
 const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<IDepartment>) => {
+  const { t, } = useTranslation(['dictionaries', 'common']);
   const { data: teachers, isLoading, } = useTeachersDictionaryQuery(isOpen);
   const { data: departments, } = useDepartmentsDictionaryQuery(isOpen);
   const [search, setSearch] = useState('');
@@ -64,7 +66,7 @@ const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModal
   const mutation = useDictionaryMutation({
     mutationFn: (teacherIds: string[]) => DepartmentsService.setDepartmentTeachers(item!.id, teacherIds),
     invalidateKeys: [DepartmentsQueryKey.DepartmentsList, DictionaryQueryKey.Teachers],
-    successMessage: 'Department teachers updated',
+    successMessage: t('departments.teachersModal.updated'),
     onSuccess: close,
   });
 
@@ -78,7 +80,7 @@ const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModal
     return !!teacher.departmentId && teacher.departmentId !== item?.id;
   }
 
-  const getDepartmentName = (departmentId: string) => departmentNameById.get(departmentId) ?? 'another department';
+  const getDepartmentName = (departmentId: string) => departmentNameById.get(departmentId) ?? t('departments.teachersModal.anotherDepartment');
 
   const add = (id: string) => setSelectedIds([...memberIds, id]);
   const remove = (id: string) => setSelectedIds(memberIds.filter((memberId) => memberId !== id));
@@ -96,20 +98,20 @@ const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModal
     <Modal isOpen={isOpen} onClose={close} isLoading={isLoading || mutation.isPending} size={'lg'}>
       <Modal.FormBody onSubmit={submitHandler}>
         <Modal.Header
-          title={'Department teachers'}
-          description={item?.name}
+          title={t('departments.teachersModal.title')}
+          description={t('departments.teachersModal.description', { name: item?.name ?? '', })}
         />
         <Modal.Content>
           <div className={styles.columns}>
             <section className={styles.section}>
               <h3 className={styles.title}>
-                In the department
+                {t('departments.teachersModal.inDepartment')}
                 <span className={styles.count}>{members.length}</span>
               </h3>
               <TeacherList
                 className={styles.list}
                 isEmpty={!members.length}
-                emptyText={'No teachers yet. Add them from the list.'}
+                emptyText={t('departments.teachersModal.empty')}
               >
                 {members.map((teacher) => (
                   <TeacherList.Item
@@ -119,23 +121,23 @@ const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModal
                       <>
                         {teacher.id === item?.headTeacherId && (
                           <TeacherList.Badge tone={'primary'}>
-                            <LuCrown /> Head
+                            <LuCrown /> {t('departments.form.headBadge')}
                           </TeacherList.Badge>
                         )}
                         {isFromOtherDepartment(teacher) && (
-                          <TeacherList.Badge tone={'warning'} title={'Will be moved to this department on save'}>
-                            Moves from {getDepartmentName(teacher.departmentId!)}
+                          <TeacherList.Badge tone={'warning'} title={t('departments.teachersModal.movesHint')}>
+                            {t('departments.teachersModal.movesFrom', { department: getDepartmentName(teacher.departmentId!), })}
                           </TeacherList.Badge>
                         )}
                         {!initialIds.includes(teacher.id) && !isFromOtherDepartment(teacher) && (
-                          <TeacherList.Badge tone={'muted'}>New</TeacherList.Badge>
+                          <TeacherList.Badge tone={'muted'}>{t('departments.teachersModal.new')}</TeacherList.Badge>
                         )}
                       </>
                     )}
                     action={(
                       <TeacherList.Action
                         icon={<LuX />}
-                        label={`Remove ${teacher.name}`}
+                        label={t('departments.teachersModal.remove', { name: teacher.name, })}
                         variant={'danger'}
                         disabled={isLocked}
                         onClick={() => remove(teacher.id)}
@@ -147,11 +149,11 @@ const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModal
             </section>
 
             <section className={styles.section}>
-              <h3 className={styles.title}>Add teachers</h3>
+              <h3 className={styles.title}>{t('departments.teachersModal.addTeachers')}</h3>
               <Input
                 name={'teacher-search'}
                 value={search}
-                placeholder={'Search by name…'}
+                placeholder={t('searchPlaceholder')}
                 icon={<LuSearch />}
                 autoComplete={'off'}
                 disabled={isLocked}
@@ -163,7 +165,7 @@ const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModal
               <TeacherList
                 className={styles.list}
                 isEmpty={!candidates.length}
-                emptyText={query ? `Nothing found for “${search.trim()}”` : 'All teachers are already in the department'}
+                emptyText={query ? t('nothingFoundFor', { search: search.trim(), }) : t('departments.teachersModal.allAdded')}
               >
                 {candidates.map((teacher) => (
                   <TeacherList.Item
@@ -171,11 +173,11 @@ const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModal
                     name={teacher.name}
                     badges={isFromOtherDepartment(teacher)
                       ? <TeacherList.Badge tone={'warning'}>{getDepartmentName(teacher.departmentId!)}</TeacherList.Badge>
-                      : !teacher.departmentId && <TeacherList.Badge>No department</TeacherList.Badge>}
+                      : !teacher.departmentId && <TeacherList.Badge>{t('departments.teachersModal.noDepartment')}</TeacherList.Badge>}
                     action={(
                       <TeacherList.Action
                         icon={<LuPlus />}
-                        label={`Add ${teacher.name}`}
+                        label={t('departments.teachersModal.add', { name: teacher.name, })}
                         disabled={isLocked}
                         onClick={() => add(teacher.id)}
                       />
@@ -189,13 +191,10 @@ const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModal
           {(movedCount > 0 || !!removedHead) && (
             <ul className={styles.notes}>
               {movedCount > 0 && (
-                <li>
-                  {movedCount === 1 ? '1 teacher' : `${movedCount} teachers`} will leave their current department.
-                  A head of another department loses that role.
-                </li>
+                <li>{t('departments.teachersModal.movedNote', { count: movedCount, })}</li>
               )}
               {!!removedHead && (
-                <li>{removedHead.name} will no longer be the head of this department.</li>
+                <li>{t('departments.teachersModal.removedHead', { name: removedHead.name, })}</li>
               )}
             </ul>
           )}
@@ -207,7 +206,7 @@ const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModal
             disabled={isLocked}
             onClick={close}
           >
-            Cancel
+            {t('common:actions.cancel')}
           </Button>
           <Button
             type={'submit'}
@@ -215,7 +214,7 @@ const DepartmentTeachersModal = ({ isOpen, item, onClose }: IDictionaryFormModal
             disabled={isLocked || !isDirty}
             isLoading={isLocked}
           >
-            Save changes
+            {t('common:actions.saveChanges')}
           </Button>
         </Modal.Footer>
       </Modal.FormBody>

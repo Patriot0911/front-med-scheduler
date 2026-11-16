@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import { LuPlus, LuSearch, LuX } from 'react-icons/lu';
 import { IDictionaryToolbarProps } from '@/interfaces/dictionaries/dictionary-tab';
 import { cn } from '@/lib/cn';
@@ -6,15 +9,17 @@ import Button from '@/components/ui/Button';
 
 import styles from './styles.module.scss';
 
-const DictionaryToolbar = ({ search, onSearchChange, itemName, canManage, onCreate, }: IDictionaryToolbarProps) => {
+const DictionaryToolbar = ({ search, onSearchChange, addLabel, canManage, onCreate, }: IDictionaryToolbarProps) => {
+  const { t, } = useTranslation('dictionaries');
+
   return (
     <div className={cn(styles.toolbar, 'fields-compact')}>
       <div className={styles.search}>
         <Input
           name={'dictionary-search'}
           value={search}
-          placeholder={'Search by name…'}
-          aria-label={'Search by name'}
+          placeholder={t('searchPlaceholder')}
+          aria-label={t('searchLabel')}
           onChange={(e) => onSearchChange(e.target.value)}
           icon={search ? <LuX /> : <LuSearch />}
           onIconClick={() => onSearchChange('')}
@@ -27,7 +32,7 @@ const DictionaryToolbar = ({ search, onSearchChange, itemName, canManage, onCrea
           onClick={onCreate}
           className={styles['action-button']}
         >
-          Add {itemName}
+          {addLabel}
         </Button>
       )}
     </div>

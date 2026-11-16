@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import useDictionaryMutation from '@/hooks/mutations/dictionaries/useDictionaryMutation';
 import LessonsService, { LessonsQueryKey } from '@/lib/services/lessons.service';
 import { LessonGroupsQueryKey } from '@/lib/services/lesson-groups.service';
@@ -13,12 +14,13 @@ const INVALIDATE_KEYS = [
 
 /** The admin panel edits through /admin/lessons, every other view through the teacher domain */
 const useEditLessonMutation = (source: TLessonsSource, onSuccess?: () => void) => {
+  const { t, } = useTranslation('lessons');
   return useDictionaryMutation<{ lessonId: string; payload: IEditLessonPayload }>({
     mutationFn: ({ lessonId, payload, }) => (source === 'admin'
       ? LessonsService.editAdminLesson(lessonId, payload)
       : LessonsService.editLesson(lessonId, payload)),
     invalidateKeys: INVALIDATE_KEYS,
-    successMessage: 'Lesson saved',
+    successMessage: t('form.saved'),
     onSuccess,
   });
 }

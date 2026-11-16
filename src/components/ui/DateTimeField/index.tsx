@@ -113,7 +113,7 @@ const DateTimeField = ({
           {withTime && (
             <div className={styles.footer}>
               <Button variant={'primary'} className={'flex-1'} onClick={close}>
-                Done
+                {t('dateTime.done')}
               </Button>
             </div>
           )}

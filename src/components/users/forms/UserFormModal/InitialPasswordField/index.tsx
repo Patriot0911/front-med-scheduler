@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -13,6 +14,7 @@ import styles from './styles.module.scss';
 
 /** Optional initial password of a new user, with a generator and a copy button. */
 const InitialPasswordField = () => {
+  const { t, } = useTranslation('users');
   const { control, setValue, } = useFormContext<TUserForm>();
   const password = useWatch({ control, name: 'password', });
   const [isVisible, setIsVisible] = useState(false);
@@ -26,9 +28,9 @@ const InitialPasswordField = () => {
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(password);
-      toast.success('Password copied');
+      toast.success(t('password.copied'));
     } catch {
-      toast.error('Could not copy the password');
+      toast.error(t('password.copyFailed'));
     }
   };
 
@@ -36,8 +38,8 @@ const InitialPasswordField = () => {
     <div className={styles.field}>
       <FormPasswordInput<TUserForm>
         name={'password'}
-        label={'Initial password'}
-        placeholder={'Leave empty to generate a random one'}
+        label={t('password.label')}
+        placeholder={t('password.placeholder')}
         autoComplete={'new-password'}
         // controlled: "Generate" reveals the password
         isRevealed={isVisible}
@@ -50,7 +52,7 @@ const InitialPasswordField = () => {
           className={styles.action}
           onClick={generate}
         >
-          Generate
+          {t('password.generate')}
         </Button>
         <Button
           variant={'ghost'}
@@ -59,7 +61,7 @@ const InitialPasswordField = () => {
           disabled={!password}
           onClick={copy}
         >
-          Copy
+          {t('password.copy')}
         </Button>
       </div>
     </div>

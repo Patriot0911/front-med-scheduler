@@ -1,0 +1,162 @@
+{
+  "noAccess": "You don't have access to any dictionary. Ask an administrator to grant you the permissions you need.",
+  "searchPlaceholder": "Search by name…",
+  "searchLabel": "Search by name",
+  "nothingFoundFor": "Nothing found for “{{search}}”",
+  "notAssigned": "Not assigned",
+  "columns": {
+    "name": "Name"
+  },
+  "fields": {
+    "name": "Name"
+  },
+  "departments": {
+    "title": "Departments",
+    "description": "Departments unite the teachers of one discipline. A lesson can be linked to one or several departments, and the head of each of them sees and edits all such lessons, even without teaching them.",
+    "add": "Add department",
+    "edit": "Edit department",
+    "delete": "Delete department",
+    "teachersAction": "Department teachers",
+    "empty": "No departments yet",
+    "confirmDelete": "Delete the department “{{name}}”? Its teachers stay in the system but are left without a department.",
+    "created": "Department created",
+    "updated": "Department updated",
+    "deleted": "Department deleted",
+    "columns": {
+      "head": "Head"
+    },
+    "form": {
+      "createTitle": "New department",
+      "editTitle": "Edit department",
+      "createDescription": "Create a department to unite the teachers of one discipline. Once it is saved, open it again to add teachers and choose the head.",
+      "editDescription": "Rename the department, choose its head and manage its teachers. Only a teacher of this department can become its head, and the head edits every lesson linked to the department.",
+      "namePlaceholder": "e.g. Department of Internal Medicine",
+      "head": "Head of the department",
+      "headHint": "One of its teachers",
+      "headHintEmpty": "Add teachers first",
+      "searchTeacher": "Search teacher…",
+      "teachers": "Teachers",
+      "noTeachers": "No teachers in this department yet",
+      "headBadge": "Head",
+      "manageTeachers": "Manage teachers"
+    },
+    "teachersModal": {
+      "title": "Department teachers",
+      "description": "{{name}}. Add teachers from the list on the right or remove them from the department. A teacher belongs to one department only, so adding a teacher from another department moves them here. Nothing changes until you save.",
+      "inDepartment": "In the department",
+      "empty": "No teachers yet. Add them from the list.",
+      "addTeachers": "Add teachers",
+      "allAdded": "All teachers are already in the department",
+      "movesHint": "Will be moved to this department on save",
+      "movesFrom": "Moves from {{department}}",
+      "anotherDepartment": "another department",
+      "new": "New",
+      "noDepartment": "No department",
+      "remove": "Remove {{name}}",
+      "add": "Add {{name}}",
+      "movedNote_one": "{{count}} teacher will leave their current department. A head of another department loses that role.",
+      "movedNote_other": "{{count}} teachers will leave their current departments. A head of another department loses that role.",
+      "removedHead": "{{name}} will no longer be the head of this department.",
+      "updated": "Department teachers updated"
+    }
+  },
+  "studentGroups": {
+    "title": "Student groups",
+    "description": "Academic groups of students. Every student belongs to one group, and lessons are scheduled for one or several groups, so students see exactly the lessons of their group. Tags help to tell groups apart by form of study or speciality.",
+    "add": "Add group",
+    "edit": "Edit group",
+    "delete": "Delete group",
+    "empty": "No student groups yet",
+    "confirmDelete": "Delete the group “{{name}}”? It will be removed from all its lessons. A group that still has students cannot be deleted.",
+    "created": "Group created",
+    "updated": "Group updated",
+    "deleted": "Group deleted",
+    "columns": {
+      "studyYear": "Study year",
+      "tags": "Tags"
+    },
+    "form": {
+      "createTitle": "New student group",
+      "editTitle": "Edit student group",
+      "createDescription": "Add an academic group. Students join it in their user profile, and teachers pick it when scheduling lessons.",
+      "editDescription": "Changes are shown right away in every lesson of the group and in its students' profiles.",
+      "namePlaceholder": "e.g. MED-101",
+      "studyYear": "Study year",
+      "studyYearPlaceholder": "e.g. 1st year, Master's",
+      "tags": "Tags",
+      "noTags": "No tags yet: create them in the “Group tags” tab"
+    }
+  },
+  "groupTags": {
+    "title": "Group tags",
+    "description": "Labels for student groups, such as the form of study or the speciality. A group can have several tags, and lessons can be filtered by them to find, for example, all lessons of full-time students.",
+    "add": "Add tag",
+    "edit": "Edit tag",
+    "delete": "Delete tag",
+    "empty": "No group tags yet",
+    "confirmDelete": "Delete the tag “{{name}}”? It will be removed from all student groups.",
+    "created": "Tag created",
+    "updated": "Tag updated",
+    "deleted": "Tag deleted",
+    "form": {
+      "createTitle": "New group tag",
+      "editTitle": "Edit group tag",
+      "createDescription": "Create a label for student groups, such as a form of study or a speciality. Then assign it to groups in their settings.",
+      "editDescription": "The new name is shown on every group with this tag and in the lesson filters.",
+      "namePlaceholder": "e.g. full-time / pediatrics"
+    }
+  },
+  "semesters": {
+    "title": "Semesters",
+    "description": "Study periods of the academic year. A lesson can be linked to a semester, which splits the schedule into periods and lets you filter lessons by them.",
+    "add": "Add semester",
+    "edit": "Edit semester",
+    "delete": "Delete semester",
+    "empty": "No semesters yet",
+    "confirmDelete": "Delete the semester “{{name}}”? A semester that already has lessons cannot be deleted.",
+    "created": "Semester created",
+    "updated": "Semester updated",
+    "deleted": "Semester deleted",
+    "columns": {
+      "dateFrom": "Starts on",
+      "dateTo": "Ends on"
+    },
+    "form": {
+      "createTitle": "New semester",
+      "editTitle": "Edit semester",
+      "createDescription": "Set the name and the dates of the study period. Teachers can then link their lessons to it.",
+      "editDescription": "Rename the semester or adjust its dates. Lessons already linked to it stay linked.",
+      "namePlaceholder": "e.g. Fall semester 2025–2026",
+      "dateFrom": "Starts on",
+      "dateTo": "Ends on"
+    }
+  },
+  "roles": {
+    "title": "Roles",
+    "description": "Roles are sets of permissions given to users. The priority builds the hierarchy: you manage only roles and users ranked below your own highest role, and only with the permissions you hold yourself.",
+    "add": "Add role",
+    "edit": "Edit role",
+    "delete": "Delete role",
+    "empty": "No roles yet",
+    "confirmDelete": "Delete the role “{{name}}”? Users with this role will lose its permissions.",
+    "created": "Role created",
+    "updated": "Role updated",
+    "deleted": "Role deleted",
+    "locked": "This role ranks at or above yours, or has permissions you lack",
+    "columns": {
+      "priority": "Priority",
+      "permissions": "Permissions"
+    },
+    "form": {
+      "createTitle": "New role",
+      "editTitle": "Edit role",
+      "createDescription": "Bundle permissions into a role and assign it to users. The priority must be lower than your own, and you can grant only the permissions you have.",
+      "editDescription": "Changes apply at once to every user with this role. You can grant only the permissions you have.",
+      "namePlaceholder": "e.g. Teacher",
+      "priority": "Priority",
+      "priorityHint": "0–256, higher ranks above",
+      "permissions": "Permissions",
+      "loadingPermissions": "Loading permissions…"
+    }
+  }
+}

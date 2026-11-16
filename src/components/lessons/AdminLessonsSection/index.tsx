@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { Permission } from '@/interfaces/auth/permission';
 import type { TLessonsMode } from '@/interfaces/lessons/filters';
 import type { TAdminLessonsTab } from '@/interfaces/lessons/sections';
@@ -18,13 +19,14 @@ const READ_PERMISSIONS = [Permission.READ_LESSONS, Permission.MANAGE_LESSONS, Pe
 const MANAGE_PERMISSIONS = [Permission.MANAGE_LESSONS, Permission.ADMIN];
 
 const MODES: TLessonsMode[] = ['calendar', 'list'];
-const LIST_TABS: ITabItem<TAdminLessonsTab>[] = [
-  { key: 'lessons', data: 'lessons', label: 'Lessons', },
-  { key: 'lesson-groups', data: 'lesson-groups', label: 'Lesson groups', },
-];
-const LIST_TAB_KEYS = LIST_TABS.map(({ data, }) => data);
+const LIST_TAB_KEYS: TAdminLessonsTab[] = ['lessons', 'lesson-groups'];
+const LIST_TAB_LABELS = {
+  lessons: 'sections.admin.tabs.lessons',
+  'lesson-groups': 'sections.admin.tabs.lessonGroups',
+} as const satisfies Record<TAdminLessonsTab, string>;
 
 const AdminLessonsSection = () => {
+  const { t, } = useTranslation('lessons');
   const { hasAny, isReady, } = usePermissions();
   const { tab: mode = 'calendar', setTab: setMode, } = useTabParam(MODES, 'mode');
   const { tab: listTab = 'lessons', setTab: setListTab, } = useTabParam(LIST_TAB_KEYS);
@@ -36,7 +38,7 @@ const AdminLessonsSection = () => {
   if (!hasAny(READ_PERMISSIONS)) {
     return (
       <p className={styles.empty}>
-        You don&apos;t have access to lessons management. Ask an administrator for permissions.
+        {t('sections.admin.noAccess')}
       </p>
     );
   }
@@ -46,8 +48,8 @@ const AdminLessonsSection = () => {
       <div className={styles.header}>
         <p className={styles.description}>
           {hasAny(MANAGE_PERMISSIONS)
-            ? 'Every lesson of the platform, public or not, whoever teaches it. You can edit any of them.'
-            : 'Every lesson of the platform, public or not, whoever teaches it. View only.'}
+            ? t('sections.admin.descriptionManage')
+            : t('sections.admin.descriptionView')}
         </p>
         <LessonsModeSwitch value={mode} onChange={setMode} />
       </div>
@@ -56,7 +58,7 @@ const AdminLessonsSection = () => {
         : (
           <>
             <Tabs
-              items={LIST_TABS}
+              items={LIST_TAB_KEYS.map((key): ITabItem<TAdminLessonsTab> => ({ key, data: key, label: t(LIST_TAB_LABELS[key]), }))}
               value={listTab}
               onChange={setListTab}
               variant={'underline'}

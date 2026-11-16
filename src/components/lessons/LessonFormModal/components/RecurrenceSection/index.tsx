@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useController, useFormContext, useWatch } from 'react-hook-form';
 import { LuX } from 'react-icons/lu';
@@ -22,27 +23,23 @@ import styles from './styles.module.scss';
 
 type TGroupMode = TLessonForm['groupMode'];
 
-const GROUP_MODES: ITabItem<TGroupMode>[] = [
-  { key: 'new', data: 'new', label: 'New group', },
-  { key: 'existing', data: 'existing', label: 'Existing group', },
-];
-const PATTERN_OPTIONS: ISelectOption[] = [
-  { value: 'none', label: 'Doesn’t repeat (only this lesson)', },
-  { value: 'daily', label: 'Every day', },
-  { value: 'weekly', label: 'Every week, on chosen days', },
-  { value: 'biweekly', label: 'Every two weeks, on chosen days', },
-  { value: 'custom', label: 'Custom dates', },
-];
-const WEEKDAY_OPTIONS: ISelectOption[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-  .map((label, index) => ({ value: String(index), label, }));
+type TPattern = TLessonForm['recurrencePattern'];
 
-const HINTS: Record<TLessonForm['recurrencePattern'], string> = {
-  none: 'Only this lesson goes into the group; you can add more lessons to it later.',
-  daily: 'Days from the rule above. Switch to Custom dates to pick them by hand.',
-  weekly: 'Days from the rule above. Switch to Custom dates to pick them by hand.',
-  biweekly: 'Days from the rule above. Switch to Custom dates to pick them by hand.',
-  custom: 'Click days to add or remove lessons. The first one is fixed at «Starts at».',
-};
+const GROUP_MODES: TGroupMode[] = ['new', 'existing'];
+const PATTERNS: TPattern[] = ['none', 'daily', 'weekly', 'biweekly', 'custom'];
+const HINT_KEYS = {
+  none: 'recurrence.hints.none',
+  daily: 'recurrence.hints.range',
+  weekly: 'recurrence.hints.range',
+  biweekly: 'recurrence.hints.range',
+  custom: 'recurrence.hints.custom',
+} as const satisfies Record<TPattern, string>;
+
+// '0' = Monday … '6' = Sunday, short names in the current dayjs locale
+const getWeekdayOptions = (): ISelectOption[] => Array.from({ length: 7, }, (_, index) => ({
+  value: String(index),
+  label: dayjs().day((index + 1) % 7).format('ddd'),
+}));
 
 const SelectParts = ({ searchPlaceholder, }: { searchPlaceholder?: string }) => (
   <>
@@ -63,6 +60,7 @@ const SelectParts = ({ searchPlaceholder, }: { searchPlaceholder?: string }) => 
  * The dates come from the rule and are shown before creating.
  */
 const RecurrenceSection = ({ dates, onRemove, }: IRecurrenceSectionProps) => {
+  const { t, } = useTranslation('lessons');
   const { control, setValue, clearErrors, } = useFormContext<TLessonForm>();
   const [start, pattern, customDates] = useWatch({ control, name: ['start', 'recurrencePattern', 'recurrenceDates'], });
   const { field: groupMode, } = useController({ control, name: 'groupMode', });
@@ -97,18 +95,18 @@ const RecurrenceSection = ({ dates, onRemove, }: IRecurrenceSectionProps) => {
     <section className={styles.section} aria-labelledby={'recurrence-title'}>
       <div className={styles.header}>
         <div>
-          <h3 id={'recurrence-title'} className={styles.title}>Lesson group</h3>
+          <h3 id={'recurrence-title'} className={styles.title}>{t('recurrence.title')}</h3>
           <p className={styles.description}>
-            Lessons that belong together, e.g. a course. Every lesson gets the fields above; the first one is at «Starts at».
+            {t('recurrence.description')}
           </p>
         </div>
         <Button variant={'ghost'} leftIcon={<LuX />} onClick={onRemove}>
-          Remove
+          {t('recurrence.remove')}
         </Button>
       </div>
 
       <Tabs<TGroupMode>
-        items={GROUP_MODES}
+        items={GROUP_MODES.map((key): ITabItem<TGroupMode> => ({ key, data: key, label: t(`recurrence.modes.${key}`), }))}
         value={groupMode.value}
         onChange={groupMode.onChange}
         variant={'tiles'}
@@ -119,8 +117,8 @@ const RecurrenceSection = ({ dates, onRemove, }: IRecurrenceSectionProps) => {
         ? (
           <FormInput<TLessonForm>
             name={'groupName'}
-            label={'Group name'}
-            placeholder={'e.g. Anatomy, lectures'}
+            label={t('recurrence.groupName')}
+            placeholder={t('recurrence.groupNamePlaceholder')}
             required
             hideErrorMessage
           />
@@ -128,23 +126,23 @@ const RecurrenceSection = ({ dates, onRemove, }: IRecurrenceSectionProps) => {
         : (
           <FormSelect<TLessonForm, ISelectOption>
             name={'existingGroupId'}
-            label={'Group'}
+            label={t('recurrence.group')}
             options={groupOptions}
-            placeholder={isLoadingGroups || groupOptions.length ? 'Pick one of your groups' : 'You have no lesson groups yet'}
-            hint={'Groups you created'}
+            placeholder={isLoadingGroups || groupOptions.length ? t('recurrence.pickGroup') : t('recurrence.noOwnGroups')}
+            hint={t('recurrence.groupHint')}
             searchable
             required
             hideErrorMessage
           >
-            <SelectParts searchPlaceholder={'Search group…'} />
+            <SelectParts searchPlaceholder={t('recurrence.searchGroup')} />
           </FormSelect>
         )}
 
       <div className={styles.row}>
         <FormSelect<TLessonForm, ISelectOption>
           name={'recurrencePattern'}
-          label={'Repeats'}
-          options={PATTERN_OPTIONS}
+          label={t('recurrence.repeats')}
+          options={PATTERNS.map((value) => ({ value, label: t(`recurrence.patterns.${value}`), }))}
           hideErrorMessage
         >
           <SelectParts />
@@ -152,8 +150,8 @@ const RecurrenceSection = ({ dates, onRemove, }: IRecurrenceSectionProps) => {
         {hasRange && (
           <FormDateTimeField<TLessonForm>
             name={'recurrenceUntil'}
-            label={'Until'}
-            placeholder={'Last day of the series'}
+            label={t('recurrence.until')}
+            placeholder={t('recurrence.untilPlaceholder')}
             required
             hideErrorMessage
           />
@@ -163,8 +161,8 @@ const RecurrenceSection = ({ dates, onRemove, }: IRecurrenceSectionProps) => {
       {(pattern === 'weekly' || pattern === 'biweekly') && (
         <FormCheckboxGroup<TLessonForm>
           name={'recurrenceWeekdays'}
-          label={'On'}
-          options={WEEKDAY_OPTIONS}
+          label={t('recurrence.on')}
+          options={getWeekdayOptions()}
           required
         />
       )}
@@ -173,8 +171,8 @@ const RecurrenceSection = ({ dates, onRemove, }: IRecurrenceSectionProps) => {
         <div className={styles['preview-header']}>
           <span className={styles['preview-title']}>
             {isTooMany
-              ? `More than ${MAX_SERIES_LESSONS} lessons: shorten the range`
-              : `${dates.length} ${dates.length === 1 ? 'lesson' : 'lessons'}`}
+              ? t('recurrence.tooMany', { count: MAX_SERIES_LESSONS, })
+              : t('count', { count: dates.length, })}
           </span>
           {!isTooMany && dates.length > 1 && (
             <span className={styles['preview-range']}>
@@ -182,7 +180,7 @@ const RecurrenceSection = ({ dates, onRemove, }: IRecurrenceSectionProps) => {
             </span>
           )}
         </div>
-        <span className={styles['preview-hint']}>{HINTS[pattern]}</span>
+        <span className={styles['preview-hint']}>{t(HINT_KEYS[pattern])}</span>
         <MultiMonthCalendar
           key={dayjs(start).format('YYYY-MM')}
           selected={isTooMany ? [] : dates}

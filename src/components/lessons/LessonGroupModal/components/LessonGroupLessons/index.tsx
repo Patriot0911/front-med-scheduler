@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { LuArrowLeft, LuFolderMinus, LuPencil, LuPlus, LuTrash2 } from 'react-icons/lu';
 import dayjs from '@/lib/dayjs';
 import { mutationToLoadingState } from '@/lib/loading-mappers';
@@ -17,25 +19,28 @@ import { createSelectColumn } from '@/components/ui/Table/selectColumn';
 import ConfirmModal from '@/components/modals/ConfirmModal';
 import LessonFormModal from '../../../LessonFormModal';
 import AssignLessonsModal from '../../../AssignLessonsModal';
-import { LESSON_COLUMNS } from '../../../LessonsTable';
-import { pluralLessons } from '../../lesson-group-text';
+import { createLessonColumns } from '../../../LessonsTable';
 
 import styles from './styles.module.scss';
 
 type TLessonsAction = { kind: 'remove' | 'delete'; lessons: ILesson[] };
 
-const describeAction = ({ kind, lessons, }: TLessonsAction) => {
-  const isOne = lessons.length === 1;
-  const what = isOne
-    ? `“${lessons[0].name}” (${dayjs(lessons[0].date).format('DD.MM.YYYY HH:mm')})`
-    : pluralLessons(lessons.length);
+const describeAction = ({ kind, lessons, }: TLessonsAction, t: TFunction<'lessons'>) => {
+  if (lessons.length === 1) {
+    const params = { name: lessons[0].name, date: dayjs(lessons[0].date).format('DD.MM.YYYY HH:mm'), };
+    return kind === 'delete'
+      ? t('groups.lessons.confirmDeleteOne', params)
+      : t('groups.lessons.confirmTakeOutOne', params);
+  }
   return kind === 'delete'
-    ? `Delete ${what}? ${isOne ? 'It is' : 'They are'} removed from the schedule for everyone. This can’t be undone.`
-    : `Take ${what} out of the group? ${isOne ? 'It stays' : 'They stay'} in the schedule, without a group.`;
+    ? t('groups.lessons.confirmDeleteMany', { count: lessons.length, })
+    : t('groups.lessons.confirmTakeOutMany', { count: lessons.length, });
 };
 
 /** The lessons screen of the group modal: the list with row and bulk actions */
 const LessonGroupLessons = ({ group, canManage, onBack, }: ILessonGroupLessonsProps) => {
+  const { t, } = useTranslation('lessons');
+  const lessonColumns = useMemo(() => createLessonColumns(t), [t]);
   const { data, isLoading, } = useLessonsQuery('admin', { lessonGroupIds: [group.id], });
   const lessons = data?.items ?? [];
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
@@ -80,26 +85,26 @@ const LessonGroupLessons = ({ group, canManage, onBack, }: ILessonGroupLessonsPr
         getId: (lesson) => lesson.id,
         selected,
         onChange: setSelected,
-        getLabel: (lesson) => `Select ${lesson.name}`,
+        getLabel: (lesson) => t('groups.lessons.select', { name: lesson.name, }),
       })]
       : []),
-    LESSON_COLUMNS.date,
-    { ...LESSON_COLUMNS.name, render: (lesson) => <span className={styles.name} title={lesson.name}>{lesson.name}</span>, },
-    LESSON_COLUMNS.teachers,
+    lessonColumns.date,
+    { ...lessonColumns.name, render: (lesson) => <span className={styles.name} title={lesson.name}>{lesson.name}</span>, },
+    lessonColumns.teachers,
   ];
   const actions: ITableAction<ILesson>[] | undefined = canManage
     ? [
-      { key: 'edit', icon: <LuPencil />, label: 'Edit lesson', onClick: openEdit, },
-      { key: 'remove', icon: <LuFolderMinus />, label: 'Take out of the group', onClick: (lesson) => openAction('remove', [lesson]), },
-      { key: 'delete', icon: <LuTrash2 />, label: 'Delete lesson', variant: 'danger', onClick: (lesson) => openAction('delete', [lesson]), },
+      { key: 'edit', icon: <LuPencil />, label: t('groups.lessons.editLesson'), onClick: openEdit, },
+      { key: 'remove', icon: <LuFolderMinus />, label: t('groups.lessons.takeOutOne'), onClick: (lesson) => openAction('remove', [lesson]), },
+      { key: 'delete', icon: <LuTrash2 />, label: t('groups.lessons.deleteLesson'), variant: 'danger', onClick: (lesson) => openAction('delete', [lesson]), },
     ]
     : undefined;
 
   return (
     <>
       <Modal.Header
-        title={'Lessons'}
-        description={`“${group.name}” · ${isLoading ? '…' : pluralLessons(lessons.length)}`}
+        title={t('groups.lessons.title')}
+        description={t('groups.lessons.description', { name: group.name, count: isLoading ? '…' : t('count', { count: lessons.length, }), })}
       />
       <Modal.Content className={styles.content}>
         {canManage && (
@@ -107,19 +112,19 @@ const LessonGroupLessons = ({ group, canManage, onBack, }: ILessonGroupLessonsPr
             {selectedLessons.length > 0
               ? (
                 <div className={styles.selection}>
-                  <span className={styles['selection-count']}>{pluralLessons(selectedLessons.length)} selected</span>
-                  <Button variant={'ghost'} onClick={() => setSelected(new Set())}>Clear</Button>
+                  <span className={styles['selection-count']}>{t('groups.lessons.selected', { count: selectedLessons.length, })}</span>
+                  <Button variant={'ghost'} onClick={() => setSelected(new Set())}>{t('clear')}</Button>
                   <Button variant={'secondary'} leftIcon={<LuFolderMinus />} onClick={() => openAction('remove', selectedLessons)}>
-                    Take out
+                    {t('groups.lessons.takeOut')}
                   </Button>
                   <Button variant={'danger'} leftIcon={<LuTrash2 />} onClick={() => openAction('delete', selectedLessons)}>
-                    Delete
+                    {t('groups.lessons.delete')}
                   </Button>
                 </div>
               )
-              : <span className={styles.hint}>Pick lessons to take them out of the group or delete them together.</span>}
+              : <span className={styles.hint}>{t('groups.lessons.hint')}</span>}
             <Button variant={'secondary'} leftIcon={<LuPlus />} onClick={() => setIsAssignOpen(true)}>
-              Add existing lessons
+              {t('groups.lessons.addExisting')}
             </Button>
           </div>
         )}
@@ -130,7 +135,7 @@ const LessonGroupLessons = ({ group, canManage, onBack, }: ILessonGroupLessonsPr
           data={lessons}
           skeletonRows={4}
           isLoading={isLoading}
-          emptyText={'No lessons in this group yet'}
+          emptyText={t('groups.lessons.empty')}
           onRowClick={canManage ? toggleSelected : undefined}
           rowSize={'lg'}
         >
@@ -140,7 +145,7 @@ const LessonGroupLessons = ({ group, canManage, onBack, }: ILessonGroupLessonsPr
       </Modal.Content>
       <Modal.Footer>
         <Button className={'flex-1'} variant={'secondary'} leftIcon={<LuArrowLeft />} onClick={onBack}>
-          Back
+          {t('back')}
         </Button>
       </Modal.Footer>
 
@@ -157,7 +162,7 @@ const LessonGroupLessons = ({ group, canManage, onBack, }: ILessonGroupLessonsPr
         onClose={closeAction}
         onConfirm={confirmAction}
         requestState={mutationToLoadingState(actionMutation)}
-        description={action.value ? describeAction(action.value) : undefined}
+        description={action.value ? describeAction(action.value, t) : undefined}
       />
     </>
   );

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { Permission } from '@/interfaces/auth/permission';
 import { IUser, IUsersFilters } from '@/interfaces/users/users';
@@ -21,6 +22,7 @@ const INITIAL_FILTERS: IUsersFilters = { roleIds: [], profiles: [], };
 type TFormState = { isOpen: boolean; item: IUser | null };
 
 const UsersSection = () => {
+  const { t, } = useTranslation('users');
   const { hasAny, isReady, } = usePermissions();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
@@ -36,7 +38,7 @@ const UsersSection = () => {
   if (!hasAny(READ_PERMISSIONS)) {
     return (
       <p className={styles.empty}>
-        You don&apos;t have access to users. Ask an administrator for permissions.
+        {t('noAccess')}
       </p>
     );
   }
@@ -47,7 +49,7 @@ const UsersSection = () => {
   return (
     <section className={styles.section}>
       <p className={styles.description}>
-        Accounts of the platform: their roles and teacher / student profiles.
+        {t('description')}
       </p>
 
       <UsersToolbar

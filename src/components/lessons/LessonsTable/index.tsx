@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import Table from '@/components/ui/Table';
 import { cn } from '@/lib/cn';
 import { getLessonStart } from '@/lib/lessons-calendar';
@@ -21,10 +23,10 @@ const names = (items: { name: string }[]) => items.map(({ name, }) => name).join
 const emptyCell = <span className={cells.empty}>—</span>;
 
 /** Lesson columns by key, also for other lesson tables (e.g. a lesson group's lessons) */
-export const LESSON_COLUMNS = {
+export const createLessonColumns = (t: TFunction<'lessons'>) => ({
   date: {
     key: 'date',
-    title: 'Date',
+    title: t('columns.date'),
     width: '10rem',
     render: (lesson) => {
       const start = getLessonStart(lesson);
@@ -40,7 +42,7 @@ export const LESSON_COLUMNS = {
   },
   name: {
     key: 'name',
-    title: 'Lesson',
+    title: t('columns.lesson'),
     render: (lesson) => (
       <div className={cells.stack}>
         <span className={cells.primary} title={lesson.name}>{lesson.name}</span>
@@ -52,13 +54,13 @@ export const LESSON_COLUMNS = {
   },
   teachers: {
     key: 'teachers',
-    title: 'Teachers',
+    title: t('columns.teachers'),
     width: '13rem',
     render: (lesson) => <span className={cells.secondary} title={names(lesson.teachers)}>{names(lesson.teachers)}</span>,
   },
   groups: {
     key: 'groups',
-    title: 'Groups',
+    title: t('columns.groups'),
     width: '11rem',
     render: (lesson) => lesson.studentGroups.length
       ? <span className={cells.secondary} title={names(lesson.studentGroups)}>{names(lesson.studentGroups)}</span>
@@ -66,7 +68,7 @@ export const LESSON_COLUMNS = {
   },
   departments: {
     key: 'departments',
-    title: 'Departments',
+    title: t('columns.departments'),
     width: '11rem',
     render: (lesson) => lesson.departments.length
       ? <span className={cells.secondary} title={names(lesson.departments)}>{names(lesson.departments)}</span>
@@ -74,21 +76,21 @@ export const LESSON_COLUMNS = {
   },
   status: {
     key: 'status',
-    title: 'Status',
+    title: t('columns.status'),
     width: '9rem',
     render: (lesson) => (
       <div className={cells.stack}>
         <span className={cn(cells.badge, lesson.visibility === LessonVisibility.Involved && cells['badge--involved'])}>
-          {lesson.visibility === LessonVisibility.Involved ? 'Participants' : 'Public'}
+          {lesson.visibility === LessonVisibility.Involved ? t('visibility.participants') : t('visibility.public')}
         </span>
       </div>
     ),
   },
-} satisfies Record<string, ITableColumn<ILesson>>;
-
-const COLUMNS: ITableColumn<ILesson>[] = Object.values(LESSON_COLUMNS);
+}) satisfies Record<string, ITableColumn<ILesson>>;
 
 const LessonsTable = ({ view, params, page, onPageChange, onEdit, }: ILessonsTableProps) => {
+  const { t, } = useTranslation('lessons');
+  const columns = useMemo(() => Object.values(createLessonColumns(t)), [t]);
   const { data, isLoading, isFetching, } = useLessonsQuery(view, { ...params, page, pageSize: LESSONS_PAGE_SIZE, });
   // the lesson is kept after closing so the modal keeps its content during the exit animation
   const [details, setDetails] = useState<TDetailsState>({ isOpen: false, lesson: null, });
@@ -96,12 +98,12 @@ const LessonsTable = ({ view, params, page, onPageChange, onEdit, }: ILessonsTab
   return (
     <>
       <Table<ILesson>
-        columns={COLUMNS}
+        columns={columns}
         rowKey={(lesson) => lesson.id}
         data={data?.items ?? []}
         skeletonRows={5}
         isLoading={isLoading}
-        emptyText={'No lessons match'}
+        emptyText={t('emptyMatch')}
         onRowClick={(lesson) => setDetails({ isOpen: true, lesson, })}
         pageSize={LESSONS_PAGE_SIZE}
         rowSize={'lg'}

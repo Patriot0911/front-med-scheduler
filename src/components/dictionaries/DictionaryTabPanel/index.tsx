@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { dictionariesConfig } from '@/configs/dictionaries.config';
 import { IDictionaryRow, TDictionaryKey } from '@/interfaces/dictionaries/tables';
@@ -21,10 +22,9 @@ interface IDictionaryTabPanelProps {
 type TFormState = { isOpen: boolean; item: IDictionaryRow | null };
 type TRowActionState = { key: string | null; item: IDictionaryRow | null };
 
-const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
-
 /** Content of one dictionary tab. Mounted per tab (keyed by it), so paging / search start fresh. */
 const DictionaryTabPanel = ({ dictionaryKey, canManage, }: IDictionaryTabPanelProps) => {
+  const { t, } = useTranslation('dictionaries');
   const config = dictionariesConfig[dictionaryKey];
 
   const [page, setPage] = useState(1);
@@ -38,7 +38,7 @@ const DictionaryTabPanel = ({ dictionaryKey, canManage, }: IDictionaryTabPanelPr
   const deleteMutation = useDictionaryMutation({
     mutationFn: (item: IDictionaryRow) => config.remove(item.id),
     invalidateKeys: [config.queryKey, ...(config.relatedQueryKeys ?? [])],
-    successMessage: `${capitalize(config.itemName)} deleted`,
+    successMessage: t(`${dictionaryKey}.deleted`),
     onSuccess: () => setItemToDelete(null),
   });
 
@@ -47,8 +47,8 @@ const DictionaryTabPanel = ({ dictionaryKey, canManage, }: IDictionaryTabPanelPr
   return (
     <div className={styles.panel}>
       <header className={styles.header}>
-        <SubHeading level={2}>{config.title}</SubHeading>
-        <p className={styles.description}>{config.description}</p>
+        <SubHeading level={2}>{t(`${dictionaryKey}.title`)}</SubHeading>
+        <p className={styles.description}>{t(`${dictionaryKey}.description`)}</p>
       </header>
 
       <DictionaryToolbar
@@ -57,7 +57,7 @@ const DictionaryTabPanel = ({ dictionaryKey, canManage, }: IDictionaryTabPanelPr
           setSearch(next);
           setPage(1);
         }}
-        itemName={config.itemName}
+        addLabel={t(`${dictionaryKey}.add`)}
         canManage={canManage}
         onCreate={() => setForm({ isOpen: true, item: null, })}
       />
@@ -97,7 +97,7 @@ const DictionaryTabPanel = ({ dictionaryKey, canManage, }: IDictionaryTabPanelPr
         onConfirm={() => itemToDelete && deleteMutation.mutate(itemToDelete)}
         requestState={mutationToLoadingState(deleteMutation)}
         description={itemToDelete
-          ? `Delete ${config.itemName} “${config.getItemLabel(itemToDelete)}”? ${config.deleteWarning ?? ''}`.trim()
+          ? t(`${dictionaryKey}.confirmDelete`, { name: config.getItemLabel(itemToDelete), })
           : undefined}
       />
     </div>

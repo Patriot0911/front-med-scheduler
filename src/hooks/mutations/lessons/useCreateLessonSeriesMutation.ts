@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import useDictionaryMutation from '@/hooks/mutations/dictionaries/useDictionaryMutation';
 import { LessonsQueryKey } from '@/lib/services/lessons.service';
 import LessonGroupsService, { LessonGroupsQueryKey } from '@/lib/services/lesson-groups.service';
@@ -14,10 +15,11 @@ const INVALIDATE_KEYS = [
 ];
 
 const useCreateLessonSeriesMutation = (onSuccess?: () => void) => {
+  const { t, } = useTranslation('lessons');
   return useDictionaryMutation<ICreateLessonSeriesPayload>({
     mutationFn: LessonGroupsService.createLessonSeries,
     invalidateKeys: INVALIDATE_KEYS,
-    successMessage: 'Lessons created',
+    successMessage: t('form.seriesCreated'),
     onSuccess,
   });
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { LuSearch, LuX } from 'react-icons/lu';
 import useDebouncedValue from '@/hooks/shared/useDebouncedValue';
@@ -15,6 +16,7 @@ import styles from './styles.module.scss';
 type TGroupModalState = { isOpen: boolean; group: ILessonGroup | null };
 
 const AdminLessonGroupsList = ({ canManage, }: IAdminLessonGroupsListProps) => {
+  const { t, } = useTranslation('lessons');
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebouncedValue(search.trim());
   const [pageState, setPageState] = useState({ search: '', page: 1, });
@@ -35,8 +37,8 @@ const AdminLessonGroupsList = ({ canManage, }: IAdminLessonGroupsListProps) => {
         <Input
           name={'lesson-groups-search'}
           value={search}
-          placeholder={'Search lesson groups…'}
-          aria-label={'Search lesson groups'}
+          placeholder={t('groups.searchPlaceholder')}
+          aria-label={t('groups.searchLabel')}
           onChange={(e) => setSearch(e.target.value)}
           icon={search ? <LuX /> : <LuSearch />}
           onIconClick={() => setSearch('')}

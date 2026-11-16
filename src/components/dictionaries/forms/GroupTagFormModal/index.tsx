@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,6 +14,7 @@ import DictionaryModal from '@/components/modals/DictionaryModal';
 import FormInput from '@/components/ui/FormInput';
 
 const GroupTagFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<IGroupTag>) => {
+  const { t, } = useTranslation('dictionaries');
   const methods = useForm<TGroupTagForm>({
     resolver: zodResolver(groupTagSchema),
     mode: 'onTouched',
@@ -24,7 +26,7 @@ const GroupTagFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<
       ? GroupTagsService.editGroupTag(item.id, data)
       : GroupTagsService.createGroupTag(data),
     invalidateKeys: [GroupTagsQueryKey.GroupTagsList, DictionaryQueryKey.GroupTags],
-    successMessage: item ? 'Tag updated' : 'Tag created',
+    successMessage: item ? t('groupTags.updated') : t('groupTags.created'),
     onSuccess: onClose,
   });
 
@@ -39,8 +41,8 @@ const GroupTagFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<
     <DictionaryModal
       isOpen={isOpen}
       onClose={onClose}
-      title={item ? 'Edit group tag' : 'New group tag'}
-      description={'Tags label student groups, e.g. form of study or speciality.'}
+      title={item ? t('groupTags.form.editTitle') : t('groupTags.form.createTitle')}
+      description={item ? t('groupTags.form.editDescription') : t('groupTags.form.createDescription')}
       methods={methods}
       onSubmit={(data: TGroupTagForm) => mutation.mutate(data)}
       isPending={mutation.isPending}
@@ -48,8 +50,8 @@ const GroupTagFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<
     >
       <FormInput<TGroupTagForm>
         name={'name'}
-        label={'Name'}
-        placeholder={'e.g. очне / педіатрія'}
+        label={t('fields.name')}
+        placeholder={t('groupTags.form.namePlaceholder')}
         required
       />
     </DictionaryModal>

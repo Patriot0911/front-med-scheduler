@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { SCREEN_TRANSITION, SCREEN_VARIANTS } from '@/lib/modal-screens';
@@ -19,6 +20,7 @@ const names = (items: { name: string }[]) => items.map(({ name, }) => name).join
 
 /** The lessons of one week by day; a lesson opens right here, with Back to the list */
 const WeekLessonsModal = ({ isOpen, onClose, weekStart, lessons, onEdit, onCreate, }: IWeekLessonsModalProps) => {
+  const { t, } = useTranslation(['lessons', 'common']);
   const [selected, setSelected] = useState<ILesson | null>(null);
   // 1: to the lesson, -1: back to the list; 0 without motion
   const [direction, setDirection] = useState(1);
@@ -70,11 +72,11 @@ const WeekLessonsModal = ({ isOpen, onClose, weekStart, lessons, onEdit, onCreat
                 </Modal.Content>
                 <Modal.Footer>
                   <Button className={'flex-1'} variant={'secondary'} leftIcon={<LuArrowLeft />} onClick={() => open(null)}>
-                    Back
+                    {t('back')}
                   </Button>
                   {onEdit && selected.canEdit && (
                     <Button className={'flex-1'} variant={'primary'} leftIcon={<LuPencil />} onClick={() => onEdit(selected)}>
-                      Edit
+                      {t('edit')}
                     </Button>
                   )}
                 </Modal.Footer>
@@ -84,10 +86,10 @@ const WeekLessonsModal = ({ isOpen, onClose, weekStart, lessons, onEdit, onCreat
               <>
                 <Modal.Header
                   title={`${first.format('DD MMM')} – ${last.format(first.isSame(last, 'month') ? 'DD' : 'DD MMM')} ${last.format('YYYY')}`}
-                  description={lessonsCount ? `${lessonsCount} ${lessonsCount === 1 ? 'lesson' : 'lessons'} this week` : undefined}
+                  description={lessonsCount ? t('week.count', { count: lessonsCount, }) : undefined}
                 />
                 <Modal.Content>
-                  {days.length === 0 && <p className={styles.empty}>No lessons this week.</p>}
+                  {days.length === 0 && <p className={styles.empty}>{t('week.empty')}</p>}
                   {days.map(({ day, lessons: dayLessons, }) => (
                     <section key={day.valueOf()} className={styles.day}>
                       <h4 className={styles['day-title']}>{day.format('dddd, DD MMMM')}</h4>
@@ -106,7 +108,7 @@ const WeekLessonsModal = ({ isOpen, onClose, weekStart, lessons, onEdit, onCreat
                                     {[names(lesson.studentGroups), names(lesson.teachers)].filter(Boolean).join(' · ')}
                                   </span>
                                 </span>
-                                {lesson.canEdit && onEdit && <span className={styles.editable}>Yours</span>}
+                                {lesson.canEdit && onEdit && <span className={styles.editable}>{t('week.yours')}</span>}
                               </button>
                             </li>
                           );
@@ -117,11 +119,11 @@ const WeekLessonsModal = ({ isOpen, onClose, weekStart, lessons, onEdit, onCreat
                 </Modal.Content>
                 <Modal.Footer>
                   <Button className={'flex-1'} variant={'secondary'} onClick={close}>
-                    Close
+                    {t('common:actions.close')}
                   </Button>
                   {onCreate && (
                     <Button className={'flex-1'} variant={'primary'} leftIcon={<LuPlus />} onClick={onCreate}>
-                      Add lesson
+                      {t('addLesson')}
                     </Button>
                   )}
                 </Modal.Footer>

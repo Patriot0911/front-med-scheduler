@@ -74,14 +74,14 @@ const MultiSelect = <O extends ISelectOption<string, string>>({
         </Select.Option>
         {value.length > 0 && (
           <div className={styles.footer}>
-            <span className={styles.counter}>{value.length} selected</span>
+            <span className={styles.counter}>{t('select.selected', { count: value.length, })}</span>
             {clearableCount > 0 && (
               <button
                 type={'button'}
                 className={styles.clear}
                 onClick={() => onChange(value.filter(isLocked))}
               >
-                Clear
+                {t('select.clear')}
               </button>
             )}
           </div>

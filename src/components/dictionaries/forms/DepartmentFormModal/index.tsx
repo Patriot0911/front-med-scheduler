@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,14 +22,13 @@ import DepartmentTeachersModal from '../DepartmentTeachersModal';
 
 import styles from './styles.module.scss';
 
-const NO_HEAD_OPTION: ISelectOption = { value: '', label: 'Not assigned', };
-
 const toFormValues = (department: IDepartment | null): TDepartmentForm => ({
   name: department?.name ?? '',
   headTeacherId: department?.headTeacherId ?? '',
 });
 
 const DepartmentFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProps<IDepartment>) => {
+  const { t, } = useTranslation('dictionaries');
   // the teachers modal replaces this one while open, the form state is kept meanwhile
   const [isTeachersOpen, setIsTeachersOpen] = useState(false);
 
@@ -36,7 +36,7 @@ const DepartmentFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProp
   const { data: teachers, } = useTeachersDictionaryQuery(isOpen && !!item);
   const departmentTeachers = (teachers ?? []).filter((teacher) => teacher.departmentId === item?.id);
   const headOptions: ISelectOption[] = [
-    NO_HEAD_OPTION,
+    { value: '', label: t('notAssigned'), },
     ...departmentTeachers.map((teacher) => ({ value: teacher.id, label: teacher.name, })),
   ];
 
@@ -61,7 +61,7 @@ const DepartmentFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProp
       return true;
     },
     invalidateKeys: [DepartmentsQueryKey.DepartmentsList, DictionaryQueryKey.Departments],
-    successMessage: item ? 'Department updated' : 'Department created',
+    successMessage: item ? t('departments.updated') : t('departments.created'),
     onSuccess: onClose,
   });
 
@@ -86,8 +86,8 @@ const DepartmentFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProp
       <DictionaryModal
         isOpen={isOpen && !isTeachersOpen}
         onClose={onClose}
-        title={item ? 'Edit department' : 'New department'}
-        description={item ? undefined : 'Teachers and the head of the department can be assigned once it is created.'}
+        title={item ? t('departments.form.editTitle') : t('departments.form.createTitle')}
+        description={item ? t('departments.form.editDescription') : t('departments.form.createDescription')}
         methods={methods}
         onSubmit={(data: TDepartmentForm) => mutation.mutate(data)}
         isPending={mutation.isPending}
@@ -95,18 +95,18 @@ const DepartmentFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProp
       >
         <FormInput<TDepartmentForm>
           name={'name'}
-          label={'Name'}
-          placeholder={'e.g. Кафедра внутрішньої медицини'}
+          label={t('fields.name')}
+          placeholder={t('departments.form.namePlaceholder')}
           required
         />
         {!!item && (
           <>
             <FormSelect<TDepartmentForm, ISelectOption>
               name={'headTeacherId'}
-              label={'Head of the department'}
+              label={t('departments.form.head')}
               options={headOptions}
-              placeholder={'Not assigned'}
-              hint={headOptions.length === 1 ? 'No teachers in this department yet' : 'Only teachers of this department'}
+              placeholder={t('notAssigned')}
+              hint={headOptions.length === 1 ? t('departments.form.headHintEmpty') : t('departments.form.headHint')}
               disabled={headOptions.length === 1}
               searchable
             >
@@ -114,7 +114,7 @@ const DepartmentFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProp
                 {(option) => option.label}
               </FormSelect.Selected>
               <FormSelect.Area>
-                <FormSelect.Search placeholder={'Search teacher…'} />
+                <FormSelect.Search placeholder={t('departments.form.searchTeacher')} />
                 <FormSelect.Option<ISelectOption>>
                   {(option) => option.label}
                 </FormSelect.Option>
@@ -124,14 +124,14 @@ const DepartmentFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProp
             <section className={styles.teachers}>
               <div className={styles['teachers-header']}>
                 <span className={styles['teachers-title']}>
-                  Teachers
+                  {t('departments.form.teachers')}
                   <span className={styles.count}>{departmentTeachers.length}</span>
                 </span>
               </div>
               <TeacherList
                 className={styles['teachers-list']}
                 isEmpty={!departmentTeachers.length}
-                emptyText={'No teachers in this department yet'}
+                emptyText={t('departments.form.noTeachers')}
               >
                 {departmentTeachers.map((teacher) => (
                   <TeacherList.Item
@@ -139,7 +139,7 @@ const DepartmentFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProp
                     name={teacher.name}
                     badges={teacher.id === headTeacherId && (
                       <TeacherList.Badge tone={'primary'}>
-                        <LuCrown /> Head
+                        <LuCrown /> {t('departments.form.headBadge')}
                       </TeacherList.Badge>
                     )}
                   />
@@ -152,7 +152,7 @@ const DepartmentFormModal = ({ isOpen, item, onClose }: IDictionaryFormModalProp
                 disabled={mutation.isPending}
                 onClick={() => setIsTeachersOpen(true)}
               >
-                Manage teachers
+                {t('departments.form.manageTeachers')}
               </Button>
             </section>
           </>

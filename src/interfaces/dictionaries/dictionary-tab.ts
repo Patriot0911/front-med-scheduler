@@ -9,7 +9,7 @@ export interface IDictionaryTabItemProps {
 export interface IDictionaryToolbarProps {
   search: string;
   onSearchChange: (search: string) => void;
-  itemName: string;
+  addLabel: string;
   canManage: boolean;
   onCreate: () => void;
 };

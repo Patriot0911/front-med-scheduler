@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { LuPlus, LuSearch, LuX } from 'react-icons/lu';
 import useDebouncedValue from '@/hooks/shared/useDebouncedValue';
 import useLessonsQuery from '@/hooks/queries/lessons/useLessonsQuery';
@@ -14,16 +15,16 @@ import Input from '@/components/ui/Input';
 import Switch from '@/components/ui/Switch';
 import Table from '@/components/ui/Table';
 import { createSelectColumn } from '@/components/ui/Table/selectColumn';
-import { LESSON_COLUMNS } from '../LessonsTable';
+import { createLessonColumns } from '../LessonsTable';
 
 import cells from '../cells/styles.module.scss';
 import styles from './styles.module.scss';
 
 const PAGE_SIZE = 6;
 
-const plural = (count: number) => `${count} ${count === 1 ? 'lesson' : 'lessons'}`;
-
 const AssignLessonsContent = ({ group, onClose, }: { group: ILessonGroup; onClose: () => void }) => {
+  const { t, } = useTranslation(['lessons', 'common']);
+  const lessonColumns = useMemo(() => createLessonColumns(t), [t]);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebouncedValue(search.trim());
   const [isOnlyUngrouped, setIsOnlyUngrouped] = useState(true);
@@ -50,31 +51,31 @@ const AssignLessonsContent = ({ group, onClose, }: { group: ILessonGroup; onClos
       selected,
       onChange: setSelected,
       isSelectable: (lesson) => !isInGroup(lesson),
-      getLabel: (lesson) => `Select ${lesson.name}`,
+      getLabel: (lesson) => t('groups.lessons.select', { name: lesson.name, }),
     }),
-    LESSON_COLUMNS.date,
+    lessonColumns.date,
     {
       key: 'name',
-      title: 'Lesson',
+      title: t('columns.lesson'),
       render: (lesson) => (
         <div className={cells.stack}>
           <span className={cells.primary} title={lesson.name}>{lesson.name}</span>
           <span className={cells.secondary}>
             {isInGroup(lesson)
-              ? 'Already in this group'
-              : lesson.lessonGroupName ? `Moves from “${lesson.lessonGroupName}”` : 'No group'}
+              ? t('groups.assign.alreadyIn')
+              : lesson.lessonGroupName ? t('groups.assign.movesFrom', { name: lesson.lessonGroupName, }) : t('groups.assign.noGroup')}
           </span>
         </div>
       ),
     },
-    LESSON_COLUMNS.teachers,
+    lessonColumns.teachers,
   ];
 
   return (
     <>
       <Modal.Header
-        title={'Add lessons to the group'}
-        description={`Existing lessons go into “${group.name}”. A lesson of another group moves here.`}
+        title={t('groups.assign.title')}
+        description={t('groups.assign.description', { name: group.name, })}
       />
       <Modal.Content className={styles.content}>
         <div className={`${styles.toolbar} fields-compact`}>
@@ -82,15 +83,15 @@ const AssignLessonsContent = ({ group, onClose, }: { group: ILessonGroup; onClos
             <Input
               name={'assign-lessons-search'}
               value={search}
-              placeholder={'Search lessons…'}
-              aria-label={'Search lessons'}
+              placeholder={t('groups.assign.searchPlaceholder')}
+              aria-label={t('groups.assign.searchLabel')}
               onChange={(e) => setSearch(e.target.value)}
               icon={search ? <LuX /> : <LuSearch />}
               onIconClick={() => setSearch('')}
               hideErrorMessage
             />
           </div>
-          <Switch checked={isOnlyUngrouped} onChange={setIsOnlyUngrouped} label={'Only lessons without a group'} />
+          <Switch checked={isOnlyUngrouped} onChange={setIsOnlyUngrouped} label={t('groups.assign.onlyUngrouped')} />
         </div>
         <Table<ILesson>
           columns={columns}
@@ -98,7 +99,7 @@ const AssignLessonsContent = ({ group, onClose, }: { group: ILessonGroup; onClos
           data={lessons}
           skeletonRows={PAGE_SIZE}
           isLoading={isLoading}
-          emptyText={'No lessons match'}
+          emptyText={t('emptyMatch')}
           onRowClick={(lesson) => {
             if (isInGroup(lesson)) return;
             const next = new Set(selected);
@@ -120,14 +121,14 @@ const AssignLessonsContent = ({ group, onClose, }: { group: ILessonGroup; onClos
         </Table>
         {selected.size > 0 && (
           <div className={styles.selection}>
-            <span>{plural(selected.size)} selected</span>
-            <Button variant={'ghost'} onClick={() => setSelected(new Set())}>Clear</Button>
+            <span>{t('groups.assign.selected', { count: selected.size, })}</span>
+            <Button variant={'ghost'} onClick={() => setSelected(new Set())}>{t('clear')}</Button>
           </div>
         )}
       </Modal.Content>
       <Modal.Footer>
         <Button className={'flex-1'} variant={'secondary'} onClick={onClose} disabled={mutation.isPending}>
-          Cancel
+          {t('common:actions.cancel')}
         </Button>
         <Button
           className={'flex-1'}
@@ -136,7 +137,7 @@ const AssignLessonsContent = ({ group, onClose, }: { group: ILessonGroup; onClos
           isLoading={mutation.isPending}
           onClick={() => mutation.mutate({ lessonGroupId: group.id, lessonIds: [...selected], })}
         >
-          {selected.size ? `Add ${plural(selected.size)}` : 'Add lessons'}
+          {selected.size ? t('groups.assign.addCount', { count: selected.size, }) : t('groups.assign.add')}
         </Button>
       </Modal.Footer>
     </>

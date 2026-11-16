@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import useMeQuery from '@/hooks/queries/auth/useMeQuery';
 import Loading from '@/components/ui/Loading';
 import LessonsBrowser from '../LessonsBrowser';
@@ -7,6 +8,7 @@ import LessonsBrowser from '../LessonsBrowser';
 import styles from './styles.module.scss';
 
 const StudyLessonsSection = () => {
+  const { t, } = useTranslation('lessons');
   const { data: user, } = useMeQuery();
 
   if (!user) {
@@ -16,7 +18,7 @@ const StudyLessonsSection = () => {
   if (!user.student) {
     return (
       <p className={styles.empty}>
-        You don&apos;t have a student profile. Ask an administrator to add one.
+        {t('sections.study.noProfile')}
       </p>
     );
   }
@@ -24,7 +26,7 @@ const StudyLessonsSection = () => {
   if (!user.student.studentGroupId) {
     return (
       <p className={styles.empty}>
-        You are not in a student group yet. Ask an administrator to add you to one.
+        {t('sections.study.noGroup')}
       </p>
     );
   }
@@ -32,7 +34,7 @@ const StudyLessonsSection = () => {
   return (
     <section className={styles.section}>
       <p className={styles.description}>
-        Lessons of your student group.
+        {t('sections.study.description')}
       </p>
       <LessonsBrowser view={'study'} />
     </section>

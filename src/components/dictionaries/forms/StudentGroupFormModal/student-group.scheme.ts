@@ -1,8 +1,9 @@
+import { validationError } from '@/i18n/client/validation';
 import { z } from 'zod';
 
 export const studentGroupSchema = z.object({
-  name: z.string().trim().min(3, 'Min 3 chars'),
-  studyYear: z.string().trim().min(1, 'Required'),
+  name: z.string().trim().min(3, validationError('minChars', { count: 3, })),
+  studyYear: z.string().trim().min(1, validationError('required')),
   tagIds: z.array(z.string()),
 });
 

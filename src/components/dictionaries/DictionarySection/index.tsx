@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { dictionariesConfig } from '@/configs/dictionaries.config';
 import { TDictionaryKey } from '@/interfaces/dictionaries/tables';
@@ -17,6 +18,7 @@ const ALL_DICTIONARY_KEYS = Object.keys(dictionariesConfig) as TDictionaryKey[];
 
 /** Tabs of the dictionaries the user may read; the selected one is kept in `?tab=`. */
 const DictionarySection = () => {
+  const { t, } = useTranslation('dictionaries');
   const { hasAny, isReady, } = usePermissions();
   const availableKeys = useMemo(
     () => ALL_DICTIONARY_KEYS.filter((key) => hasAny(dictionariesConfig[key].readPermissions)),
@@ -31,7 +33,7 @@ const DictionarySection = () => {
   if (!tab) {
     return (
       <p className={styles.empty}>
-        You don&apos;t have access to any dictionary. Ask an administrator for permissions.
+        {t('noAccess')}
       </p>
     );
   }
@@ -39,7 +41,7 @@ const DictionarySection = () => {
   const tabsItems: ITabItem<TDictionaryKey>[] = availableKeys.map((key) => ({
     key,
     data: key,
-    label: dictionariesConfig[key].title,
+    label: t(`${key}.title`),
   }));
 
   return (

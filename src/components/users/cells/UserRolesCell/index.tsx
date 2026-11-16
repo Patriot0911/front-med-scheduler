@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import useRolesDictionaryQuery from '@/hooks/queries/dictionaries/useRolesDictionaryQuery';
 import ChipsCell from '@/components/dictionaries/cells/ChipsCell';
 
@@ -11,6 +12,7 @@ interface IUserRolesCellProps {
 
 /** Role ids → role names (from the cached /dictionaries/roles list). */
 const UserRolesCell = ({ roleIds, canReadRoles, }: IUserRolesCellProps) => {
+  const { t, } = useTranslation('users');
   const { data: roles, } = useRolesDictionaryQuery(canReadRoles && roleIds.length > 0);
 
   if (!canReadRoles) {
@@ -19,7 +21,7 @@ const UserRolesCell = ({ roleIds, canReadRoles, }: IUserRolesCellProps) => {
 
   const namesById = new Map((roles ?? []).map((role) => [role.id, role.name]));
 
-  return <ChipsCell items={roleIds.map((id) => namesById.get(id) ?? '…')} limit={2} emptyText={'No roles'} />;
+  return <ChipsCell items={roleIds.map((id) => namesById.get(id) ?? '…')} limit={2} emptyText={t('noRoles')} />;
 }
 
 export default UserRolesCell;

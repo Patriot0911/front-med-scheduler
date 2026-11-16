@@ -1,0 +1,273 @@
+{
+  "count_one": "{{count}} lesson",
+  "count_other": "{{count}} lessons",
+  "addLesson": "Add lesson",
+  "edit": "Edit",
+  "back": "Back",
+  "clear": "Clear",
+  "loadError": "Couldn't load lessons: {{error}}",
+  "sections": {
+    "all": {
+      "description": "Every lesson available to you: public lessons and the ones you take part in as a teacher or a student. Use the search and filters to narrow the calendar down."
+    },
+    "study": {
+      "description": "Lessons of your student group: lectures, practical classes and other events scheduled for it, including the ones visible only to their participants.",
+      "noProfile": "You don't have a student profile. Ask an administrator to add one.",
+      "noGroup": "You are not in a student group yet. Ask an administrator to add you to one."
+    },
+    "teaching": {
+      "tabs": {
+        "teaching": "Teaching",
+        "department": "Department"
+      },
+      "description": {
+        "teaching": "Lessons you teach, on your own or together with other teachers. Click a free slot in the calendar or use “Add lesson” to schedule a new one.",
+        "department": "All lessons linked to the department you head. As the head, you can edit any of them, even the ones you don't teach."
+      },
+      "noProfile": "You don't have a teacher profile. Ask an administrator to add one."
+    },
+    "admin": {
+      "noAccess": "You don't have access to lessons management. Ask an administrator to grant you the permissions you need.",
+      "descriptionManage": "Every lesson of the platform, public or not, whoever teaches it. You can edit any lesson and manage lesson groups: rename them, move lessons between them or delete them.",
+      "descriptionView": "Every lesson of the platform, public or not, whoever teaches it. View only: editing needs the “Manage all lessons” permission.",
+      "tabs": {
+        "lessons": "Lessons",
+        "lessonGroups": "Lesson groups"
+      },
+      "modes": {
+        "calendar": "Calendar",
+        "list": "List"
+      },
+      "includePast": "Include past lessons"
+    }
+  },
+  "toolbar": {
+    "searchPlaceholder": "Search lessons, groups, teachers…",
+    "searchLabel": "Search lessons",
+    "filters": "Filters"
+  },
+  "filters": {
+    "title": "Filters",
+    "description": "Show only the lessons that match every selected filter. Within one filter, a lesson fits if it matches any of the chosen values.",
+    "selected": "Selected: {{count}}",
+    "none": "No filters selected",
+    "clearAll": "Clear all",
+    "apply": "Apply filters",
+    "visibility": "Visibility",
+    "anyVisibility": "Any visibility",
+    "lessonGroupIds": {
+      "label": "Lesson group",
+      "placeholder": "All lesson groups",
+      "search": "Search lesson group…"
+    },
+    "teacherIds": {
+      "label": "Teacher",
+      "placeholder": "All teachers",
+      "search": "Search teacher…"
+    },
+    "studentGroupIds": {
+      "label": "Student group",
+      "placeholder": "All groups",
+      "search": "Search group…"
+    },
+    "groupTagIds": {
+      "label": "Group tag",
+      "placeholder": "All tags",
+      "search": "Search tag…"
+    },
+    "departmentIds": {
+      "label": "Department",
+      "placeholder": "All departments",
+      "search": "Search department…"
+    },
+    "semesterIds": {
+      "label": "Semester",
+      "placeholder": "All semesters",
+      "search": "Search semester…"
+    }
+  },
+  "visibility": {
+    "public": "Public",
+    "participants": "Participants",
+    "publicOption": "Public: anyone can see it",
+    "participantsOption": "Participants only"
+  },
+  "columns": {
+    "date": "Date",
+    "lesson": "Lesson",
+    "teachers": "Teachers",
+    "groups": "Groups",
+    "departments": "Departments",
+    "status": "Status"
+  },
+  "emptyMatch": "No lessons match",
+  "details": {
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration",
+    "teachers": "Teachers",
+    "groups": "Groups",
+    "departments": "Departments",
+    "note": "Note",
+    "hours": "{{count}} h",
+    "minutes": "{{count}} min"
+  },
+  "week": {
+    "count_one": "{{count}} lesson this week",
+    "count_other": "{{count}} lessons this week",
+    "empty": "No lessons this week.",
+    "yours": "Yours"
+  },
+  "form": {
+    "createTitle": "New lesson",
+    "editTitle": "Edit lesson",
+    "createDescription": "Schedule a lesson for one or several student groups. You stay among its teachers, and later it can be edited by every teacher of the lesson and by the heads of its departments. Add it to a lesson group to create a whole series at once.",
+    "editDescription": "Changes apply to this lesson only. To move it, change the date and time it starts at.",
+    "editDescriptionInGroup": "Part of “{{group}}”. Changes apply to this lesson only, not to the other lessons of the group. To move it, change the date and time it starts at.",
+    "name": "Name",
+    "namePlaceholder": "e.g. Anatomy: upper limb",
+    "start": "Starts at",
+    "duration": "Minutes",
+    "teachers": "Teachers",
+    "teachersPlaceholder": "Select teachers",
+    "you": "{{name}} (you)",
+    "searchTeacher": "Search teacher…",
+    "studentGroups": "Student groups",
+    "noGroups": "No groups",
+    "searchGroup": "Search group…",
+    "semester": "Semester",
+    "noSemester": "No semester",
+    "visibility": "Visibility",
+    "departments": "Departments",
+    "noDepartments": "No departments",
+    "teachersNoDepartments": "Teachers have no departments",
+    "searchDepartment": "Search department…",
+    "departmentsHint": "Their heads can edit it",
+    "note": "Note",
+    "notePlaceholder": "What to bring, where to meet…",
+    "lessonGroup": "Lesson group",
+    "noLessonGroup": "No group",
+    "lessonGroupHint": "Only your groups",
+    "addToGroup": "Add to a lesson group",
+    "createLesson": "Create lesson",
+    "createLessons_one": "Create {{count}} lesson",
+    "createLessons_other": "Create {{count}} lessons",
+    "created": "Lesson created",
+    "seriesCreated": "Lessons created",
+    "saved": "Lesson saved",
+    "addedToGroup": "Lessons added to the group"
+  },
+  "recurrence": {
+    "title": "Lesson group",
+    "description": "Lessons that belong together, such as a course or a cycle of lectures. Every lesson of the series gets the fields above, and the first one takes place at “Starts at”.",
+    "remove": "Remove",
+    "modes": {
+      "new": "New group",
+      "existing": "Existing group"
+    },
+    "groupName": "Group name",
+    "groupNamePlaceholder": "e.g. Anatomy, lectures",
+    "group": "Group",
+    "pickGroup": "Pick one of your groups",
+    "noOwnGroups": "You have no lesson groups yet",
+    "groupHint": "Groups you created",
+    "searchGroup": "Search group…",
+    "repeats": "Repeats",
+    "patterns": {
+      "none": "Doesn't repeat (only this lesson)",
+      "daily": "Every day",
+      "weekly": "Every week, on chosen days",
+      "biweekly": "Every two weeks, on chosen days",
+      "custom": "Custom dates"
+    },
+    "until": "Until",
+    "untilPlaceholder": "Last day of the series",
+    "on": "On",
+    "tooMany": "More than {{count}} lessons: shorten the range",
+    "hints": {
+      "none": "Only this lesson goes into the group; you can add more lessons to it later.",
+      "range": "Days follow the rule above. Switch to Custom dates to pick them by hand.",
+      "custom": "Click days to add or remove lessons. The first one is fixed at “Starts at”."
+    }
+  },
+  "groups": {
+    "searchPlaceholder": "Search lesson groups…",
+    "searchLabel": "Search lesson groups",
+    "edit": "Edit group",
+    "view": "View group",
+    "delete": "Delete group",
+    "empty": "No lesson groups yet",
+    "emptySearch": "No lesson groups match the search",
+    "saved": "Lesson group saved",
+    "deleted": "Lesson group deleted",
+    "columns": {
+      "name": "Lesson group",
+      "department": "Department",
+      "createdBy": "Created by",
+      "lessons": "Lessons",
+      "period": "Period"
+    },
+    "overview": {
+      "fallback": "Lesson group",
+      "createdBy": "created by {{name}}",
+      "editDescription": "Rename the group or update its note. Its lessons are edited on a separate screen.",
+      "name": "Name",
+      "note": "Note",
+      "notePlaceholder": "Optional",
+      "lessons": "Lessons",
+      "editLessons": "Edit lessons",
+      "viewLessons": "View lessons",
+      "count": "Count",
+      "period": "Period"
+    },
+    "lessons": {
+      "title": "Lessons",
+      "description": "“{{name}}” · {{count}}",
+      "selected_one": "{{count}} lesson selected",
+      "selected_other": "{{count}} lessons selected",
+      "takeOut": "Take out",
+      "delete": "Delete",
+      "hint": "Pick lessons to take them out of the group or delete them together.",
+      "addExisting": "Add existing lessons",
+      "empty": "No lessons in this group yet",
+      "editLesson": "Edit lesson",
+      "takeOutOne": "Take out of the group",
+      "deleteLesson": "Delete lesson",
+      "select": "Select {{name}}",
+      "confirmDeleteOne": "Delete “{{name}}” ({{date}})? It is removed from the schedule for everyone. This can't be undone.",
+      "confirmDeleteMany_one": "Delete {{count}} lesson? It is removed from the schedule for everyone. This can't be undone.",
+      "confirmDeleteMany_other": "Delete {{count}} lessons? They are removed from the schedule for everyone. This can't be undone.",
+      "confirmTakeOutOne": "Take “{{name}}” ({{date}}) out of the group? It stays in the schedule, without a group.",
+      "confirmTakeOutMany_one": "Take {{count}} lesson out of the group? It stays in the schedule, without a group.",
+      "confirmTakeOutMany_other": "Take {{count}} lessons out of the group? They stay in the schedule, without a group.",
+      "deleted": "Lessons deleted",
+      "takenOut": "Lessons taken out of the group"
+    },
+    "assign": {
+      "title": "Add lessons to the group",
+      "description": "Pick existing lessons to put into “{{name}}”. The selection is kept across pages and searches. A lesson belongs to one group only, so a lesson of another group moves here.",
+      "searchPlaceholder": "Search lessons…",
+      "searchLabel": "Search lessons",
+      "onlyUngrouped": "Only lessons without a group",
+      "alreadyIn": "Already in this group",
+      "movesFrom": "Moves from “{{name}}”",
+      "noGroup": "No group",
+      "selected_one": "{{count}} lesson selected",
+      "selected_other": "{{count}} lessons selected",
+      "add": "Add lessons",
+      "addCount_one": "Add {{count}} lesson",
+      "addCount_other": "Add {{count}} lessons"
+    },
+    "deleteModal": {
+      "confirm": "Delete the lesson group “{{name}}”?",
+      "noLessons": "It has no lessons.",
+      "withLessons_one": "Its {{count}} lesson will be deleted too. This can't be undone.",
+      "withLessons_other": "Its {{count}} lessons will be deleted too. This can't be undone.",
+      "keepLessons_one": "Its {{count}} lesson stays in the schedule, without a group.",
+      "keepLessons_other": "Its {{count}} lessons stay in the schedule, without a group.",
+      "alsoDelete_one": "Also delete its {{count}} lesson",
+      "alsoDelete_other": "Also delete its {{count}} lessons",
+      "alsoDeleteHint": "Otherwise they leave the group"
+    }
+  }
+}

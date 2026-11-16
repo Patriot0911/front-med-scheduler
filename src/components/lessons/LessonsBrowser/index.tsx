@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import dayjs from '@/lib/dayjs';
 import { LESSONS_VIEWS } from '@/configs/lessons-views.config';
@@ -21,6 +22,7 @@ import styles from './styles.module.scss';
 type TFormState = { isOpen: boolean; draft: ILessonDraft | null; lesson: ILesson | null };
 
 const LessonsBrowser = ({ view, mode = 'calendar', canEdit = true, }: ILessonsBrowserProps) => {
+  const { t, } = useTranslation('lessons');
   const { filters: filterKeys, canCreate, source, } = LESSONS_VIEWS[view];
   // the draft / lesson is kept after closing so the modal keeps its content during the exit animation
   const [form, setForm] = useState<TFormState>({ isOpen: false, draft: null, lesson: null, });
@@ -52,7 +54,7 @@ const LessonsBrowser = ({ view, mode = 'calendar', canEdit = true, }: ILessonsBr
           <Switch
             checked={includePast}
             onChange={setIncludePast}
-            label={'Include past lessons'}
+            label={t('sections.admin.includePast')}
           />
         )}
         {canCreate && (
@@ -61,7 +63,7 @@ const LessonsBrowser = ({ view, mode = 'calendar', canEdit = true, }: ILessonsBr
             onClick={() => openForm(nextHourLessonDraft())}
             className={styles['create-button']}
           >
-            Add lesson
+            {t('addLesson')}
           </Button>
         )}
       </LessonsToolbar>

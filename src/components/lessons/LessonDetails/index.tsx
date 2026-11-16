@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import type { ReactNode } from 'react';
 import { LuBuilding2, LuCalendar, LuClock, LuHourglass, LuUser, LuUsers } from 'react-icons/lu';
 import { cn } from '@/lib/cn';
@@ -15,29 +17,33 @@ interface IDetailRow {
   value?: ReactNode;
 };
 
-const formatDuration = (minutes: number) => {
+const formatDuration = (minutes: number, t: TFunction<'lessons'>) => {
   const hours = Math.floor(minutes / 60);
   const rest = minutes % 60;
-  return [hours && `${hours} h`, rest && `${rest} min`].filter(Boolean).join(' ');
+  return [
+    hours && t('details.hours', { count: hours, }),
+    rest && t('details.minutes', { count: rest, }),
+  ].filter(Boolean).join(' ');
 };
 
 const joinNames = (items: { name: string }[]) => items.map(({ name, }) => name).join(', ');
 
 /** Date, people and note of a lesson; used by the details and week modals */
 const LessonDetails = ({ lesson, }: ILessonDetailsProps) => {
+  const { t, } = useTranslation('lessons');
   const start = getLessonStart(lesson);
   const rows: IDetailRow[] = [
-    { key: 'date', icon: <LuCalendar />, label: 'Date', value: start.format('ddd, DD MMM YYYY'), },
+    { key: 'date', icon: <LuCalendar />, label: t('details.date'), value: start.format('ddd, DD MMM YYYY'), },
     {
       key: 'time',
       icon: <LuClock />,
-      label: 'Time',
+      label: t('details.time'),
       value: `${start.format('HH:mm')} – ${start.add(lesson.duration, 'minute').format('HH:mm')}`,
     },
-    { key: 'duration', icon: <LuHourglass />, label: 'Duration', value: formatDuration(lesson.duration), },
-    { key: 'teachers', icon: <LuUser />, label: 'Teachers', value: joinNames(lesson.teachers), },
-    { key: 'groups', icon: <LuUsers />, label: 'Groups', value: joinNames(lesson.studentGroups), },
-    { key: 'departments', icon: <LuBuilding2 />, label: 'Departments', value: joinNames(lesson.departments), },
+    { key: 'duration', icon: <LuHourglass />, label: t('details.duration'), value: formatDuration(lesson.duration, t), },
+    { key: 'teachers', icon: <LuUser />, label: t('details.teachers'), value: joinNames(lesson.teachers), },
+    { key: 'groups', icon: <LuUsers />, label: t('details.groups'), value: joinNames(lesson.studentGroups), },
+    { key: 'departments', icon: <LuBuilding2 />, label: t('details.departments'), value: joinNames(lesson.departments), },
   ];
 
   return (
@@ -58,7 +64,7 @@ const LessonDetails = ({ lesson, }: ILessonDetailsProps) => {
 
       {!!lesson.note && (
         <div className={styles.description}>
-          <span className={styles['description-title']}>Note</span>
+          <span className={styles['description-title']}>{t('details.note')}</span>
           <p className={styles['description-text']}>{lesson.note}</p>
         </div>
       )}

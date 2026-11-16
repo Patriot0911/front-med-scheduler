@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs from '@/lib/dayjs';
 import { EventProps } from 'react-big-calendar';
 import { ICalendarEvent, TCalendarEventDensity } from '@/interfaces/ui/calendar';
 import { cn } from '@/lib/cn';

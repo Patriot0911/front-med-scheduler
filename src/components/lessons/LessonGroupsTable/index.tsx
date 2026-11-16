@@ -1,5 +1,8 @@
 'use client';
 
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { LuEye, LuPencil, LuTrash2 } from 'react-icons/lu';
 import dayjs from '@/lib/dayjs';
 import Table from '@/components/ui/Table';
@@ -14,10 +17,10 @@ const DATE_FORMAT = 'DD.MM.YYYY';
 
 const emptyCell = <span className={cells.empty}>—</span>;
 
-const COLUMNS: ITableColumn<ILessonGroup>[] = [
+const createColumns = (t: TFunction<'lessons'>): ITableColumn<ILessonGroup>[] => [
   {
     key: 'name',
-    title: 'Lesson group',
+    title: t('groups.columns.name'),
     render: (group) => (
       <div className={cells.stack}>
         <span className={cells.primary} title={group.name}>{group.name}</span>
@@ -27,7 +30,7 @@ const COLUMNS: ITableColumn<ILessonGroup>[] = [
   },
   {
     key: 'department',
-    title: 'Department',
+    title: t('groups.columns.department'),
     width: '12rem',
     render: (group) => group.departmentName
       ? <span className={cells.secondary} title={group.departmentName}>{group.departmentName}</span>
@@ -35,7 +38,7 @@ const COLUMNS: ITableColumn<ILessonGroup>[] = [
   },
   {
     key: 'createdBy',
-    title: 'Created by',
+    title: t('groups.columns.createdBy'),
     width: '12rem',
     render: (group) => group.createdByTeacherName
       ? <span className={cells.secondary} title={group.createdByTeacherName}>{group.createdByTeacherName}</span>
@@ -43,14 +46,14 @@ const COLUMNS: ITableColumn<ILessonGroup>[] = [
   },
   {
     key: 'lessons',
-    title: 'Lessons',
+    title: t('groups.columns.lessons'),
     width: '6rem',
     align: 'right',
     render: (group) => group.lessonsCount,
   },
   {
     key: 'period',
-    title: 'Period',
+    title: t('groups.columns.period'),
     width: '12rem',
     render: (group) => group.firstLessonDate && group.lastLessonDate
       ? (
@@ -63,24 +66,26 @@ const COLUMNS: ITableColumn<ILessonGroup>[] = [
 ];
 
 const LessonGroupsTable = ({ search, page, onPageChange, onOpen, onDelete, }: ILessonGroupsTableProps) => {
+  const { t, } = useTranslation('lessons');
+  const columns = useMemo(() => createColumns(t), [t]);
   const { data, isLoading, isFetching, } = useAdminLessonGroupsQuery(page, LESSON_GROUPS_PAGE_SIZE, search);
   const actions: ITableAction<ILessonGroup>[] = [
-    { key: 'open', icon: onDelete ? <LuPencil /> : <LuEye />, label: onDelete ? 'Edit group' : 'View group', onClick: onOpen, },
+    { key: 'open', icon: onDelete ? <LuPencil /> : <LuEye />, label: onDelete ? t('groups.edit') : t('groups.view'), onClick: onOpen, },
     ...(onDelete
-      ? [{ key: 'delete', icon: <LuTrash2 />, label: 'Delete group', variant: 'danger' as const, onClick: onDelete, }]
+      ? [{ key: 'delete', icon: <LuTrash2 />, label: t('groups.delete'), variant: 'danger' as const, onClick: onDelete, }]
       : []),
   ];
 
   return (
     <Table<ILessonGroup>
-      columns={COLUMNS}
+      columns={columns}
       actions={actions}
       onRowClick={onOpen}
       rowKey={(group) => group.id}
       data={data?.items ?? []}
       skeletonRows={5}
       isLoading={isLoading}
-      emptyText={search ? 'No lesson groups match the search' : 'No lesson groups yet'}
+      emptyText={search ? t('groups.emptySearch') : t('groups.empty')}
       pageSize={LESSON_GROUPS_PAGE_SIZE}
       rowSize={'lg'}
       pagination={{

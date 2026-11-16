@@ -27,12 +27,6 @@ export interface ILessonsViewConfig {
   canCreate?: boolean;
 };
 
-export interface ILessonsListFilterConfig {
-  label: string;
-  placeholder: string;
-  searchPlaceholder: string;
-};
-
 export type TLessonsMode = 'calendar' | 'list';
 
 export interface ILessonsBrowserProps {

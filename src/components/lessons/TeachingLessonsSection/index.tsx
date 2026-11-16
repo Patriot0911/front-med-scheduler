@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import useMeQuery from '@/hooks/queries/auth/useMeQuery';
 import useTabParam from '@/hooks/shared/useTabParam';
 import Loading from '@/components/ui/Loading';
@@ -10,20 +11,11 @@ import LessonsBrowser from '../LessonsBrowser';
 
 import styles from './styles.module.scss';
 
-const TABS: ITabItem<TTeachingLessonsTab>[] = [
-  { key: 'teaching', data: 'teaching', label: 'Teaching', },
-  { key: 'department', data: 'department', label: 'Department', },
-];
-
-const DESCRIPTIONS: Record<TTeachingLessonsTab, string> = {
-  teaching: 'Lessons you teach, on your own or together with other teachers.',
-  department: 'All lessons of the department you head.',
-};
-
 const TEACHER_TABS: TTeachingLessonsTab[] = ['teaching'];
 const HEAD_TABS: TTeachingLessonsTab[] = ['teaching', 'department'];
 
 const TeachingLessonsSection = () => {
+  const { t, } = useTranslation('lessons');
   const { data: user, } = useMeQuery();
   const isHead = !!user?.teacher?.headOfDepartmentId;
   const { tab = 'teaching', setTab, } = useTabParam(isHead ? HEAD_TABS : TEACHER_TABS);
@@ -35,7 +27,7 @@ const TeachingLessonsSection = () => {
   if (!user.teacher) {
     return (
       <p className={styles.empty}>
-        You don&apos;t have a teacher profile. Ask an administrator to add one.
+        {t('sections.teaching.noProfile')}
       </p>
     );
   }
@@ -44,14 +36,14 @@ const TeachingLessonsSection = () => {
     <section className={styles.section}>
       {isHead && (
         <Tabs
-          items={TABS}
+          items={HEAD_TABS.map((key): ITabItem<TTeachingLessonsTab> => ({ key, data: key, label: t(`sections.teaching.tabs.${key}`), }))}
           value={tab}
           onChange={setTab}
           variant={'underline'}
         />
       )}
       <p className={styles.description}>
-        {DESCRIPTIONS[tab]}
+        {t(`sections.teaching.description.${tab}`)}
       </p>
       <LessonsBrowser view={tab} />
     </section>

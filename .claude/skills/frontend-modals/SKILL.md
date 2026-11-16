@@ -56,6 +56,7 @@ const [isShownLessonModal, setIsShownLessonModal] = useState(false);
 
 ```tsx
 const LessonModal = (props: ILessonModalProps) => {
+  const { t, } = useTranslation(['lessons', 'common']);
   const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const mutation = useCreateLessonMutation();
   const methods = useForm<TLessonForm>({
@@ -95,15 +96,15 @@ const LessonModal = (props: ILessonModalProps) => {
     <Modal {...props} size="md" isLoading={mutation.isPending}>
       <Modal.FormBody methods={methods} onSubmit={methods.handleSubmit(submitHandler)}>
         <Modal.Header
-          title="Create lesson"
-          description="Fill in lesson details"
+          title={t('form.createTitle')}
+          description={t('form.createDescription')}
         />
         <Modal.Content>
-          <FormInput<TLessonForm> name="title" label="Title" required disabled={isLocked} />
+          <FormInput<TLessonForm> name="title" label={t('form.name')} required disabled={isLocked} />
         </Modal.Content>
         <Modal.Footer>
           <Button className="flex-1" variant="secondary" onClick={props.onClose} disabled={isLocked}>
-            Cancel
+            {t('common:actions.cancel')}
           </Button>
           <Button
             type="submit"
@@ -111,7 +112,7 @@ const LessonModal = (props: ILessonModalProps) => {
             disabled={!methods.formState.isValid || isLocked}
             variant={LoadingStateVariantsMap[loadingState]}
           >
-            {LessonCreateButtonDictionary[loadingState]}
+            {t(LessonCreateButtonDictionary[loadingState])}
           </Button>
         </Modal.Footer>
       </Modal.FormBody>
@@ -129,7 +130,8 @@ const LessonModal = (props: ILessonModalProps) => {
 ### Правила композиції
 
 - **Не вкладай** власний `<form>` всередину `Modal.FormBody`, бо він сам рендерить `<form>` і `FormProvider`.
-- **`Modal.Header`** — обов'язковий. `title` короткий, 1–3 слова. `description` — опційно, одне речення.
+- **`Modal.Header`** — обов'язковий. `title` короткий, 1–3 слова. `description` — розгорнутий, 1–3 речення: що робить модалка, на що вплине дія, обмеження. У модалці створення / редагування опис є для обох режимів (`form.createDescription` / `form.editDescription`). Підказки полів (`hint`) — навпаки, кілька слів.
+- **Тексти** — лише через i18n (`useTranslation('<ns>')`, див. розділ «Мультимовність» у CLAUDE.md), фрази цілком, без склеювання слів.
 - **`Modal.Content`** — усі поля та текст. Пояснювальний текст під полями оформлюй класом `description` з `styles.module.scss` модалки (див. AuthModal / ConfirmModal).
 - **`Modal.Footer`**:
   - кнопки — лише `@/components/ui/Button`;
@@ -204,11 +206,11 @@ const LessonModal = (props: ILessonModalProps) => {
 - **Текст і варіант кнопки** беруться зі стану через `mutationToLoadingState` і `LoadingStateVariantsMap` (`@/lib/loading-mappers`). Тексти кнопок під кожен стан тримай у `src/configs/<domain>.dictionary.ts`:
 
   ```ts
-  export const LessonCreateButtonDictionary: Record<LoadingState, string> = {
-    [LoadingState.Ide]: 'Create',
-    [LoadingState.Pendding]: 'Processing...',
-    [LoadingState.Loading]: 'Loading...',
-    [LoadingState.Success]: 'Created successfully!',
+  export const LessonCreateButtonDictionary: Record<LoadingState, ParseKeys<'lessons'>> = {
+    [LoadingState.Ide]: 'form.button.ide',
+    [LoadingState.Pendding]: 'form.button.pendding',
+    [LoadingState.Loading]: 'form.button.loading',
+    [LoadingState.Success]: 'form.button.success',
   };
   ```
 - **Після успіху** модалка закривається сама через 1500ms. Таймер зберігай у `useRef` і обов'язково очищай у cleanup ефекту.

@@ -138,7 +138,7 @@ export default DepartmentsService;
 
 ### Фільтри занять
 
-- Кожен розділ рендерить `LessonsBrowser view={...}` (`study` | `teaching` | `department` | `all` | `admin`). Набір фільтрів погляду — `LESSONS_VIEWS` у `configs/lessons-views.config.ts`; підписи мультиселектів — `LESSONS_LIST_FILTERS`. Новий фільтр: поле в `ILessonsFilters` (= ім'я query-параметра бекенду) → `EMPTY_LESSONS_FILTERS` / `LESSONS_LIST_FILTERS` → довідник у `useLessonsFilterOptions` → ключ у потрібних поглядах.
+- Кожен розділ рендерить `LessonsBrowser view={...}` (`study` | `teaching` | `department` | `all` | `admin`). Набір фільтрів погляду — `LESSONS_VIEWS` у `configs/lessons-views.config.ts`; підписи мультиселектів — `lessons:filters.<key>.{label,placeholder,search}`. Новий фільтр: поле в `ILessonsFilters` (= ім'я query-параметра бекенду) → `EMPTY_LESSONS_FILTERS` → тексти `filters.<key>` в обох `lessons.json` (без них `tsc` падає) → довідник у `useLessonsFilterOptions` → ключ у потрібних поглядах.
 - Стан — у URL через `useLessonsFiltersParams(keys)`: `?search=` і повторювані ключі масивів (`teacherIds=a&teacherIds=b`), ті самі імена, що й у API. Хук читає й пише лише ключі свого погляду.
 - `LessonsToolbar`: пошук (debounce → URL) і кнопка «Filters» з лічильником, що відкриває `LessonsFiltersModal` (`SideModal`, щоб календар не зсувався, а випадні списки не обрізались). Чернетка живе в `LessonsFiltersForm`, яка монтується лише при відкритій модалці, тож кожне відкриття починається із застосованих фільтрів; застосовує лише «Apply filters». Довідники вантажаться лише при відкритій модалці й лише для фільтрів погляду.
 - `/dictionaries/*`, з яких беруться опції, доступні будь-якому токену (зокрема `departments`), тож фільтри працюють і для студентів.
@@ -194,26 +194,28 @@ export default DepartmentsService;
 - **Мова запиту** — `getRequestLocale()` (`i18n/server`): cookie `NEXT_LOCALE` → `Accept-Language` → `uk`. Через `cookies()` усі маршрути динамічні.
 - `RootLayout` ставить `<html lang>` і передає в `Providers` ресурси лише активної мови й fallback (`pickResources`). `I18nProvider` один раз створює інстанс і виставляє локаль dayjs (`setDayjsLocale`), zod (`z.config(z.locales.uk())`) і `i18nRef`.
 - **Перемикання** — `useLocale().setLocale(locale)`: пише cookie і **перезавантажує** сторінку (так само як `AuthAccounts.switchTo`), тож dayjs, zod і тексти завжди однієї мови. UI: `SidebarLanguage` у сайдбарі, `LanguageSwitch` (`components/layout/LanguageSwitch`) на Welcome і `/schedule`.
-- **Переклади** — `src/i18n/locales/<uk|en>/<namespace>.json`; namespace на домен (`common`, `layout`, `auth`, `ui`, `public`, `validation`, `permissions`). Новий namespace: JSON в обох мовах + запис у `i18n/server/resources.ts`. Українські ресурси типізовані англійськими: брак ключа валить `tsc`. Ключі типобезпечні (`interfaces/i18n/i18next.d.ts`).
+- **Переклади** — `src/i18n/locales/<uk|en>/<namespace>.json`; namespace на домен (`common`, `layout`, `auth`, `ui`, `public`, `validation`, `permissions`, `dictionaries`, `users`, `lessons`). Новий namespace: JSON в обох мовах + запис у `i18n/server/resources.ts`. Українські ресурси типізовані англійськими: брак ключа валить `tsc`. Ключі типобезпечні (`interfaces/i18n/i18next.d.ts`).
 - Множина — суфікси i18next: в `en` `_one` / `_other`, в `uk` `_one` / `_few` / `_many` / `_other`; виклик `t('key', { count, })`.
 - **Де брати `t`:**
   - клієнтські компоненти й хуки — `useTranslation('<ns>')`; ключі з інших namespace — `useTranslation(['auth', 'common'])` + `t('common:actions.cancel')`;
   - серверні сторінки й `generateMetadata` — `await getServerTranslation('<ns>')`;
   - код поза React (фабрики колонок, `getErrorMessage`, axios, `getPermissionLabel`) — `getGlobalI18n()` з `i18n/client/i18nRef`.
-- **Конфіги** зберігають ключі, а не тексти: `label: 'nav.overview'` (`TNavLabelKey`), `PermissionLabels` → ключі `permissions`, `*.dictionary.ts` — `Record<LoadingState, ParseKeys<'<ns>'>>`, у компоненті `t(dict[state])`.
+- **Конфіги** зберігають ключі, а не тексти: `label: 'nav.overview'` (`TNavLabelKey`), `PermissionLabels` → ключі `permissions`, `*.dictionary.ts` — `Record<LoadingState, ParseKeys<'<ns>'>>`, у компоненті `t(dict[state])`. Модульні константи з текстами (колонки таблиць, опції селектів) стають фабриками від `t` або будуються в компоненті (`createLessonColumns(t)`).
+- **Фрази цілком**, без склеювання слів у коді (`Add ${itemName}` ламає відмінки в українській): кожна дія має свій ключ (`departments.add`, `departments.delete`). Лічильники — через множину i18next (`t('count', { count, })`), а не `count === 1 ? … : …`.
+- **Стиль текстів:** описи (розділів, вкладок, модалок) — розгорнуті, 1–3 речення: що це, на що впливає, обмеження. Підказки полів (`hint`) — коротко, кілька слів. Кожна модалка створення / редагування має `description` і для створення, і для редагування (`form.createDescription` / `form.editDescription`); описи не обіцяють поведінки, якої немає в `api-med-scheduler/docs/domain.md`.
 - **Zod-схеми** лишаються модульними константами: повідомлення — `validationError('minChars', { count: 8, })` з `i18n/client/validation.ts` (zod викликає його при кожній перевірці, тож текст поточною мовою). Стандартні повідомлення zod без власного тексту — з `z.locales`.
 - **Дати**: локаль dayjs — `uk` / `en-gb` (`DAYJS_LOCALES`); календарю передається `culture`. Назви місяців і днів беріть з dayjs (`format('MMM')`, `getWeekdayLabels()`), а не хардкодом.
-- **Ще не перекладено** (наступні ітерації): `components/lessons`, `users`, `dictionaries`, їхні конфіги (`dictionaries.config.tsx`, `lessons-views.config.ts`), схеми й `successMessage` мутацій. Повідомлення помилок бекенду приходять англійською.
+- Повідомлення помилок бекенду приходять англійською (перекладу немає).
 
 ## Довідники — розширюються конфігом
 
-Сторінка `/dictionaries` повністю керується `configs/dictionaries.config.tsx` (`IDictionaryConfig<T>`): назва, іконка, дозволи на читання / керування, колонки, `fetchList`, `remove`, `FormModal`, `rowActions`, `relatedQueryKeys`. Порядок ключів об'єкта = порядок вкладок.
+Сторінка `/dictionaries` повністю керується `configs/dictionaries.config.tsx` (`IDictionaryConfig<T>`): іконка, дозволи на читання / керування, колонки, `fetchList`, `remove`, `FormModal`, `rowActions`, `relatedQueryKeys`. Порядок ключів об'єкта = порядок вкладок. Тексти — у `dictionaries.json` під ключем вкладки: `<key>.title`, `.description`, `.add`, `.edit`, `.delete`, `.empty`, `.confirmDelete` (`{{name}}`), `.created` / `.updated` / `.deleted`, `.form.*`; у конфігу заголовки колонок, `rowActions[].label` і `rowLock.reason` — ключі цього namespace.
 
 Новий довідник:
 1. `interfaces/dictionaries/<x>.ts` — `I<X>`, `I<X>Payload`, `I<X>Response`.
 2. `lib/services/<x>.service.ts` + `<X>QueryKey`.
 3. `components/dictionaries/forms/<X>FormModal/` — `index.tsx` + `<x>.scheme.ts`; оболонка — `DictionaryModal`, пропси — `IDictionaryFormModalProps<I<X>>` (`item: null` = створення).
-4. Запис `defineDictionary<I<X>>({...})` у `dictionariesConfig`.
+4. Запис `defineDictionary<I<X>>({...})` у `dictionariesConfig` + тексти `<key>.*` в обох `dictionaries.json`.
 5. Кастомні клітинки — `components/dictionaries/cells/`.
 
 ## Форми

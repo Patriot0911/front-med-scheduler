@@ -1,7 +1,8 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import { EMPTY_LESSONS_FILTERS, LESSONS_LIST_FILTERS } from '@/configs/lessons-views.config';
+import { EMPTY_LESSONS_FILTERS } from '@/configs/lessons-views.config';
 import { countActiveFilters, isSameFilters } from '@/lib/lessons-filters';
 import useLessonsFilterOptions from '@/hooks/lessons/useLessonsFilterOptions';
 import { LessonVisibility } from '@/interfaces/lessons/lesson';
@@ -15,14 +16,14 @@ import Select from '@/components/ui/Select';
 
 import styles from './styles.module.scss';
 
-const VISIBILITY_OPTIONS: ISelectOption[] = [
-  { value: '', label: 'Any visibility', },
-  { value: LessonVisibility.All, label: 'Public', },
-  { value: LessonVisibility.Involved, label: 'Participants only', },
-];
-
 // mounted only while the modal is open, so every opening starts from the applied filters
 const LessonsFiltersForm = ({ filterKeys, filters, onApply, onClose, }: ILessonsFiltersFormProps) => {
+  const { t, } = useTranslation(['lessons', 'common']);
+  const visibilityOptions: ISelectOption[] = [
+    { value: '', label: t('filters.anyVisibility'), },
+    { value: LessonVisibility.All, label: t('visibility.public'), },
+    { value: LessonVisibility.Involved, label: t('visibility.participantsOption'), },
+  ];
   const [draft, setDraft] = useState<ILessonsFilters>(filters);
   const options = useLessonsFilterOptions(filterKeys);
   const listKeys = filterKeys.filter((key): key is TLessonsListFilterKey => key !== 'visibility');
@@ -41,38 +42,38 @@ const LessonsFiltersForm = ({ filterKeys, filters, onApply, onClose, }: ILessons
       }}
     >
       <SideModal.Header
-        title={'Filters'}
-        description={'Show only the lessons that match all selected filters.'}
+        title={t('filters.title')}
+        description={t('filters.description')}
       />
       <SideModal.Content className={'fields-compact'}>
         <div className={styles.summary}>
-          <span>{draftCount > 0 ? `Selected: ${draftCount}` : 'No filters selected'}</span>
+          <span>{draftCount > 0 ? t('filters.selected', { count: draftCount, }) : t('filters.none')}</span>
           <Button
             variant={'ghost'}
             disabled={draftCount === 0}
             onClick={() => setDraft(EMPTY_LESSONS_FILTERS)}
           >
-            Clear all
+            {t('filters.clearAll')}
           </Button>
         </div>
         <div className={styles.fields}>
           {listKeys.map((key) => (
             <MultiSelect
               key={key}
-              label={LESSONS_LIST_FILTERS[key].label}
+              label={t(`filters.${key}.label`)}
               options={options[key]}
               value={draft[key]}
               onChange={(values) => setDraft((prev) => ({ ...prev, [key]: values, }))}
-              placeholder={LESSONS_LIST_FILTERS[key].placeholder}
-              searchPlaceholder={LESSONS_LIST_FILTERS[key].searchPlaceholder}
+              placeholder={t(`filters.${key}.placeholder`)}
+              searchPlaceholder={t(`filters.${key}.search`)}
               searchable
               hideErrorMessage
             />
           ))}
           {filterKeys.includes('visibility') && (
             <Select
-              label={'Visibility'}
-              options={VISIBILITY_OPTIONS}
+              label={t('filters.visibility')}
+              options={visibilityOptions}
               value={draft.visibility}
               onChange={(visibility) => setDraft((prev) => ({ ...prev, visibility: visibility as LessonVisibility | '', }))}
               hideErrorMessage
@@ -91,7 +92,7 @@ const LessonsFiltersForm = ({ filterKeys, filters, onApply, onClose, }: ILessons
       </SideModal.Content>
       <SideModal.Footer>
         <Button className={'flex-1'} variant={'secondary'} onClick={onClose}>
-          Cancel
+          {t('common:actions.cancel')}
         </Button>
         <Button
           type={'submit'}
@@ -99,7 +100,7 @@ const LessonsFiltersForm = ({ filterKeys, filters, onApply, onClose, }: ILessons
           variant={'primary'}
           disabled={isSameFilters(draft, filters, filterKeys)}
         >
-          Apply filters
+          {t('filters.apply')}
         </Button>
       </SideModal.Footer>
     </SideModal.FormBody>

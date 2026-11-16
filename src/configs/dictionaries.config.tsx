@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs from '@/lib/dayjs';
 import { LuBuilding2, LuCalendarRange, LuGraduationCap, LuShieldCheck, LuTags, LuUsers } from 'react-icons/lu';
 import type { IDictionaryConfig, IDictionaryRow } from '@/interfaces/dictionaries/tables';
 import type { IRole } from '@/interfaces/dictionaries/roles';
@@ -32,9 +32,6 @@ const defineDictionary = <T extends IDictionaryRow>(config: IDictionaryConfig<T>
   config as unknown as IDictionaryConfig<IDictionaryRow>;
 
 const departmentsDictionaryConfig = defineDictionary<IDepartment>({
-  title: 'Departments',
-  itemName: 'department',
-  description: 'Departments (кафедри) group teachers. The head of a department manages its lessons.',
   icon: <LuBuilding2 />,
   queryKey: DepartmentsQueryKey.DepartmentsList,
   pageSize: PAGE_SIZE,
@@ -43,26 +40,25 @@ const departmentsDictionaryConfig = defineDictionary<IDepartment>({
   fetchList: DepartmentsService.getDepartments,
   remove: DepartmentsService.deleteDepartment,
   getItemLabel: (department) => department.name,
-  deleteWarning: 'Teachers of this department will be left without a department.',
   relatedQueryKeys: [DictionaryQueryKey.Departments, DictionaryQueryKey.Teachers],
   FormModal: DepartmentFormModal,
   rowActions: [
     {
       key: 'teachers',
       icon: <LuGraduationCap />,
-      label: 'Department teachers',
+      label: 'departments.teachersAction',
       Modal: DepartmentTeachersModal,
     },
   ],
   columns: [
     {
       key: 'name',
-      title: 'Name',
+      title: 'columns.name',
       dataBind: 'name',
     },
     {
       key: 'head',
-      title: 'Head',
+      title: 'departments.columns.head',
       width: '30%',
       render: (department) => <TeacherNameCell teacherId={department.headTeacherId} />,
     },
@@ -70,9 +66,6 @@ const departmentsDictionaryConfig = defineDictionary<IDepartment>({
 });
 
 const studentGroupsDictionaryConfig = defineDictionary<IStudentGroup>({
-  title: 'Student groups',
-  itemName: 'group',
-  description: 'Academic groups of students. Lessons are scheduled for one or several groups.',
   icon: <LuUsers />,
   queryKey: StudentGroupsQueryKey.StudentGroupsList,
   pageSize: PAGE_SIZE,
@@ -81,33 +74,29 @@ const studentGroupsDictionaryConfig = defineDictionary<IStudentGroup>({
   fetchList: StudentGroupsService.getStudentGroups,
   remove: StudentGroupsService.deleteStudentGroup,
   getItemLabel: (group) => group.name,
-  deleteWarning: 'The group will be removed from its lessons. A group that still has students cannot be deleted.',
   FormModal: StudentGroupFormModal,
   columns: [
     {
       key: 'name',
-      title: 'Name',
+      title: 'columns.name',
       dataBind: 'name',
       width: '25%',
     },
     {
       key: 'studyYear',
-      title: 'Study year',
+      title: 'studentGroups.columns.studyYear',
       dataBind: 'studyYear',
       width: '25%',
     },
     {
       key: 'tags',
-      title: 'Tags',
+      title: 'studentGroups.columns.tags',
       render: (group) => <GroupTagsCell tagIds={group.groupTags} />,
     },
   ],
 });
 
 const groupTagsDictionaryConfig = defineDictionary<IGroupTag>({
-  title: 'Group tags',
-  itemName: 'tag',
-  description: 'Labels for student groups, e.g. form of study or speciality.',
   icon: <LuTags />,
   queryKey: GroupTagsQueryKey.GroupTagsList,
   pageSize: PAGE_SIZE,
@@ -117,21 +106,17 @@ const groupTagsDictionaryConfig = defineDictionary<IGroupTag>({
   remove: GroupTagsService.deleteGroupTag,
   relatedQueryKeys: [DictionaryQueryKey.GroupTags, StudentGroupsQueryKey.StudentGroupsList],
   getItemLabel: (tag) => tag.name,
-  deleteWarning: 'The tag will be removed from all student groups.',
   FormModal: GroupTagFormModal,
   columns: [
     {
       key: 'name',
-      title: 'Name',
+      title: 'columns.name',
       dataBind: 'name',
     },
   ],
 });
 
 const semestersDictionaryConfig = defineDictionary<ISemester>({
-  title: 'Semesters',
-  itemName: 'semester',
-  description: 'Study periods that lessons belong to.',
   icon: <LuCalendarRange />,
   queryKey: SemestersQueryKey.SemestersList,
   pageSize: PAGE_SIZE,
@@ -140,24 +125,23 @@ const semestersDictionaryConfig = defineDictionary<ISemester>({
   fetchList: SemestersService.getSemesters,
   remove: SemestersService.deleteSemester,
   getItemLabel: (semester) => semester.name,
-  deleteWarning: 'A semester that already has lessons cannot be deleted.',
   FormModal: SemesterFormModal,
   relatedQueryKeys: [DictionaryQueryKey.Semesters],
   columns: [
     {
       key: 'name',
-      title: 'Name',
+      title: 'columns.name',
       dataBind: 'name',
     },
     {
       key: 'dateFrom',
-      title: 'Starts on',
+      title: 'semesters.columns.dateFrom',
       width: '18%',
       render: (semester) => dayjs(semester.dateFrom).format(DATE_FORMAT),
     },
     {
       key: 'dateTo',
-      title: 'Ends on',
+      title: 'semesters.columns.dateTo',
       width: '18%',
       render: (semester) => dayjs(semester.dateTo).format(DATE_FORMAT),
     },
@@ -165,9 +149,6 @@ const semestersDictionaryConfig = defineDictionary<ISemester>({
 });
 
 const rolesDictionaryConfig = defineDictionary<IRole>({
-  title: 'Roles',
-  itemName: 'role',
-  description: 'Sets of permissions assigned to users.',
   icon: <LuShieldCheck />,
   queryKey: RolesQueryKey.RolesList,
   pageSize: PAGE_SIZE,
@@ -176,29 +157,28 @@ const rolesDictionaryConfig = defineDictionary<IRole>({
   fetchList: RolesService.getRoles,
   remove: RolesService.deleteRole,
   getItemLabel: (role) => role.name,
-  deleteWarning: 'Users with this role will lose its permissions.',
   FormModal: RoleFormModal,
   rowLock: {
     isLocked: (role) => !role.canManage,
-    reason: 'This role ranks at or above yours, or has permissions you lack',
+    reason: 'roles.locked',
   },
   columns: [
     {
       key: 'name',
-      title: 'Name',
+      title: 'columns.name',
       dataBind: 'name',
       width: '22%',
     },
     {
       key: 'rolePriority',
-      title: 'Priority',
+      title: 'roles.columns.priority',
       dataBind: 'rolePriority',
       width: '10%',
       align: 'center',
     },
     {
       key: 'permissions',
-      title: 'Permissions',
+      title: 'roles.columns.permissions',
       render: (role) => <ChipsCell items={role.permissions.map(getPermissionLabel)} />,
     },
   ],

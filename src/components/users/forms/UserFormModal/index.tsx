@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,8 +23,6 @@ import Collapse from '@/components/ui/Collapse';
 import InitialPasswordField from './InitialPasswordField';
 
 import styles from './styles.module.scss';
-
-const NOT_ASSIGNED_OPTION: ISelectOption = { value: '', label: 'Not assigned', };
 
 const toFormValues = (user: IUser | null): TUserForm => ({
   fullName: user?.fullName ?? '',
@@ -48,13 +47,14 @@ const toPayload = (data: TUserForm, canAssignRoles: boolean): IUserPayload => ({
     : null,
 });
 
-const toOptions = (items: { id: string; name: string }[] = []): ISelectOption[] => [
-  NOT_ASSIGNED_OPTION,
+const toOptions = (notAssigned: string, items: { id: string; name: string }[] = []): ISelectOption[] => [
+  { value: '', label: notAssigned, },
   ...items.map((item) => ({ value: item.id, label: item.name, })),
 ];
 
 /** Creates a user with optional roles and teacher / student profiles, or edits an existing one. */
 const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModalProps) => {
+  const { t, } = useTranslation('users');
   const isEdit = !!item;
   const methods = useForm<TUserForm>({
     resolver: zodResolver(userSchema),
@@ -77,7 +77,7 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
     },
     // teacher profiles feed the teachers lists (departments, lessons)
     invalidateKeys: [UsersQueryKey.UsersList, DictionaryQueryKey.Teachers, DepartmentsQueryKey.DepartmentsList],
-    successMessage: item ? 'User updated' : 'User created',
+    successMessage: item ? t('updated') : t('created'),
     onSuccess: onClose,
   });
 
@@ -92,10 +92,8 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
     <DictionaryModal
       isOpen={isOpen}
       onClose={onClose}
-      title={isEdit ? 'Edit user' : 'New user'}
-      description={isEdit
-        ? undefined
-        : 'Set an initial password to pass on to the user, or leave it empty to generate a random one.'}
+      title={isEdit ? t('form.editTitle') : t('form.createTitle')}
+      description={isEdit ? t('form.editDescription') : t('form.createDescription')}
       methods={methods}
       onSubmit={(data: TUserForm) => mutation.mutate(data)}
       isPending={mutation.isPending}
@@ -103,26 +101,26 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
     >
       <FormInput<TUserForm>
         name={'fullName'}
-        label={'Full name'}
-        placeholder={'e.g. John Doe'}
+        label={t('form.fullName')}
+        placeholder={t('form.fullNamePlaceholder')}
         required
       />
       <FormInput<TUserForm>
         name={'email'}
-        label={'Email'}
+        label={t('form.email')}
         type={'email'}
-        placeholder={'e.g. john.doe@example.com'}
+        placeholder={t('form.emailPlaceholder')}
         required
       />
       {canAssignRoles && (
         <FormMultiSelect<TUserForm, ISelectOption>
           name={'roleIds'}
-          label={'Roles'}
+          label={t('form.roles')}
           options={(roles ?? []).map((role) => ({ value: role.id, label: role.name, }))}
-          placeholder={'No roles'}
+          placeholder={t('noRoles')}
           hideErrorMessage
-          searchPlaceholder={'Search role…'}
-          hint={'You can only assign or remove roles within your own role priority'}
+          searchPlaceholder={t('form.searchRole')}
+          hint={t('form.rolesHint')}
           searchable
         />
       )}
@@ -131,15 +129,15 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
       <section className={styles.profile}>
         <FormSwitch<TUserForm>
           name={'isTeacher'}
-          label={'Teacher profile'}
-          hint={'Can be assigned to lessons and departments'}
+          label={t('form.teacherProfile')}
+          hint={t('form.teacherProfileHint')}
         />
         <Collapse isOpen={isTeacher} className={styles['profile-fields']}>
           <FormSelect<TUserForm, ISelectOption>
             name={'departmentId'}
-            label={'Department'}
-            options={toOptions(departments)}
-            placeholder={'Not assigned'}
+            label={t('form.department')}
+            options={toOptions(t('notAssigned'), departments)}
+            placeholder={t('notAssigned')}
             hideErrorMessage
             searchable
           >
@@ -147,7 +145,7 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
               {(option) => option.label}
             </FormSelect.Selected>
             <FormSelect.Area>
-              <FormSelect.Search placeholder={'Search department…'} />
+              <FormSelect.Search placeholder={t('form.searchDepartment')} />
               <FormSelect.Option<ISelectOption>>
                 {(option) => option.label}
               </FormSelect.Option>
@@ -159,15 +157,15 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
       <section className={styles.profile}>
         <FormSwitch<TUserForm>
           name={'isStudent'}
-          label={'Student profile'}
-          hint={'Belongs to a student group'}
+          label={t('form.studentProfile')}
+          hint={t('form.studentProfileHint')}
         />
         <Collapse isOpen={isStudent} className={styles['profile-fields']}>
           <FormSelect<TUserForm, ISelectOption>
             name={'studentGroupId'}
-            label={'Student group'}
-            options={toOptions(groups)}
-            placeholder={'Not assigned'}
+            label={t('form.studentGroup')}
+            options={toOptions(t('notAssigned'), groups)}
+            placeholder={t('notAssigned')}
             hideErrorMessage
             searchable
           >
@@ -175,7 +173,7 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
               {(option) => option.label}
             </FormSelect.Selected>
             <FormSelect.Area>
-              <FormSelect.Search placeholder={'Search group…'} />
+              <FormSelect.Search placeholder={t('form.searchGroup')} />
               <FormSelect.Option<ISelectOption>>
                 {(option) => option.label}
               </FormSelect.Option>
@@ -183,7 +181,7 @@ const UserFormModal = ({ isOpen, item, onClose, canAssignRoles, }: IUserFormModa
           </FormSelect>
           <FormSwitch<TUserForm>
             name={'isGroupMonitor'}
-            label={'Group monitor'}
+            label={t('form.groupMonitor')}
             disabled={!methods.getValues('studentGroupId')}
           />
         </Collapse>

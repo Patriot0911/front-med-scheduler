@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { LuFilter, LuPlus, LuSearch, LuX } from 'react-icons/lu';
 import { ISelectOption } from '@/interfaces/ui/selectors';
@@ -12,11 +13,7 @@ import MultiSelect from '@/components/ui/MultiSelect';
 
 import styles from './styles.module.scss';
 
-const PROFILE_OPTIONS: ISelectOption[] = [
-  { value: UserProfileType.Teacher, label: 'Teacher', },
-  { value: UserProfileType.Student, label: 'Student', },
-  { value: UserProfileType.None, label: 'No profile', },
-];
+const PROFILE_TYPES = [UserProfileType.Teacher, UserProfileType.Student, UserProfileType.None];
 
 const EMPTY_FILTERS: IUsersFilters = { roleIds: [], profiles: [], };
 
@@ -38,6 +35,8 @@ const UsersToolbar = ({
   canManage,
   onCreate,
 }: IUsersToolbarProps) => {
+  const { t, } = useTranslation('users');
+  const profileOptions: ISelectOption[] = PROFILE_TYPES.map((type) => ({ value: type, label: t(`profiles.${type}`), }));
   const { data: roles, } = useRolesDictionaryQuery(canFilterByRoles);
   const roleOptions: ISelectOption[] = (roles ?? []).map((role) => ({ value: role.id, label: role.name, }));
   const [draft, setDraft] = useState<IUsersFilters>(filters);
@@ -54,8 +53,8 @@ const UsersToolbar = ({
           <Input
             name={'users-search'}
             value={search}
-            placeholder={'Search by name or email…'}
-            aria-label={'Search by name or email'}
+            placeholder={t('searchPlaceholder')}
+            aria-label={t('searchLabel')}
             onChange={(e) => onSearchChange(e.target.value)}
             icon={search ? <LuX /> : <LuSearch />}
             onIconClick={() => onSearchChange('')}
@@ -68,18 +67,18 @@ const UsersToolbar = ({
             options={roleOptions}
             value={draft.roleIds}
             onChange={(roleIds) => setDraft((prev) => ({ ...prev, roleIds, }))}
-            placeholder={'All roles'}
-            searchPlaceholder={'Search role…'}
+            placeholder={t('allRoles')}
+            searchPlaceholder={t('searchRole')}
             searchable
             hideErrorMessage
           />
         )}
         <MultiSelect
           className={styles.filter}
-          options={PROFILE_OPTIONS}
+          options={profileOptions}
           value={draft.profiles}
           onChange={(profiles) => setDraft((prev) => ({ ...prev, profiles: profiles as UserProfileType[], }))}
-          placeholder={'All profiles'}
+          placeholder={t('allProfiles')}
           hideErrorMessage
         />
         <div className={styles['filter-actions']}>
@@ -90,7 +89,7 @@ const UsersToolbar = ({
             onClick={() => onFiltersApply(draft)}
             className={styles['action-button']}
           >
-            Apply filters
+            {t('applyFilters')}
           </Button>
         </div>
       </div>
@@ -100,7 +99,7 @@ const UsersToolbar = ({
           onClick={onCreate}
           className={styles['action-button']}
         >
-          Add user
+          {t('add')}
         </Button>
       )}
     </div>
