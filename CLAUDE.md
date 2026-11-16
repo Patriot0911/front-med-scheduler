@@ -23,6 +23,10 @@ npm run lint        # eslint (next core-web-vitals + typescript)
 - `.env`: `NEXT_PUBLIC_API_URL=http://localhost:3001/api` (з суфіксом `/api`; шляхи в сервісах його не містять).
 - Тестів немає.
 
+## Скіли й правила
+
+Процедури — у `.claude/skills/`: `frontend-rebuild-plan` (рішення дня нуль і порядок побудови), `frontend-domain` (бізнес-правила → UI), `frontend-api-resource`, `frontend-ui-kit`, `frontend-styling`, `frontend-i18n`, `frontend-forms`, `frontend-modals`, `frontend-feature-section`. Короткі обмеження за шляхами — `.claude/rules/` (`styles`, `ui-kit`, `api-layer`, `texts`).
+
 ## Структура
 
 ```
