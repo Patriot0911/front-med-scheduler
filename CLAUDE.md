@@ -5,7 +5,7 @@ API — сусідній репозиторій `../api-med-scheduler`. Доме
 
 ## Git
 
-- **Не комітити й не пушити без прямого прохання.** Зміни лишаються в робочому дереві, доки користувач сам не попросить коміт. Дозвіл на один коміт не поширюється на наступні.
+- **ШІ ніколи не комітить і не пушить** — навіть на прохання (тоді лише текст повідомлення коміту). Зміни лишаються в робочому дереві, коміти робить користувач. Деталі — `.claude/rules/git.md`.
 
 ## Стек
 
@@ -25,7 +25,7 @@ npm run lint        # eslint (next core-web-vitals + typescript)
 
 ## Скіли й правила
 
-Процедури — у `.claude/skills/`: `frontend-rebuild-plan` (рішення дня нуль і порядок побудови), `frontend-domain` (бізнес-правила → UI), `frontend-api-resource`, `frontend-ui-kit`, `frontend-styling`, `frontend-i18n`, `frontend-forms`, `frontend-modals`, `frontend-feature-section`. Короткі обмеження за шляхами — `.claude/rules/` (`styles`, `ui-kit`, `api-layer`, `texts`).
+Процедури — у `.claude/skills/`: `frontend-rebuild-plan` (рішення дня нуль і порядок побудови), `frontend-domain` (бізнес-правила → UI), `frontend-api-resource`, `frontend-ui-kit`, `frontend-styling`, `frontend-i18n`, `frontend-forms`, `frontend-modals`, `frontend-feature-section`. Короткі обмеження — `.claude/rules/` (`git` завжди; за шляхами `styles`, `ui-kit`, `api-layer`, `texts`, `comments`).
 
 ## Структура
 
