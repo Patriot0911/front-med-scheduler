@@ -5,6 +5,7 @@ import { apiClient } from '../axios';
 
 export enum LessonGroupsQueryKey {
   AdminList = 'lessonGroupsAdminList',
+  UsableList = 'lessonGroupsUsableList',
   My = 'lessonGroupsMy',
 };
 
@@ -22,6 +23,11 @@ class LessonGroupsService {
   /** Lessons into an existing group at each of the dates */
   static async addLessonsToGroup(lessonGroupId: string, payload: IAddLessonsToGroupPayload): Promise<unknown> {
     return apiClient.post(`/lessons-groups/${lessonGroupId}/lessons`, payload);
+  }
+
+  /** Groups the current teacher may put lessons into: their own and their department's */
+  static async getUsableLessonGroups(params: ILessonGroupsListParams): Promise<ILessonGroupsResponse> {
+    return apiClient.get('/lessons-groups/usable/list', { params, });
   }
 
   static async getAdminLessonGroups(params: ILessonGroupsListParams): Promise<ILessonGroupsResponse> {

@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { LuSearch, LuX } from 'react-icons/lu';
 import useDebouncedValue from '@/hooks/shared/useDebouncedValue';
-import useAdminLessonGroupsQuery from '@/hooks/queries/lessons/useAdminLessonGroupsQuery';
-import type { IAdminLessonGroupsListProps, ILessonGroup } from '@/interfaces/lessons/lesson-group';
+import useLessonGroupsQuery from '@/hooks/queries/lessons/useLessonGroupsQuery';
+import type { ILessonGroup, ILessonGroupsListProps } from '@/interfaces/lessons/lesson-group';
 import Input from '@/components/ui/Input';
 import LessonGroupsTable, { LESSON_GROUPS_PAGE_SIZE } from '../LessonGroupsTable';
 import LessonGroupModal from '../LessonGroupModal';
@@ -15,7 +15,7 @@ import styles from './styles.module.scss';
 
 type TGroupModalState = { isOpen: boolean; group: ILessonGroup | null };
 
-const AdminLessonGroupsList = ({ canManage, }: IAdminLessonGroupsListProps) => {
+const LessonGroupsList = ({ source, canManage, }: ILessonGroupsListProps) => {
   const { t, } = useTranslation('lessons');
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebouncedValue(search.trim());
@@ -26,7 +26,7 @@ const AdminLessonGroupsList = ({ canManage, }: IAdminLessonGroupsListProps) => {
   const [deleting, setDeleting] = useState<TGroupModalState & { session: number }>({ isOpen: false, group: null, session: 0, });
 
   // the opened group follows the list after edits (name, lessons count, period)
-  const { data, } = useAdminLessonGroupsQuery(page, LESSON_GROUPS_PAGE_SIZE, debouncedSearch);
+  const { data, } = useLessonGroupsQuery(source, page, LESSON_GROUPS_PAGE_SIZE, debouncedSearch);
   const fresh = (group: ILessonGroup | null) => (group && data?.items.find(({ id, }) => id === group.id)) ?? group;
 
   const openDelete = (group: ILessonGroup) => setDeleting((prev) => ({ isOpen: true, group, session: prev.session + 1, }));
@@ -46,6 +46,7 @@ const AdminLessonGroupsList = ({ canManage, }: IAdminLessonGroupsListProps) => {
         />
       </div>
       <LessonGroupsTable
+        source={source}
         search={debouncedSearch}
         page={page}
         onPageChange={(next) => setPageState({ search: debouncedSearch, page: next, })}
@@ -53,6 +54,7 @@ const AdminLessonGroupsList = ({ canManage, }: IAdminLessonGroupsListProps) => {
         onDelete={canManage ? openDelete : undefined}
       />
       <LessonGroupModal
+        source={source}
         isOpen={opened.isOpen}
         group={fresh(opened.group)}
         canManage={canManage}
@@ -70,4 +72,4 @@ const AdminLessonGroupsList = ({ canManage, }: IAdminLessonGroupsListProps) => {
   );
 }
 
-export default AdminLessonGroupsList;
+export default LessonGroupsList;

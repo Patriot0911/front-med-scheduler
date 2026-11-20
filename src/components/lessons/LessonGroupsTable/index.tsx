@@ -6,7 +6,7 @@ import type { TFunction } from 'i18next';
 import { LuEye, LuPencil, LuTrash2 } from 'react-icons/lu';
 import dayjs from '@/lib/dayjs';
 import Table from '@/components/ui/Table';
-import useAdminLessonGroupsQuery from '@/hooks/queries/lessons/useAdminLessonGroupsQuery';
+import useLessonGroupsQuery from '@/hooks/queries/lessons/useLessonGroupsQuery';
 import type { ILessonGroup, ILessonGroupsTableProps } from '@/interfaces/lessons/lesson-group';
 import type { ITableAction, ITableColumn } from '@/interfaces/ui/table';
 
@@ -65,10 +65,10 @@ const createColumns = (t: TFunction<'lessons'>): ITableColumn<ILessonGroup>[] =>
   },
 ];
 
-const LessonGroupsTable = ({ search, page, onPageChange, onOpen, onDelete, }: ILessonGroupsTableProps) => {
+const LessonGroupsTable = ({ source, search, page, onPageChange, onOpen, onDelete, }: ILessonGroupsTableProps) => {
   const { t, } = useTranslation('lessons');
   const columns = useMemo(() => createColumns(t), [t]);
-  const { data, isLoading, isFetching, } = useAdminLessonGroupsQuery(page, LESSON_GROUPS_PAGE_SIZE, search);
+  const { data, isLoading, isFetching, } = useLessonGroupsQuery(source, page, LESSON_GROUPS_PAGE_SIZE, search);
   const actions: ITableAction<ILessonGroup>[] = [
     { key: 'open', icon: onDelete ? <LuPencil /> : <LuEye />, label: onDelete ? t('groups.edit') : t('groups.view'), onClick: onOpen, },
     ...(onDelete

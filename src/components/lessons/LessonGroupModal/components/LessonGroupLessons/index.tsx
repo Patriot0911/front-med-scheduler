@@ -38,10 +38,10 @@ const describeAction = ({ kind, lessons, }: TLessonsAction, t: TFunction<'lesson
 };
 
 /** The lessons screen of the group modal: the list with row and bulk actions */
-const LessonGroupLessons = ({ group, canManage, onBack, }: ILessonGroupLessonsProps) => {
+const LessonGroupLessons = ({ group, source, canManage, onBack, }: ILessonGroupLessonsProps) => {
   const { t, } = useTranslation('lessons');
   const lessonColumns = useMemo(() => createLessonColumns(t), [t]);
-  const { data, isLoading, } = useLessonsQuery('admin', { lessonGroupIds: [group.id], });
+  const { data, isLoading, } = useLessonsQuery(source === 'admin' ? 'admin' : 'all', { lessonGroupIds: [group.id], });
   const lessons = data?.items ?? [];
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const selectedLessons = lessons.filter((lesson) => selected.has(lesson.id));

@@ -22,24 +22,27 @@
       },
       "description": {
         "teaching": "Lessons you teach, on your own or together with other teachers. Click a free slot in the calendar or use “Add lesson” to schedule a new one.",
-        "department": "All lessons linked to the department you head. As the head, you can edit any of them, even the ones you don't teach."
+        "department": "All lessons linked to the department you head. As the head, you can edit any of them, even the ones you don't teach.",
+        "lessonGroups": "Lesson groups you can add lessons to: the ones you created and your department's. Click a group to see its lessons."
       },
       "noProfile": "You don't have a teacher profile. Ask an administrator to add one."
     },
     "admin": {
       "noAccess": "You don't have access to lessons management. Ask an administrator to grant you the permissions you need.",
       "descriptionManage": "Every lesson of the platform, public or not, whoever teaches it. You can edit any lesson and manage lesson groups: rename them, move lessons between them or delete them.",
-      "descriptionView": "Every lesson of the platform, public or not, whoever teaches it. View only: editing needs the “Manage all lessons” permission.",
-      "tabs": {
-        "lessons": "Lessons",
-        "lessonGroups": "Lesson groups"
-      },
-      "modes": {
-        "calendar": "Calendar",
-        "list": "List"
-      },
-      "includePast": "Include past lessons"
+      "descriptionView": "Every lesson of the platform, public or not, whoever teaches it. View only: editing needs the “Manage all lessons” permission."
     }
+  },
+  "listMode": {
+    "modes": {
+      "calendar": "Calendar",
+      "list": "List"
+    },
+    "tabs": {
+      "lessons": "Lessons",
+      "lessonGroups": "Lesson groups"
+    },
+    "includePast": "Include past lessons"
   },
   "toolbar": {
     "searchPlaceholder": "Search lessons, groups, teachers…",

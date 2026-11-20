@@ -54,7 +54,7 @@ const LessonsBrowser = ({ view, mode = 'calendar', canEdit = true, }: ILessonsBr
           <Switch
             checked={includePast}
             onChange={setIncludePast}
-            label={t('sections.admin.includePast')}
+            label={t('listMode.includePast')}
           />
         )}
         {canCreate && (

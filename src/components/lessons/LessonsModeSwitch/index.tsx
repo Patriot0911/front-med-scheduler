@@ -17,7 +17,7 @@ const MODE_ICONS: Record<TLessonsMode, ReactNode> = {
 const LessonsModeSwitch = ({ value, onChange, }: ILessonsModeSwitchProps) => {
   const { t, } = useTranslation('lessons');
   const modes = (Object.keys(MODE_ICONS) as TLessonsMode[]).map((key): ITabItem<TLessonsMode> => {
-    const label = t(`sections.admin.modes.${key}`);
+    const label = t(`listMode.modes.${key}`);
     return { key, data: key, label, render: <span className={styles.item}>{MODE_ICONS[key]}{label}</span>, };
   });
 

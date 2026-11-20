@@ -10,6 +10,7 @@ const INVALIDATE_KEYS = [
   LessonsQueryKey.My,
   LessonsQueryKey.Admin,
   LessonGroupsQueryKey.AdminList,
+  LessonGroupsQueryKey.UsableList,
   LessonGroupsQueryKey.My,
   DictionaryQueryKey.LessonGroups,
 ];

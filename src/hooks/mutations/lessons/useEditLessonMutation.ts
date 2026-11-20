@@ -10,6 +10,7 @@ const INVALIDATE_KEYS = [
   LessonsQueryKey.My,
   LessonsQueryKey.Admin,
   LessonGroupsQueryKey.AdminList,
+  LessonGroupsQueryKey.UsableList,
 ];
 
 /** The admin panel edits through /admin/lessons, every other view through the teacher domain */

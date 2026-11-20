@@ -15,6 +15,9 @@ export interface ILessonGroup {
   lastLessonDate: string | null;
 };
 
+/** admin: every group (/admin/lessons-groups); usable: the teacher's own and their department's */
+export type TLessonGroupsSource = 'admin' | 'usable';
+
 export type ILessonGroupsResponse = IGenericListResponse<ILessonGroup>;
 
 export interface ILessonGroupsListParams {
@@ -30,6 +33,7 @@ export interface IEditLessonGroupPayload {
 };
 
 export interface ILessonGroupsTableProps {
+  source: TLessonGroupsSource;
   search: string;
   page: number;
   onPageChange: (page: number) => void;
@@ -40,6 +44,7 @@ export interface ILessonGroupsTableProps {
 };
 
 export interface ILessonGroupModalProps extends IModalBaseProps {
+  source: TLessonGroupsSource;
   group: ILessonGroup | null;
   canManage: boolean;
   onDelete: (group: ILessonGroup) => void;
@@ -54,14 +59,15 @@ export interface IAssignLessonsModalProps extends IModalBaseProps {
   group: ILessonGroup | null;
 };
 
-
-export interface IAdminLessonGroupsListProps {
+export interface ILessonGroupsListProps {
+  source: TLessonGroupsSource;
   /** Edit, delete and the lessons actions; otherwise groups open read-only */
   canManage: boolean;
 };
 
 interface ILessonGroupScreenProps {
   group: ILessonGroup;
+  source: TLessonGroupsSource;
   canManage: boolean;
 };
 

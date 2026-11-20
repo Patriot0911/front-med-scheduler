@@ -9,6 +9,7 @@ const INVALIDATE_KEYS = [
   LessonsQueryKey.My,
   LessonsQueryKey.Admin,
   LessonGroupsQueryKey.AdminList,
+  LessonGroupsQueryKey.UsableList,
 ];
 
 const useAddLessonsToGroupMutation = (onSuccess?: () => void) => {

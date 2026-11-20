@@ -15,7 +15,7 @@ import styles from './styles.module.scss';
 
 type TScreen = 'overview' | 'lessons';
 
-const LessonGroupContent = ({ group, canManage, onDelete, onClose, }: Omit<ILessonGroupModalProps, 'isOpen' | 'group'> & { group: ILessonGroup }) => {
+const LessonGroupContent = ({ group, source, canManage, onDelete, onClose, }: Omit<ILessonGroupModalProps, 'isOpen' | 'group'> & { group: ILessonGroup }) => {
   const [screen, setScreen] = useState<TScreen>('overview');
   const methods = useForm<TLessonGroupForm>({
     resolver: zodResolver(lessonGroupSchema),
@@ -41,6 +41,7 @@ const LessonGroupContent = ({ group, canManage, onDelete, onClose, }: Omit<ILess
           ? (
             <LessonGroupOverview
               group={group}
+              source={source}
               canManage={canManage}
               methods={methods}
               onOpenLessons={() => setScreen('lessons')}
@@ -51,6 +52,7 @@ const LessonGroupContent = ({ group, canManage, onDelete, onClose, }: Omit<ILess
           : (
             <LessonGroupLessons
               group={group}
+              source={source}
               canManage={canManage}
               onBack={() => setScreen('overview')}
             />
@@ -60,7 +62,7 @@ const LessonGroupContent = ({ group, canManage, onDelete, onClose, }: Omit<ILess
   );
 }
 
-/** A lesson group in the admin panel: details first, its lessons on a screen of their own */
+/** A lesson group: details first, its lessons on a screen of their own */
 const LessonGroupModal = ({ isOpen, group, ...props }: ILessonGroupModalProps) => {
   return (
     <Modal isOpen={isOpen} onClose={props.onClose} size={'lg'}>

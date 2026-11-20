@@ -8,6 +8,7 @@ export const LESSON_GROUPS_INVALIDATE_KEYS: string[] = [
   LessonsQueryKey.My,
   LessonsQueryKey.Admin,
   LessonGroupsQueryKey.AdminList,
+  LessonGroupsQueryKey.UsableList,
   LessonGroupsQueryKey.My,
   DictionaryQueryKey.LessonGroups,
 ];
