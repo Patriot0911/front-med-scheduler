@@ -38,7 +38,7 @@ const describeAction = ({ kind, lessons, }: TLessonsAction, t: TFunction<'lesson
 };
 
 /** The lessons screen of the group modal: the list with row and bulk actions */
-const LessonGroupLessons = ({ group, source, canManage, onBack, }: ILessonGroupLessonsProps) => {
+const LessonGroupLessons = ({ group, source, canManage, canManageLessons, onBack, }: ILessonGroupLessonsProps) => {
   const { t, } = useTranslation('lessons');
   const lessonColumns = useMemo(() => createLessonColumns(t), [t]);
   const { data, isLoading, } = useLessonsQuery(source === 'admin' ? 'admin' : 'all', { lessonGroupIds: [group.id], });
@@ -55,7 +55,7 @@ const LessonGroupLessons = ({ group, source, canManage, onBack, }: ILessonGroupL
     closeAction();
     setSelected(new Set());
   };
-  const removeMutation = useRemoveLessonsFromGroupMutation(afterAction);
+  const removeMutation = useRemoveLessonsFromGroupMutation(source, afterAction);
   const deleteMutation = useDeleteLessonsMutation(afterAction);
   const actionMutation = action.value?.kind === 'delete' ? deleteMutation : removeMutation;
 
@@ -79,7 +79,7 @@ const LessonGroupLessons = ({ group, source, canManage, onBack, }: ILessonGroupL
   };
 
   const columns: ITableColumn<ILesson>[] = [
-    ...(canManage
+    ...(canManageLessons
       ? [createSelectColumn({
         rows: lessons,
         getId: (lesson) => lesson.id,
@@ -92,13 +92,18 @@ const LessonGroupLessons = ({ group, source, canManage, onBack, }: ILessonGroupL
     { ...lessonColumns.name, render: (lesson) => <span className={styles.name} title={lesson.name}>{lesson.name}</span>, },
     lessonColumns.teachers,
   ];
-  const actions: ITableAction<ILesson>[] | undefined = canManage
-    ? [
-      { key: 'edit', icon: <LuPencil />, label: t('groups.lessons.editLesson'), onClick: openEdit, },
-      { key: 'remove', icon: <LuFolderMinus />, label: t('groups.lessons.takeOutOne'), onClick: (lesson) => openAction('remove', [lesson]), },
-      { key: 'delete', icon: <LuTrash2 />, label: t('groups.lessons.deleteLesson'), variant: 'danger', onClick: (lesson) => openAction('delete', [lesson]), },
-    ]
-    : undefined;
+  // a teacher edits only the lessons they may edit anyway (canEdit)
+  const actions: ITableAction<ILesson>[] = [
+    ...(canManage || canManageLessons
+      ? [{ key: 'edit', icon: <LuPencil />, label: t('groups.lessons.editLesson'), disabled: (lesson: ILesson) => !canManage && !lesson.canEdit, onClick: openEdit, }]
+      : []),
+    ...(canManageLessons
+      ? [{ key: 'remove', icon: <LuFolderMinus />, label: t('groups.lessons.takeOutOne'), onClick: (lesson: ILesson) => openAction('remove', [lesson]), }]
+      : []),
+    ...(canManage
+      ? [{ key: 'delete', icon: <LuTrash2 />, label: t('groups.lessons.deleteLesson'), variant: 'danger' as const, onClick: (lesson: ILesson) => openAction('delete', [lesson]), }]
+      : []),
+  ];
 
   return (
     <>
@@ -107,7 +112,7 @@ const LessonGroupLessons = ({ group, source, canManage, onBack, }: ILessonGroupL
         description={t('groups.lessons.description', { name: group.name, count: isLoading ? '…' : t('count', { count: lessons.length, }), })}
       />
       <Modal.Content className={styles.content}>
-        {canManage && (
+        {canManageLessons && (
           <div className={styles.toolbar}>
             {selectedLessons.length > 0
               ? (
@@ -117,12 +122,14 @@ const LessonGroupLessons = ({ group, source, canManage, onBack, }: ILessonGroupL
                   <Button variant={'secondary'} leftIcon={<LuFolderMinus />} onClick={() => openAction('remove', selectedLessons)}>
                     {t('groups.lessons.takeOut')}
                   </Button>
-                  <Button variant={'danger'} leftIcon={<LuTrash2 />} onClick={() => openAction('delete', selectedLessons)}>
-                    {t('groups.lessons.delete')}
-                  </Button>
+                  {canManage && (
+                    <Button variant={'danger'} leftIcon={<LuTrash2 />} onClick={() => openAction('delete', selectedLessons)}>
+                      {t('groups.lessons.delete')}
+                    </Button>
+                  )}
                 </div>
               )
-              : <span className={styles.hint}>{t('groups.lessons.hint')}</span>}
+              : <span className={styles.hint}>{canManage ? t('groups.lessons.hint') : t('groups.lessons.hintTakeOut')}</span>}
             <Button variant={'secondary'} leftIcon={<LuPlus />} onClick={() => setIsAssignOpen(true)}>
               {t('groups.lessons.addExisting')}
             </Button>
@@ -130,13 +137,13 @@ const LessonGroupLessons = ({ group, source, canManage, onBack, }: ILessonGroupL
         )}
         <Table<ILesson>
           columns={columns}
-          actions={actions}
+          actions={actions.length ? actions : undefined}
           rowKey={(lesson) => lesson.id}
           data={lessons}
           skeletonRows={4}
           isLoading={isLoading}
           emptyText={t('groups.lessons.empty')}
-          onRowClick={canManage ? toggleSelected : undefined}
+          onRowClick={canManageLessons ? toggleSelected : undefined}
           rowSize={'lg'}
         >
           <Table.Header />
@@ -149,12 +156,12 @@ const LessonGroupLessons = ({ group, source, canManage, onBack, }: ILessonGroupL
         </Button>
       </Modal.Footer>
 
-      <AssignLessonsModal isOpen={isAssignOpen} onClose={() => setIsAssignOpen(false)} group={group} />
+      <AssignLessonsModal isOpen={isAssignOpen} onClose={() => setIsAssignOpen(false)} group={group} source={source} />
       <LessonFormModal
         isOpen={edit.isOpen}
         draft={null}
         lesson={edit.lesson}
-        source={'admin'}
+        source={source === 'admin' ? 'admin' : 'my'}
         onClose={() => setEdit((prev) => ({ ...prev, isOpen: false, }))}
       />
       <ConfirmModal

@@ -13,7 +13,7 @@ import { formatGroupPeriod } from '../../lesson-group-text';
 
 import styles from './styles.module.scss';
 
-const LessonGroupOverview = ({ group, canManage, methods, onOpenLessons, onDelete, onClose, }: ILessonGroupOverviewProps) => {
+const LessonGroupOverview = ({ group, canManage, canManageLessons, methods, onOpenLessons, onDelete, onClose, }: ILessonGroupOverviewProps) => {
   const { t, } = useTranslation(['lessons', 'common']);
   const mutation = useEditLessonGroupMutation(onClose);
   const onSubmit = (form: TLessonGroupForm) => mutation.mutate({
@@ -56,7 +56,7 @@ const LessonGroupOverview = ({ group, canManage, methods, onOpenLessons, onDelet
           <div className={styles['lessons-header']}>
             <h3 id={'group-lessons-title'} className={styles.title}>{t('groups.overview.lessons')}</h3>
             <Button variant={'secondary'} rightIcon={<LuArrowRight />} onClick={onOpenLessons}>
-              {canManage ? t('groups.overview.editLessons') : t('groups.overview.viewLessons')}
+              {canManageLessons ? t('groups.overview.editLessons') : t('groups.overview.viewLessons')}
             </Button>
           </div>
           <dl className={styles.stats}>

@@ -22,7 +22,7 @@ import styles from './styles.module.scss';
 
 const PAGE_SIZE = 6;
 
-const AssignLessonsContent = ({ group, onClose, }: { group: ILessonGroup; onClose: () => void }) => {
+const AssignLessonsContent = ({ group, source, onClose, }: Pick<IAssignLessonsModalProps, 'source' | 'onClose'> & { group: ILessonGroup }) => {
   const { t, } = useTranslation(['lessons', 'common']);
   const lessonColumns = useMemo(() => createLessonColumns(t), [t]);
   const [search, setSearch] = useState('');
@@ -34,13 +34,14 @@ const AssignLessonsContent = ({ group, onClose, }: { group: ILessonGroup; onClos
   const [pageState, setPageState] = useState({ key: paramsKey, page: 1, });
   const page = pageState.key === paramsKey ? pageState.page : 1;
 
-  const { data, isLoading, isFetching, } = useLessonsQuery('admin', {
+  // a teacher adds only the lessons they teach
+  const { data, isLoading, isFetching, } = useLessonsQuery(source === 'admin' ? 'admin' : 'teaching', {
     ...(debouncedSearch ? { search: debouncedSearch, } : {}),
     ...(isOnlyUngrouped ? { withoutLessonGroup: true, } : {}),
     page,
     pageSize: PAGE_SIZE,
   });
-  const mutation = useAssignLessonsToGroupMutation(onClose);
+  const mutation = useAssignLessonsToGroupMutation(source, onClose);
   const lessons = data?.items ?? [];
   const isInGroup = (lesson: ILesson) => lesson.lessonGroupId === group.id;
 
@@ -75,7 +76,7 @@ const AssignLessonsContent = ({ group, onClose, }: { group: ILessonGroup; onClos
     <>
       <Modal.Header
         title={t('groups.assign.title')}
-        description={t('groups.assign.description', { name: group.name, })}
+        description={t(source === 'admin' ? 'groups.assign.description' : 'groups.assign.descriptionTeaching', { name: group.name, })}
       />
       <Modal.Content className={styles.content}>
         <div className={`${styles.toolbar} fields-compact`}>
@@ -145,10 +146,10 @@ const AssignLessonsContent = ({ group, onClose, }: { group: ILessonGroup; onClos
 }
 
 /** Existing lessons into a group: picked across pages and searches, sent together */
-const AssignLessonsModal = ({ isOpen, onClose, group, }: IAssignLessonsModalProps) => {
+const AssignLessonsModal = ({ isOpen, onClose, group, source, }: IAssignLessonsModalProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={'lg'}>
-      {group && <AssignLessonsContent group={group} onClose={onClose} />}
+      {group && <AssignLessonsContent group={group} source={source} onClose={onClose} />}
     </Modal>
   );
 }

@@ -22,6 +22,7 @@ const LessonGroupContent = ({ group, source, canManage, onDelete, onClose, }: Om
     mode: 'onTouched',
     defaultValues: { name: group.name, note: group.note ?? '', },
   });
+  const canManageLessons = source === 'admin' ? canManage : !!group.canManageLessons;
   const isReducedMotion = useReducedMotion();
   const direction = isReducedMotion ? 0 : screen === 'lessons' ? 1 : -1;
 
@@ -43,6 +44,7 @@ const LessonGroupContent = ({ group, source, canManage, onDelete, onClose, }: Om
               group={group}
               source={source}
               canManage={canManage}
+              canManageLessons={canManageLessons}
               methods={methods}
               onOpenLessons={() => setScreen('lessons')}
               onDelete={onDelete}
@@ -54,6 +56,7 @@ const LessonGroupContent = ({ group, source, canManage, onDelete, onClose, }: Om
               group={group}
               source={source}
               canManage={canManage}
+              canManageLessons={canManageLessons}
               onBack={() => setScreen('overview')}
             />
           )}

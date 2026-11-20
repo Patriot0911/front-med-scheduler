@@ -13,6 +13,8 @@ export interface ILessonGroup {
   lessonsCount: number;
   firstLessonDate: string | null;
   lastLessonDate: string | null;
+  /** Only in /lessons-groups/usable/list: the teacher created the group, so adds and takes out its lessons */
+  canManageLessons?: boolean;
 };
 
 /** admin: every group (/admin/lessons-groups); usable: the teacher's own and their department's */
@@ -57,6 +59,7 @@ export interface IDeleteLessonGroupModalProps extends IModalBaseProps {
 
 export interface IAssignLessonsModalProps extends IModalBaseProps {
   group: ILessonGroup | null;
+  source: TLessonGroupsSource;
 };
 
 export interface ILessonGroupsListProps {
@@ -72,6 +75,7 @@ interface ILessonGroupScreenProps {
 };
 
 export interface ILessonGroupOverviewProps extends ILessonGroupScreenProps {
+  canManageLessons: boolean;
   /** Kept by the modal, so edits survive a visit to the lessons screen */
   methods: UseFormReturn<{ name: string; note: string }>;
   onOpenLessons: () => void;
@@ -80,5 +84,7 @@ export interface ILessonGroupOverviewProps extends ILessonGroupScreenProps {
 };
 
 export interface ILessonGroupLessonsProps extends ILessonGroupScreenProps {
+  /** Add existing lessons and take lessons out; deleting and editing any lesson come with canManage */
+  canManageLessons: boolean;
   onBack: () => void;
 };

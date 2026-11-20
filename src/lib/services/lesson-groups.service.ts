@@ -30,6 +30,15 @@ class LessonGroupsService {
     return apiClient.get('/lessons-groups/usable/list', { params, });
   }
 
+  /** Only lessons the teacher teaches; the group's creator only */
+  static async assignLessons(lessonGroupId: string, lessonIds: string[]): Promise<number> {
+    return apiClient.put(`/lessons-groups/${lessonGroupId}/lessons`, { lessonIds, });
+  }
+
+  static async removeLessons(lessonGroupId: string, lessonIds: string[]): Promise<number> {
+    return apiClient.post(`/lessons-groups/${lessonGroupId}/lessons/remove`, { lessonIds, });
+  }
+
   static async getAdminLessonGroups(params: ILessonGroupsListParams): Promise<ILessonGroupsResponse> {
     return apiClient.get('/admin/lessons-groups', { params, });
   }

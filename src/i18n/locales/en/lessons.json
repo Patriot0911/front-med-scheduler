@@ -231,6 +231,7 @@
       "takeOut": "Take out",
       "delete": "Delete",
       "hint": "Pick lessons to take them out of the group or delete them together.",
+      "hintTakeOut": "Pick lessons to take them out of the group. The lessons themselves stay.",
       "addExisting": "Add existing lessons",
       "empty": "No lessons in this group yet",
       "editLesson": "Edit lesson",
@@ -249,6 +250,7 @@
     "assign": {
       "title": "Add lessons to the group",
       "description": "Pick existing lessons to put into “{{name}}”. The selection is kept across pages and searches. A lesson belongs to one group only, so a lesson of another group moves here.",
+      "descriptionTeaching": "Pick lessons you teach to put into “{{name}}”. The selection is kept across pages and searches. A lesson belongs to one group only, so a lesson of another group moves here.",
       "searchPlaceholder": "Search lessons…",
       "searchLabel": "Search lessons",
       "onlyUngrouped": "Only lessons without a group",
