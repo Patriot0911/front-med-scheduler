@@ -21,6 +21,7 @@ npm run lint        # eslint (next core-web-vitals + typescript)
 ```
 
 - `.env`: `NEXT_PUBLIC_API_URL=http://localhost:3001/api` (з суфіксом `/api`; шляхи в сервісах його не містять).
+- Docker: `docker build --build-arg NEXT_PUBLIC_API_URL=https://api.<домен>/api .` — змінна вшивається в клієнтський бандл під час збірки, тому образ збирається окремо під кожне середовище (без build-arg збірка падає). `.env` до образу не потрапляє (`.dockerignore`). Healthcheck — `GET /healthz`.
 - Тестів немає.
 
 ## Скіли й правила
