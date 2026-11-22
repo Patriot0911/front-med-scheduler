@@ -1,5 +1,5 @@
 import { IModalFormBodyProps } from '@/interfaces/shared/modal';
-import { FormProvider } from 'react-hook-form';
+import { FieldValues, FormProvider } from 'react-hook-form';
 import { cn } from '@/lib/cn';
 import { useModalLayout } from '../../context';
 
@@ -18,7 +18,11 @@ const FormWrapper = ({ children, className, ...props }: Omit<IModalFormBodyProps
   );
 }
 
-const ModalFormBody = ({ children, methods, ...props }: IModalFormBodyProps) => {
+const ModalFormBody = <TFields extends FieldValues, TContext, TTransformed>({
+  children,
+  methods,
+  ...props
+}: IModalFormBodyProps<TFields, TContext, TTransformed>) => {
   if (!methods) {
     return (
       <FormWrapper {...props}>

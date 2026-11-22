@@ -1,6 +1,6 @@
 import { LoadingState } from '@/lib/loading-mappers';
 import { FormHTMLAttributes, HTMLAttributes, PropsWithChildren, ReactNode } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 export interface IModalBaseProps {
   isOpen: boolean;
@@ -14,10 +14,10 @@ export interface IModalHeaderProps {
   actions?: ReactNode;
 };
 
-export interface IModalFormBodyProps extends
+export interface IModalFormBodyProps<TFields extends FieldValues = FieldValues, TContext = unknown, TTransformed = TFields> extends
 PropsWithChildren,
 FormHTMLAttributes<HTMLFormElement> {
-  methods?: UseFormReturn<any>;
+  methods?: UseFormReturn<TFields, TContext, TTransformed>;
 };
 
 export interface IModalContentProps extends

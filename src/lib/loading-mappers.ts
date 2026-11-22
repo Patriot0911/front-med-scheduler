@@ -15,7 +15,7 @@ export const LoadingStateVariantsMap: Record<LoadingState, ButtonVariant> = {
   [LoadingState.Success]: 'success',
 };
 
-export const mutationToLoadingState = (mutation: UseMutationResult<any, Error, any>): LoadingState => {
+export const mutationToLoadingState = (mutation: Pick<UseMutationResult, 'isPending' | 'isSuccess'>): LoadingState => {
   if (mutation.isPending) return LoadingState.Pendding;
   if (mutation.isSuccess) return LoadingState.Success;
   return LoadingState.Ide;

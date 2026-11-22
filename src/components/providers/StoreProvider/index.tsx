@@ -2,19 +2,15 @@
 
 import { AppStore, makeStore } from '@/store';
 import { setGlobalStore } from '@/store/storeRef';
-import { PropsWithChildren, useRef, } from 'react'
+import { PropsWithChildren, useState, } from 'react'
 import { Provider, } from 'react-redux'
 
 const StoreProvider = ({ children, }: PropsWithChildren )  => {
-  const storeRef = useRef<AppStore | null>(null);
-
-  if (!storeRef.current) {
-    storeRef.current = makeStore();
-    setGlobalStore(storeRef.current);
-  }
+  const [store] = useState<AppStore>(makeStore);
+  setGlobalStore(store);
 
   return (
-    <Provider store={storeRef.current}>
+    <Provider store={store}>
       {children}
     </Provider>
   );

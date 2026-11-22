@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { LoadingState, LoadingStateVariantsMap } from '@/lib/loading-mappers';
 import { ConfirmModalButtonDictionary } from '@/configs/modal.dictionary';
 import { IConfirmModalProps } from '@/interfaces/shared/modal';
@@ -13,13 +13,13 @@ import styles from './styles.module.scss';
 
 const ConfirmModal = (props: IConfirmModalProps) => {
   const { t, } = useTranslation();
-  const [confirmWord, setConfirmWord] = useState<string>('')
+  const [confirmWord, setConfirmWord] = useState<string>('');
+  const [wasOpen, setWasOpen] = useState(props.isOpen);
 
-  useEffect(() => {
-    if (!props.isOpen) {
-      setConfirmWord('');
-    }
-  }, [props.isOpen]);
+  if (wasOpen !== props.isOpen) {
+    setWasOpen(props.isOpen);
+    if (!props.isOpen) setConfirmWord('');
+  }
 
   return (
     <Modal
