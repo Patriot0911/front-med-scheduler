@@ -7,6 +7,14 @@ API — сусідній репозиторій `../api-med-scheduler`. Доме
 
 - **ШІ ніколи не комітить і не пушить** — навіть на прохання (тоді лише текст повідомлення коміту). Зміни лишаються в робочому дереві, коміти робить користувач. Деталі — `.claude/rules/git.md`.
 
+## Гілки й CI
+
+- `master` — розробка; `production` — те, що задеплоєно (деплой — лише з неї, через PR `master → production`). Гілку `staging` поки не плануємо.
+- `.github/workflows/ci.yml` запускається на PR у `master` / `production`, на push у `master` і вручну; CD викликатиме його через `workflow_call`. Jobs:
+  - `quality` — `npm run lint` (падає лише на помилках, попередження допустимі), `next typegen` + `tsc --noEmit`;
+  - `docker` — збірка образу без push; `next build` іде всередині Dockerfile, тож це й перевірка збірки. `NEXT_PUBLIC_API_URL` — з repository variable або заглушка.
+- Dependabot (`.github/dependabot.yml`) — npm, docker, github-actions, PR у `master`.
+
 ## Стек
 
 Next.js 16 (App Router) · React 19 · TypeScript (strict) · i18next + react-i18next · TanStack Query 5 · Redux Toolkit (лише стан автентифікації) · axios · react-hook-form + zod · SCSS-модулі + CSS-токени · Tailwind 4 (лише утиліти) · framer-motion · react-big-calendar · dayjs · react-hot-toast · react-icons.
