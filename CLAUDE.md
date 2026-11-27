@@ -10,7 +10,8 @@ API — сусідній репозиторій `../api-med-scheduler`. Доме
 ## Гілки й CI
 
 - `master` — розробка; `production` — те, що задеплоєно (деплой — лише з неї, через PR `master → production`). Гілку `staging` поки не плануємо.
-- `.github/workflows/ci.yml` запускається на PR у `master` / `production`, на push у `master` і вручну; CD викликатиме його через `workflow_call`. Jobs:
+- `.github/workflows/deploy.yml` — на push у `production` і вручну: `ci.yml` (`workflow_call`) → образ у GHCR (`latest`, `sha-<short>`, build-arg `NEXT_PUBLIC_API_URL` з repository variable) → SSH на сервер, `docker compose pull && up -d` у `/app/med-scheduler/front`, очікування `healthy`. Compose на сервері — `deploy/docker-compose.yml` (`127.0.0.1:4000`); загальний опис деплою — `../api-med-scheduler/deploy/README.md`.
+- `.github/workflows/ci.yml` запускається на PR у `master` / `production`, на push у `master`, вручну і з `deploy.yml`. Jobs:
   - `quality` — `npm run lint` (падає лише на помилках, попередження допустимі), `next typegen` + `tsc --noEmit`;
   - `docker` — збірка образу без push; `next build` іде всередині Dockerfile, тож це й перевірка збірки. `NEXT_PUBLIC_API_URL` — з repository variable або заглушка.
 - Dependabot (`.github/dependabot.yml`) — npm, docker, github-actions, PR у `master`.

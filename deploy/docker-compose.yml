@@ -1,0 +1,22 @@
+# production web client; lives on the server in /app/med-scheduler/front
+# NEXT_PUBLIC_API_URL is baked into the image at build time, so no runtime env is needed
+name: med-web
+
+services:
+  web:
+    image: ${WEB_IMAGE:-ghcr.io/patriot0911/front-med-scheduler}:${WEB_TAG:-latest}
+    container_name: med-web
+    restart: unless-stopped
+    environment:
+      NODE_OPTIONS: --max-old-space-size=320
+    # the host reverse proxy terminates TLS and forwards the site domain here
+    ports:
+      - '127.0.0.1:${WEB_PORT:-4000}:3000'
+    mem_limit: 448m
+    stop_grace_period: 10s
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:3000/healthz']
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 15s
