@@ -3,12 +3,12 @@ paths:
   - "src/**/*.scss"
 ---
 
-# Стилі
+# Styles
 
-- Кольори, радіуси, тіні, шрифти, насиченість — лише CSS-токени з `src/styles/abstracts`. Жодних hex / `rgb()` / назв кольорів; прозорість — `rgba(var(--color-*-rgb), α)`.
-- Відступи й z-index — зі шкали в скілі `frontend-styling` (розділ 2), не довільні значення.
-- Шрифт — лише змінна, створена в `src/fonts/*.ts`; `--font-plus-jakarta` і `--font-lora` не існують.
-- Mobile-first: базові стилі для телефона, ширші — `@include mq('sm' | 'md' | 'lg' | 'xl')`.
-- Без локального `scrollbar-width` (крім `none`), без `:global` для сторонніх бібліотек (вони — `styles/vendors/`).
-- Модуль доменного компонента не перевизначає вигляд ui-компонента; потрібен варіант — додай його в `components/ui`.
-- Новий токен — у `abstracts`, не в модуль.
+- Colors, radii, shadows, fonts, font weights — only CSS tokens from `src/styles/abstracts`. No hex / `rgb()` / color names; transparency — `rgba(var(--color-*-rgb), α)`.
+- Spacing and z-index — from the scale in skill `frontend-styling` (section 2), not arbitrary values.
+- Fonts — only a variable created in `src/fonts/*.ts`; `--font-plus-jakarta` and `--font-lora` do not exist.
+- Mobile-first: base styles for phones, wider ones — `@include mq('sm' | 'md' | 'lg' | 'xl')`.
+- No local `scrollbar-width` (except `none`), no `:global` for third-party libraries (they go to `styles/vendors/`).
+- A domain component's module does not override a ui component's look; need a variant — add it in `components/ui`.
+- A new token goes into `abstracts`, not into a module.

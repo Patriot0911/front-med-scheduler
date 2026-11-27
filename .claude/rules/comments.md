@@ -5,8 +5,8 @@ paths:
   - "src/**/*.scss"
 ---
 
-# Коментарі
+# Comments
 
-- Нуль коментарів за замовчуванням, і JSDoc теж: прості компоненти, пропси, обробники, хуки, стилі, конфіги, типи й очевидні умови не коментуються.
-- Коментар доречний лише як опис справді складного компонента чи логіки, яку без нього не зрозуміти (`useFloatingPanel`, `buildSeriesDates`).
-- Не переказуй те, що видно з назв. Рясні коментарі в наявному коді — не зразок.
+- Zero comments by default, JSDoc included: simple components, props, handlers, hooks, styles, configs, types and obvious conditions get none.
+- A comment fits only as a description of a genuinely complex component or logic that cannot be understood without it (`useFloatingPanel`, `buildSeriesDates`).
+- Do not restate what names already say. Heavy comments in existing code are not a model.

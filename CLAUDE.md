@@ -3,9 +3,9 @@
 Веб-клієнт розкладу занять медичного університету: календар занять, публічний розклад, керування користувачами та довідниками.
 API — сусідній репозиторій `../api-med-scheduler`. Доменна модель і правила доступу описані в `../api-med-scheduler/docs/domain.md`.
 
-## Git
+## Правила
 
-- **ШІ ніколи не комітить і не пушить** — навіть на прохання (тоді лише текст повідомлення коміту). Зміни лишаються в робочому дереві, коміти робить користувач. Деталі — `.claude/rules/git.md`.
+Обов'язкові правила (git, операції й секрети, конвенції коду) — у `.claude/rules/`, карта «контекст → файл» — [.claude/rules/index.md](.claude/rules/index.md). Тут вони не повторюються.
 
 ## Гілки й CI
 
@@ -34,7 +34,7 @@ npm run lint        # eslint (next core-web-vitals + typescript)
 
 ## Скіли й правила
 
-Процедури — у `.claude/skills/`: `frontend-rebuild-plan` (рішення дня нуль і порядок побудови), `frontend-domain` (бізнес-правила → UI), `frontend-api-resource`, `frontend-ui-kit`, `frontend-styling`, `frontend-i18n`, `frontend-forms`, `frontend-modals`, `frontend-feature-section`. Короткі обмеження — `.claude/rules/` (`git` завжди; за шляхами `styles`, `ui-kit`, `api-layer`, `texts`, `comments`).
+Процедури — у `.claude/skills/`: `frontend-rebuild-plan` (рішення дня нуль і порядок побудови), `frontend-domain` (бізнес-правила → UI), `frontend-api-resource`, `frontend-ui-kit`, `frontend-styling`, `frontend-i18n`, `frontend-forms`, `frontend-modals`, `frontend-feature-section`. Короткі обмеження — `.claude/rules/`, вхід — `index.md`.
 
 ## Структура
 
@@ -253,7 +253,7 @@ export default DepartmentsService;
 - Імпорти через `@/`; стилі імпортуються останніми: `import styles from './styles.module.scss'`.
 - Кома після останнього елемента навіть в однорядкових об'єктах: `{ page, pageSize, }`, `const { data, } = ...`.
 - Константи модуля — `UPPER_SNAKE_CASE` угорі файлу (`READ_PERMISSIONS`, `PAGE_SIZE`).
-- **Коментарі — лише ситуативно.** Елементарний код (прості компоненти, пропси, обробники, стилі, конфіги, очевидні умови) не коментуємо взагалі, навіть JSDoc. Коментар доречний тільки як опис справді складного компонента чи логіки, яку без нього не зрозуміти. Не коментуй те, що видно з назв. Наявні в коді рясні коментарі — не зразок для нового коду.
+- Коментарі — `.claude/rules/comments.md`.
 - Тексти UI — лише через i18n (див. «Мультимовність»), без хардкоду в JSX. Тексти кнопок, що залежать від стану мутації, — у `configs/<domain>.dictionary.ts` як `Record<LoadingState, ParseKeys<'<ns>'>>`. Назви `LoadingState.Ide` / `Pendding` — історичні опечатки, не перейменовуй точково.
 - Класи: `cn(...)` (clsx + tailwind-merge).
 - Дати — `dayjs` з `@/lib/dayjs` (локаль за мовою: `uk` / `en-gb`, тиждень з понеділка). Частина файлів імпортує `'dayjs'` напряму — у новому коді бери `@/lib/dayjs`.

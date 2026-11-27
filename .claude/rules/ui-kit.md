@@ -4,13 +4,13 @@ paths:
   - "src/interfaces/ui/**"
 ---
 
-# UI-кіт
+# UI kit
 
-- Перед новим компонентом звір `.claude/skills/frontend-ui-kit/references/component-inventory.md`; після — онови його.
-- Кіт не знає домену: без запитів, `Permission`, сутностей.
-- Пропси — у `src/interfaces/ui/*.d.ts`, розширюють нативні атрибути, `className` прокидається останнім у `cn(...)`.
-- Поле = базовий компонент + `Form*`-обгортка (`useFormInputProps` / `useController`); обгортка не приймає `error` / `touched` ззовні.
-- Кожен оголошений проп має ефект (не повторюй `Button size` без стилів).
-- Випадні панелі — лише `useFloatingPanel`; модальне — лише `Modal` / `SideModal`.
-- Тексти кіта — namespace `ui`; контекстні тексти приходять пропами.
-- Зміна контракту пропа — оновити всі виклики в тій самій зміні.
+- Before a new component check `.claude/skills/frontend-ui-kit/references/component-inventory.md`; update it afterwards.
+- The kit knows nothing about the domain: no queries, `Permission`, entities.
+- Props live in `src/interfaces/ui/*.d.ts`, extend native attributes, `className` is passed last into `cn(...)`.
+- Field = base component + `Form*` wrapper (`useFormInputProps` / `useController`); the wrapper does not accept `error` / `touched` from outside.
+- Every declared prop has an effect (do not repeat `Button size` without styles).
+- Dropdown panels — only `useFloatingPanel`; modals — only `Modal` / `SideModal`.
+- Kit texts — namespace `ui`; contextual texts come via props.
+- Changing a prop contract — update all call sites in the same change.

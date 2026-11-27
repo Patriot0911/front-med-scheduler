@@ -6,11 +6,11 @@ paths:
   - "src/**/*.scheme.ts"
 ---
 
-# Тексти
+# Texts
 
-- Жодних літеральних текстів у JSX і конфігах: лише ключі i18n, додані в `en` **і** `uk`.
-- `t`: серверні сторінки — `getServerTranslation`, клієнтські компоненти — `useTranslation`, поза React — `getGlobalI18n()`, zod — `validationError` / `validationMessage`.
-- Фраза цілком (без склеювання слів), множина — `t('key', { count, })` з чотирма формами в `uk`.
-- Модульні константи з текстами (колонки, опції) — фабрики від `t`.
-- Описи не обіцяють поведінки, якої немає в `../api-med-scheduler/docs/domain.md`; терміни — за глосарієм скіла `frontend-domain`.
-- Дати — `@/lib/dayjs`, назви місяців і днів — з dayjs.
+- No literal texts in JSX or configs: only i18n keys, added to both `en` **and** `uk`.
+- `t`: server pages — `getServerTranslation`, client components — `useTranslation`, outside React — `getGlobalI18n()`, zod — `validationError` / `validationMessage`.
+- Whole phrases (no gluing words together), plurals — `t('key', { count, })` with four forms in `uk`.
+- Module constants with texts (columns, options) — factories taking `t`.
+- Descriptions never promise behavior that is not in `../api-med-scheduler/docs/domain.md`; terms follow the glossary in skill `frontend-domain`.
+- Dates — `@/lib/dayjs`, month and day names — from dayjs.
